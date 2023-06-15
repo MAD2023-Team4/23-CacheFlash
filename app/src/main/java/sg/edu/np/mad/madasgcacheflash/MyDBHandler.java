@@ -127,5 +127,4 @@ public class MyDBHandler extends SQLiteOpenHelper {
         // Log a message to indicate that the Flashcard was saved successfully
         Log.i("MyDBHandler", "Flashcard saved successfully");
     }
-
 }
