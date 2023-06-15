@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="purple_500">#6200EE</color>
+
+    <!--Blue color research
+    // Source from:
+    https://colors.dopely.top/inside-colors/blue-color-palette-inspirations-with-names-and-hex-codes/-->
+    <color name="blue">#5BAEB7</color>
+</resources>

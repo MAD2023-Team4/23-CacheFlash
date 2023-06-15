@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MAD Asg CacheFlash</string>
+    <string name="loginPageTitle">Login</string>
+    <string name="usernameText">Username</string>
+    <string name="passwordText">Password</string>
+    <string name="loginButtonText">Login</string>
+    <string name="newUserText">New User? Click Here!</string>
+
+    <string name="createAcctTitle">Create Account</string>
+    <string name="confirmCreationText">Create</string>
+    <string name="cancelCreationText">Cancel</string>
+
+    <string name="mainLandingPageTitle">Main Page</string>
+</resources>
