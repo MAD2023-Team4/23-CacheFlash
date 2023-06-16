@@ -63,7 +63,6 @@ public class Login extends AppCompatActivity {
                         extras.putString("Password",etPassword.getText().toString());
                         Intent intent = new Intent(Login.this, MainActivity.class);
                         intent.putExtras(extras);
-                        //__________________________________________________________________________
                         startActivity(intent);
                     }
 
@@ -89,7 +88,7 @@ public class Login extends AppCompatActivity {
             }
         });
     }
-    MyDBHandler myDBHandler = new MyDBHandler(this, null);
+    MyDBHandler myDBHandler = new MyDBHandler(this);
     public boolean isValidCredentials(String username, String password){
         /*
         sharedPreferences = getSharedPreferences(GLOBAL_PREF, MODE_PRIVATE);

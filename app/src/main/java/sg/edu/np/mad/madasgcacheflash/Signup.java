@@ -27,7 +27,7 @@ public class Signup extends AppCompatActivity {
         setContentView(R.layout.activity_signup);
     }
 
-    MyDBHandler myDBHandler = new MyDBHandler(this, null);
+    MyDBHandler myDBHandler = new MyDBHandler(this);
     @Override
     protected void onStart(){
         super.onStart();
@@ -62,11 +62,13 @@ public class Signup extends AppCompatActivity {
                         Toast.makeText(Signup.this, "Username already exists!",
                                 Toast.LENGTH_SHORT).show();
                     }
-                    myDBHandler.addUser(dbUserData);
-                    Toast.makeText(Signup.this, "Username created!",
-                            Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(Signup.this, Login.class);
-                    startActivity(intent);
+                    else {
+                        myDBHandler.addUser(dbUserData);
+                        Toast.makeText(Signup.this, "Username created!",
+                                Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Signup.this, Login.class);
+                        startActivity(intent);
+                    }
                 }
                 else{
                     Toast.makeText(Signup.this, "Username already exists, try another username!",

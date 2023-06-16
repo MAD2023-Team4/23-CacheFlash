@@ -10,6 +10,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.List;
+
 public class MyDBHandler extends SQLiteOpenHelper {
     String title = "MyDBHandler";
     String currentUser;
@@ -26,7 +28,6 @@ public class MyDBHandler extends SQLiteOpenHelper {
     public static String COLUMN_PASSWORD = "Password";
     //and a column for password
     public static String COLUMN_TITLE = "Title";
-    //a column for questions
     public static String COLUMN_QUESTIONS = "Questions";
     //a column for questions
     public static String COLUMN_ANSWERS = "Answers";
@@ -38,9 +39,9 @@ public class MyDBHandler extends SQLiteOpenHelper {
     // 3
 
 
-    public MyDBHandler(Context context, String title) {
+    public MyDBHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.title = title;
+        //this.title = title;
     }
 
     @Override
@@ -49,10 +50,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
         String CREATE_ACCOUNT_TABLE = "CREATE TABLE " + ACCOUNTS + "(" + COLUMN_USERNAME + " TEXT, "
                 + COLUMN_PASSWORD + " TEXT)";
 
-        String CREATE_FLASHCARD_TABLE = "CREATE TABLE " + FLASHCARDS + "(" +COLUMN_TITLE + " TEXT, "
+        String CREATE_FLASHCARD_TABLE = "CREATE TABLE " + FLASHCARDS + "("
+                + COLUMN_TITLE + " TEXT, "
                 + COLUMN_QUESTIONS + " TEXT, "
                 + COLUMN_ANSWERS + " TEXT, "
                 + COLUMN_USERNAME + " TEXT)";
+
+
 
         //CREATE TABLE ACCOUNTS (
         //  COLUMN_USERNAME TEXT,
@@ -62,11 +66,13 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Log.i(title, CREATE_ACCOUNT_TABLE);
         Log.i(title, CREATE_FLASHCARD_TABLE);
         db.execSQL(CREATE_ACCOUNT_TABLE);
-        db.execSQL(CREATE_FLASHCARD_TABLE);
+        db.execSQL("CREATE TABLE IF NOT EXISTS flashcards (title TEXT, question TEXT," +
+                " answer TEXT, username TEXT)");
     }
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion){
         db.execSQL("DROP TABLE IF EXISTS " + ACCOUNTS);
+        db.execSQL("DROP TABLE IF EXISTS " + FLASHCARDS);
         onCreate(db);
     }
     public void addUser(User userData){
@@ -110,7 +116,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         db.close();
         return queryResult;
     }
-
+    /*
     public void saveFlashcard(Flashcard flashcard) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_TITLE, flashcard.getTitle());
@@ -127,4 +133,23 @@ public class MyDBHandler extends SQLiteOpenHelper {
         // Log a message to indicate that the Flashcard was saved successfully
         Log.i("MyDBHandler", "Flashcard saved successfully");
     }
+    */
+    public void saveFlashcards(List<Flashcard> flashcards) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        for (Flashcard flashcard : flashcards) {
+            ContentValues values = new ContentValues();
+            values.put(COLUMN_TITLE, flashcard.getTitle());
+            values.put(COLUMN_QUESTIONS, TextUtils.join("|", flashcard.getQuestions()));
+            values.put(COLUMN_ANSWERS, TextUtils.join("|", flashcard.getAnswers()));
+            values.put(COLUMN_USERNAME, flashcard.getUsername());
+            db.insert(FLASHCARDS, null, values);
+
+            Log.i(title, "Inserted/created flashcard: " + values.toString());
+        }
+        db.close();
+
+        // Log a message to indicate that the flashcards were saved successfully
+        Log.i("MyDBHandler", "Flashcards saved successfully");
+    }
+
 }
