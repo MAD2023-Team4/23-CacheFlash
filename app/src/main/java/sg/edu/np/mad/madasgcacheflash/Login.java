@@ -13,6 +13,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 public class Login extends AppCompatActivity {
 
     String title = "Main activity";
@@ -55,7 +57,13 @@ public class Login extends AppCompatActivity {
                         etPassword.getText().toString().isEmpty())){
                     if(isValidCredentials(etUsername.getText().toString(),
                             etPassword.getText().toString())){
+
+                        Bundle extras = new Bundle();
+                        extras.putString("Username", etUsername.getText().toString());
+                        extras.putString("Password",etPassword.getText().toString());
                         Intent intent = new Intent(Login.this, MainActivity.class);
+                        intent.putExtras(extras);
+                        //__________________________________________________________________________
                         startActivity(intent);
                     }
 

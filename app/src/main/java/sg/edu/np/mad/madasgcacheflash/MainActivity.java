@@ -24,8 +24,11 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     List<String> questions = new ArrayList<>();
     List<String> answers = new ArrayList<>();
+    List<String> currentQuestions = new ArrayList<>();
+    List<String> currentAnswers = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
     //TextView cred = findViewById(R.id.welcome);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
         // Save the Flashcard in the database
         MyDBHandler databaseHelper = new MyDBHandler(this, "IT Basics");
         databaseHelper.saveFlashcard(flashcard);
+
+
+
+        //Unpacking flashcards from Questions list and Answers list
+        //__________________________________________________________________________________________
 
 
 
