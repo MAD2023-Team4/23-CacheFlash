@@ -30,83 +30,38 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     String title = "Main Activity";
     List<Flashcard> flashcardList = new ArrayList<>();
-    List<String> questions = new ArrayList<>();
-    List<String> answers = new ArrayList<>();
-    List<String> currentQuestions = new ArrayList<>();
-    List<String> currentAnswers = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
-    //TextView cred = findViewById(R.id.welcome);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+
         TextView welcomeTxt = findViewById(R.id.welcome);
-        //Instantiating all default flashcard objects
-        //__________________________________________________________________________________________
-        // Create a new Flashcard object
-        Flashcard france = new Flashcard();
 
-        // Set the title of the Flashcard
-        france.setTitle("France");
+        // Create the flashcards
+        createFlashcards();
 
-        // Set the questions for the Flashcard
-        questions.add("What is the capital of France?");
-        questions.add("What is the largest city in France?");
-        questions.add("What is the national language of France?");
-        france.setQuestions(questions);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView1);
+        FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false));
+        int spacingInPixels = 8;
+        recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(fcAdapter);
 
-        // Set the answers for the Flashcard
-        answers.add("Paris");
-        answers.add("Lyon");
-        answers.add("French");
-        france.setAnswers(answers);
-        questions.clear();
-        answers.clear();
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Flashcard flashcard) {
+                // Start FlashCardQuestionPage activity with the selected flashcard
+                Intent intent = new Intent(MainActivity.this, FlashCardQuestionPage.class);
+                intent.putExtra("flashcard", flashcard);
+                startActivity(intent);
+            }
+        });
 
-        Flashcard math = new Flashcard();
-
-        // Set the title of the Flashcard
-        math.setTitle("Math");
-
-        // Set the questions for the Flashcard
-        questions.add("What is the product rule of logarithm?");
-        questions.add("What is the quotient rule of logarithm?");
-        questions.add("What is the notation for differentiation?");
-        math.setQuestions(questions);
-
-        // Set the answers for the Flashcard
-        answers.add("logb(xy) = logb x + logb y");
-        answers.add("loga(x/y)  = loga x – loga y");
-        answers.add("dy/dx or f'(x)");
-        math.setAnswers(answers);
-        questions.clear();
-        answers.clear();
-
-        Flashcard socialStudies = new Flashcard();
-
-        // Set the title of the Flashcard
-        socialStudies.setTitle("Social Studies");
-
-        // Set the questions for the Flashcard
-        questions.add("When did Singapore gain independence?");
-        questions.add("Who won the gold medal in Rio 2016?");
-        questions.add("Who is the president of Singapore in 2020?");
-        socialStudies.setQuestions(questions);
-
-        // Set the answers for the Flashcard
-        answers.add("1965");
-        answers.add("Joseph Schooling");
-        answers.add("Mdm Halimah Yacob");
-        socialStudies.setAnswers(answers);
-
-        flashcardList.add(france);
-        flashcardList.add(socialStudies);
-        flashcardList.add(math);
-        //https://www.planetware.com/pictures/france-f.htm
-
-        //Unpacking flashcards from Questions list and Answers list
-        //__________________________________________________________________________________________
         for (Flashcard flashcard : flashcardList) {
             // Access the current flashcard
             // You can perform operations or access its properties here
@@ -114,29 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
             // ... Perform further operations with the flashcard
 
-            RecyclerView recyclerView = findViewById(R.id.recyclerView1);
-            FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
-            LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+             recyclerView = findViewById(R.id.recyclerView2);
+             fcAdapter = new FlashcardAdapter(flashcardList);
+             mLayoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(new LinearLayoutManager(
                     this, LinearLayoutManager.HORIZONTAL, false));
-            int spacingInPixels = 8;
-            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(fcAdapter);
-        }
-        for (Flashcard flashcard : flashcardList) {
-            // Access the current flashcard
-            // You can perform operations or access its properties here
-            String title = flashcard.getTitle();
-
-            // ... Perform further operations with the flashcard
-
-            RecyclerView recyclerView = findViewById(R.id.recyclerView2);
-            FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
-            LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(new LinearLayoutManager(
-                    this, LinearLayoutManager.HORIZONTAL, false));
-            int spacingInPixels = 8;
+            spacingInPixels = 8;
             recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(fcAdapter);
@@ -178,8 +116,52 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
     }
+    private void createFlashcards() {
+        // Create and add flashcards to the flashcardList
 
+        Flashcard france = new Flashcard();
+        france.setTitle("France");
+        List<String> questions = new ArrayList<>();
+        List<String> answers = new ArrayList<>();
+        questions.add("What is the capital of France?");
+        questions.add("What is the largest city in France?");
+        questions.add("What is the national language of France?");
+        answers.add("Paris");
+        answers.add("Lyon");
+        answers.add("French");
+        france.setQuestions(questions);
+        france.setAnswers(answers);
+        flashcardList.add(france);
+
+        Flashcard math = new Flashcard();
+        math.setTitle("Math");
+        questions = new ArrayList<>();
+        answers = new ArrayList<>();
+        questions.add("What is the product rule of logarithm?");
+        questions.add("What is the quotient rule of logarithm?");
+        questions.add("What is the notation for differentiation?");
+        answers.add("logb(xy) = logb x + logb y");
+        answers.add("loga(x/y)  = loga x – loga y");
+        answers.add("dy/dx or f'(x)");
+        math.setQuestions(questions);
+        math.setAnswers(answers);
+        flashcardList.add(math);
+
+        Flashcard socialStudies = new Flashcard();
+        socialStudies.setTitle("Social Studies");
+        questions = new ArrayList<>();
+        answers = new ArrayList<>();
+        questions.add("When did Singapore gain independence?");
+        questions.add("Who won the gold medal in Rio 2016?");
+        questions.add("Who is the president of Singapore in 2020?");
+        answers.add("1965");
+        answers.add("Joseph Schooling");
+        answers.add("Mdm Halimah Yacob");
+        socialStudies.setQuestions(questions);
+        socialStudies.setAnswers(answers);
+        flashcardList.add(socialStudies);
+    }
 }
+
+
