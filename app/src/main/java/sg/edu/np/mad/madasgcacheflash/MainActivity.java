@@ -105,38 +105,6 @@ public class MainActivity extends AppCompatActivity {
         flashcardList.add(math);
         //https://www.planetware.com/pictures/france-f.htm
 
-        /*
-        MyDBHandler myDBHandler = new MyDBHandler(this);
-        SQLiteDatabase db = myDBHandler.getWritableDatabase();
-        // Perform database operations using the 'db' object
-        // Save the Flashcard in the database
-        myDBHandler.saveFlashcards(flashcardList);
-        // Get a writable database instance
-        db.close();
-         */
-        // Creating user object, passed from the Login page
-
-        Intent intent = getIntent();
-        if (intent != null && intent.getExtras() != null) {
-            // Retrieve the username and password from the intent extras
-            String username = intent.getStringExtra("Username");
-            String password = intent.getStringExtra("Password");
-            welcomeTxt.setText("Welcome, " + username + "!");
-        }
-
-        /*
-            catch (Exception e){
-                Toast.makeText (getApplicationContext (),
-                        "Whoops, please re-login again.", Toast.LENGTH_SHORT).show();
-                finish(); // Close the current activity
-
-                // Start the login activity again
-                Intent loginIntent = new Intent(MainActivity.this, Login.class);
-                startActivity(loginIntent);
-                }
-                */
-
-
         //Unpacking flashcards from Questions list and Answers list
         //__________________________________________________________________________________________
         for (Flashcard flashcard : flashcardList) {
@@ -213,19 +181,5 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    MyDBHandler myDBHandler = new MyDBHandler(this);
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i(title, "Starting Flashcards DB Creation");
 
-    }
-    public void onCreate(SQLiteDatabase db) {
-        // Create the SQLite database if it does not exist.
-        db.execSQL("CREATE TABLE IF NOT EXISTS flashcards (title TEXT, question TEXT, answer TEXT)");
-    }
-
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-    }
 }
