@@ -27,23 +27,30 @@
         android:id="@+id/titleTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="64sp"
-        android:textStyle="bold"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_gravity="center"
+        android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:ellipsize="end" />
+        android:textSize="64sp"
+        android:textStyle="bold"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="125dp" />
+
+    <Button
+        android:id="@+id/btnBackToHome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:text="Back to Home" />
 
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="136dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="172dp"
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         app:cardUseCompatPadding="true"

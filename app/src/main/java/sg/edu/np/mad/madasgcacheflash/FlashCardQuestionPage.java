@@ -34,6 +34,14 @@ public class FlashCardQuestionPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flash_card_question_page);
+        Button btnBackToHome = findViewById(R.id.btnBackToHome);
+        btnBackToHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Navigate back to the home activity
+                onBackPressed();
+            }
+        });
         TextView textView = findViewById(R.id.textView);
         Button buttonNext = findViewById(R.id.button2);
         Button buttonPrev = findViewById(R.id.button);
