@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 //Source from: https://abhiandroid.com/programming/splashscreen
 //__________________________________________________________________________________________
 public class SplashActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
