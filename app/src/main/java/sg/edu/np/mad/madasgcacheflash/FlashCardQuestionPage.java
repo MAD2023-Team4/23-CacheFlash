@@ -40,6 +40,7 @@ public class FlashCardQuestionPage extends AppCompatActivity {
         // Get the flashcard from the intent
         questions = new ArrayList<>();
         answers = new ArrayList<>();
+        TextView titleTextView = findViewById(R.id.titleTextView);
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("flashcard")) {
             Flashcard flashcard = intent.getParcelableExtra("flashcard");
@@ -47,6 +48,10 @@ public class FlashCardQuestionPage extends AppCompatActivity {
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
             answers = flashcard.getAnswers();
+
+            titleTextView.setText(flashcard.getTitle());
+
+
 
             // Initialize the current question index
             currentQuestionIndex = 0;
