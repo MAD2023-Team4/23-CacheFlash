@@ -1,7 +1,9 @@
 package sg.edu.np.mad.madasgcacheflash;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,12 +22,13 @@ public class Testyourself extends AppCompatActivity {
     int currentIndex = 0;
     List<String> questions = new ArrayList<>();
     List<String> answers = new ArrayList<>();
+    List<Integer> answeredQuestions = new ArrayList<>(); // New list to track answered questions
+    boolean isAnswered = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_testyourself);
-
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("flashcard")) {
@@ -37,92 +40,40 @@ public class Testyourself extends AppCompatActivity {
 
             TextView Title = findViewById(R.id.ftitle);
             TextView qcard = findViewById(R.id.QCard);
-            TextView acard = findViewById(R.id.ACard);
+            EditText input = findViewById(R.id.Userinput);
+            Button back = findViewById(R.id.button3);
+            Button prev = findViewById(R.id.button);
+            Button next = findViewById(R.id.button2);
+            Button submit = findViewById(R.id.button4);
+
             Title.setText(flashcard.getTitle());
             qcard.setText(questions.get(currentIndex));
-            acard.setText(answers.get(currentIndex));
-            acard.setVisibility(View.GONE);
-            Button b1 = findViewById(R.id.button3);
-            Button b2 = findViewById(R.id.button);
-            Button b3 = findViewById(R.id.button2);
-            Button b4 = findViewById(R.id.button4);
 
-            qcard.setOnClickListener(new View.OnClickListener() {
+            next.setEnabled(false);
 
+            submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (v == qcard) {
-                        acard.setText(answers.get(currentIndex));
-                        acard.setVisibility(View.VISIBLE);
-                        qcard.setVisibility(View.GONE);
+                    String answer = input.getText().toString();
+                    String correctAnswer = answers.get(currentIndex);
 
+                    if (answer.equals(correctAnswer)) {
+                        Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Incorrect. The correct answer is: " + correctAnswer, Toast.LENGTH_SHORT).show();
+                        input.setText(correctAnswer); // Display the correct answer
                     }
 
+                    input.setEnabled(false); // Disable the input field
+                    submit.setEnabled(false); // Disable the submit button
+                    next.setEnabled(true); // Enable the next button
+                    isAnswered = true;
 
-
-                }
-
-
-            });
-
-            b4.setOnClickListener(new View.OnClickListener() {
-
-                @Override
-                public void onClick(View v) {
-                    EditText input = findViewById(R.id.Userinput);
-                    String answer=input.getText().toString();
-                    String s=answers.get(currentIndex);
-                    acard.setText(answers.get(currentIndex));
-
-
-                    if (answer.equals(s)) {
-                        acard.setText(answers.get(currentIndex));
-                        acard.setVisibility(View.VISIBLE);
-                        qcard.setVisibility(View.GONE);
-                        Toast.makeText(getApplicationContext(), answer+" is Correct", Toast.LENGTH_SHORT).show();
-                    }
-
-                    else
-                    {
-                        acard.setVisibility(View.VISIBLE);
-                        qcard.setVisibility(View.GONE);
-                        Toast.makeText(getApplicationContext(), answer+" is Incorrect. Correct Answer is "+s , Toast.LENGTH_SHORT).show();
-                        Log.v(TITLE, "Incorrect");
-                    }
-
-
-
-
-
-
-
+                    answeredQuestions.add(currentIndex); // Add the answered question index to the list
                 }
             });
 
-
-
-
-
-
-
-
-
-            acard.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (v == acard) {
-                        acard.setText(answers.get(currentIndex));
-                        qcard.setVisibility(View.VISIBLE);
-                        acard.setVisibility(View.GONE);
-
-
-                    }
-
-
-                }
-            });
-
-            b1.setOnClickListener(new View.OnClickListener() {
+            back.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Testyourself.this, MainActivity.class);
@@ -130,63 +81,56 @@ public class Testyourself extends AppCompatActivity {
                 }
             });
 
-            b2.setOnClickListener(new View.OnClickListener() {
+            prev.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.v(TITLE, String.valueOf(currentIndex));
                     currentIndex--;
-                    if (currentIndex <= 0) {
-                        currentIndex = questions.size();
+                    if (currentIndex < 0) {
+                        currentIndex = 0;
                     }
                     qcard.setText(questions.get(currentIndex));
+                    input.setText(answers.get(currentIndex)); // Display the correct answer for the previous question
+                    input.setEnabled(false); // Disable the input field
+
+                    submit.setEnabled(false); // Disable the submit button
+                    next.setEnabled(true); // Enable the next button
+
+                    isAnswered = false; // Reset the answered flag
                 }
             });
-            b3.setOnClickListener(new View.OnClickListener() {
+
+            next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     currentIndex++;
                     if (currentIndex >= questions.size()) {
-                        currentIndex = 0;
+                        currentIndex = questions.size() - 1;
                     }
-                    qcard.setText(questions.get(currentIndex));
+
+                    if (answeredQuestions.contains(currentIndex)) {
+                        input.setText(answers.get(currentIndex)); // Display the correct answer for the already answered question
+                        input.setEnabled(false); // Disable the input field
+                        submit.setEnabled(false); // Disable the submit button
+                        next.setEnabled(true); // Enable the next button
+                        isAnswered = true;
+                    } else {
+                        qcard.setText(questions.get(currentIndex));
+                        input.setText(""); // Clear the input field
+                        input.setEnabled(true); // Enable the input field
+
+                        submit.setEnabled(true); // Enable the submit button
+                        next.setEnabled(false); // Disable the next button
+
+                        isAnswered = false; // Reset the answered flag
+                    }
+
+                    if (currentIndex == questions.size() - 1) {
+                        next.setEnabled(false); // Disable the next button at the last question
+                    }
                 }
             });
 
             Log.v(TITLE, "On Create!");
         }
     }
-
-    @Override
-    protected void onStart () {
-        super.onStart();
-        Log.v(TITLE, "On Start!");
-    }
-
-
-    @Override
-    protected void onResume () {
-        super.onResume();
-        Log.v(TITLE, "On Resume!");
-
-
-    }
-
-    @Override
-    protected void onStop () {
-        super.onStop();
-        Log.v(TITLE, "On Stop");
-    }
-
-    @Override
-    protected void onPause () {
-        super.onPause();
-        Log.v(TITLE, "On pause");
-    }
-
-    @Override
-    protected void onDestroy () {
-        super.onDestroy();
-        Log.v(TITLE, "On Destroy");
-    }
-
 }
