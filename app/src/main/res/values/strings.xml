@@ -14,4 +14,6 @@
     <string name="learnTitle">Learn Yourself</string>
     <string name="testTitle">Test Yourself</string>
 
+    <string name="btn1">previous</string>
+    <string name="btn2">next</string>
 </resources>

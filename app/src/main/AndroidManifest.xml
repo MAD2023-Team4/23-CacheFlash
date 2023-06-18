@@ -14,7 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MADAsgCacheFlash"
         tools:targetApi="31">
-
+        <activity
+            android:name=".FlashCardQuestionPage"
+            android:exported="false" />
         <activity
             android:name=".Profile"
             android:exported="false" />
@@ -26,10 +28,10 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

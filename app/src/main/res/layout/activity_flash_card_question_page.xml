@@ -31,10 +31,16 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
-        android:textSize="64sp"
+        android:textSize="58sp"
         android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/btnBackToHome"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="120dp"
         tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="125dp" />
+        tools:layout_editor_absoluteY="90dp"
+        />
 
     <Button
         android:id="@+id/btnBackToHome"
