@@ -14,7 +14,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-public class testyourself extends AppCompatActivity {
+public class Testyourself extends AppCompatActivity {
 
     final String TITLE = "Testyourself";
     int currentIndex = 0;
@@ -125,7 +125,7 @@ public class testyourself extends AppCompatActivity {
             b1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(testyourself.this, MainActivity.class);
+                    Intent intent = new Intent(Testyourself.this, MainActivity.class);
                     startActivity(intent);
                 }
             });
