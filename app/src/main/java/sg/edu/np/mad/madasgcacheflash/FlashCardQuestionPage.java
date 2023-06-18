@@ -41,10 +41,14 @@ public class FlashCardQuestionPage extends AppCompatActivity {
         btnBackToHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Navigate back to the home activity
-                onBackPressed();
+                Intent intent = new Intent(FlashCardQuestionPage.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
             }
         });
+
+
         TextView textView = findViewById(R.id.textView);
         Button buttonNext = findViewById(R.id.button2);
         Button buttonPrev = findViewById(R.id.button);

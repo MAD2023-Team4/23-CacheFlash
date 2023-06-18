@@ -55,10 +55,8 @@ public class MainActivity extends AppCompatActivity {
         fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
-                // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, FlashCardQuestionPage.class);
-                intent.putExtra("flashcard", flashcard);
-                startActivity(intent);
+                // Start ShuffleCardActivity with the selected flashcard
+                startShuffleCardActivity(flashcard);
             }
         });
 
@@ -69,9 +67,9 @@ public class MainActivity extends AppCompatActivity {
 
             // ... Perform further operations with the flashcard
 
-             recyclerView = findViewById(R.id.recyclerView2);
-             fcAdapter = new FlashcardAdapter(flashcardList);
-             mLayoutManager = new LinearLayoutManager(this);
+            recyclerView = findViewById(R.id.recyclerView2);
+            fcAdapter = new FlashcardAdapter(flashcardList);
+            mLayoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(new LinearLayoutManager(
                     this, LinearLayoutManager.HORIZONTAL, false));
             spacingInPixels = 8;
@@ -81,10 +79,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         //Call API
         //__________________________________________________________________________________________
-
 
 
         //Bottom Navigation View
@@ -103,11 +99,9 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), Dashboard.class));
                         overridePendingTransition(0, 0);
                         return true;
-                    }
-                    else if (id == R.id.home) {
+                    } else if (id == R.id.home) {
                         return true;
-                    }
-                    else if (id == R.id.about){
+                    } else if (id == R.id.about) {
                         startActivity(new Intent(getApplicationContext(), Profile.class));
                         overridePendingTransition(0, 0);
                         return true;
@@ -117,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void createFlashcards() {
         // Create and add flashcards to the flashcardList
 
@@ -161,6 +156,12 @@ public class MainActivity extends AppCompatActivity {
         socialStudies.setQuestions(questions);
         socialStudies.setAnswers(answers);
         flashcardList.add(socialStudies);
+    }
+
+    private void startShuffleCardActivity(Flashcard flashcard) {
+        Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
+        shuffleCardIntent.putExtra("flashcard", flashcard);
+        startActivity(shuffleCardIntent);
     }
 }
 

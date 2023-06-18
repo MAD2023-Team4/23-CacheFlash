@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#CCCCCC"
+    android:paddingBottom="16dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:paddingTop="16dp"
+    tools:context=".ShuffleCardActivity">
+
+    <ImageView
+        android:id="@+id/one"
+        android:layout_width="80dp"
+        android:layout_height="300dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/images" />
+
+    <ImageView
+
+        android:id="@+id/two"
+        android:src="@drawable/images"
+        android:layout_toRightOf="@id/one"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="80dp"
+        android:layout_height="300dp"/>
+
+    <ImageView
+        android:id="@+id/three"
+        android:layout_width="80dp"
+        android:layout_height="300dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/two"
+        android:src="@drawable/images" />
+
+</RelativeLayout>
