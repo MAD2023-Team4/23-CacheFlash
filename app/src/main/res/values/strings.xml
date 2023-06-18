@@ -13,5 +13,9 @@
     <string name="mainLandingPageTitle">Main Page</string>
     <string name="learnTitle">Learn Yourself</string>
     <string name="testTitle">Test Yourself</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="back">Back</string>
+    <string name="submit">Submit</string>
 
 </resources>
