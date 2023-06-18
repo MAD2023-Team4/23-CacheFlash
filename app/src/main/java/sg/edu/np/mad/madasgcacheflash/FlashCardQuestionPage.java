@@ -30,11 +30,14 @@ public class FlashCardQuestionPage extends AppCompatActivity {
     private boolean isQuestionShowing = true;
     private MotionLayout motionLayout;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flash_card_question_page);
         Button btnBackToHome = findViewById(R.id.btnBackToHome);
+        updateTextViewClickListener();
         btnBackToHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,6 +92,8 @@ public class FlashCardQuestionPage extends AppCompatActivity {
 
                 // Update the text with the previous question
                 textView.setText(questions.get(currentQuestionIndex));
+
+                isQuestionShowing = true;
 
                 // Apply the slide in animation from right to left to the textView
                 Animation slideInAnimation = AnimationUtils.loadAnimation(FlashCardQuestionPage.this, R.anim.slide_right);
@@ -149,6 +154,8 @@ public class FlashCardQuestionPage extends AppCompatActivity {
 
                 // Update the text with the next question
                 textView.setText(questions.get(currentQuestionIndex));
+
+                isQuestionShowing = true;
 
                 // Apply the slide in animation from left to right to the textView
                 Animation slideInAnimation = AnimationUtils.loadAnimation(FlashCardQuestionPage.this, R.anim.slide_left);
@@ -281,6 +288,28 @@ public class FlashCardQuestionPage extends AppCompatActivity {
         });
         rotationY.start();
     }
+    private void updateTextViewClickListener() {
+        TextView textView = findViewById(R.id.textView);
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String currentText = textView.getText().toString();
+                String newText = isQuestionShowing ? getAnswerForQuestion(currentText) : getQuestionForAnswer(currentText);
+
+                if (newText != null) {
+                    // Toggle the state of isQuestionShowing
+                    isQuestionShowing = !isQuestionShowing;
+
+                    // Apply the rotation animation
+                    applyRotationAnimation(textView);
+
+                    // Set the new text in the TextView
+                    textView.setText(newText);
+                }
+            }
+        });
+    }
+
 
 
 
