@@ -1,7 +1,5 @@
 package sg.edu.np.mad.madasgcacheflash;
 
-
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,4 +60,3 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardViewHolder> 
         return flashcardList.size();
     }
 }
-

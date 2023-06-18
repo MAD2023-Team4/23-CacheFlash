@@ -172,3 +172,4 @@ public class MainActivity extends AppCompatActivity {
         flashcardList.add(socialStudies);
     }
 }
+
