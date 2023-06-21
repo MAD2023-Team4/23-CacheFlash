@@ -9,7 +9,7 @@
     <string name="createAcctTitle">Create Account</string>
     <string name="confirmCreationText">Create</string>
     <string name="cancelCreationText">Cancel</string>
-
+    <string name="Prompt">Enter your Answer here</string>
     <string name="mainLandingPageTitle">Main Page</string>
     <string name="learnTitle">Learn Yourself</string>
     <string name="testTitle">Test Yourself</string>
