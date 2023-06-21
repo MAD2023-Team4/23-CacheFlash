@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         TextView welcomeTxt = findViewById(R.id.welcome);
 
         // Create the flashcards
@@ -63,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, FlashCardQuestionPage.class);
                 intent.putExtra("flashcard", flashcard);
                 startActivity(intent);
-
             }
         });
 
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-  
+
     private void createFlashcards() {
         // Create and add flashcards to the flashcardList
 
@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
         math.setAnswers(answers);
         flashcardList.add(math);
   
+
         Flashcard socialStudies = new Flashcard();
         socialStudies.setTitle("Social Studies");
         questions = new ArrayList<>();
@@ -174,9 +175,12 @@ public class MainActivity extends AppCompatActivity {
         flashcardList.add(socialStudies);
     }
 
+
     private void startShuffleCardActivity(Flashcard flashcard) {
         Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
         shuffleCardIntent.putExtra("flashcard", flashcard);
         startActivity(shuffleCardIntent);
     }
+
 }
+

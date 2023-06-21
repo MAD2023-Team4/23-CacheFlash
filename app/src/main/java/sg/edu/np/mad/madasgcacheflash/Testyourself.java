@@ -42,10 +42,11 @@ public class Testyourself extends AppCompatActivity {
             qcard.setText(questions.get(currentIndex));
             acard.setText(answers.get(currentIndex));
             acard.setVisibility(View.GONE);
-            Button b1 = findViewById(R.id.button3);
-            Button b2 = findViewById(R.id.button);
-            Button b3 = findViewById(R.id.button2);
-            Button b4 = findViewById(R.id.button4);
+
+            Button Back = findViewById(R.id.button3);
+            Button Prev = findViewById(R.id.button);
+            Button Next = findViewById(R.id.button2);
+            Button Submit = findViewById(R.id.button4);
 
             qcard.setOnClickListener(new View.OnClickListener() {
 
@@ -65,7 +66,9 @@ public class Testyourself extends AppCompatActivity {
 
             });
 
-            b4.setOnClickListener(new View.OnClickListener() {
+
+            Submit.setOnClickListener(new View.OnClickListener() {
+
 
                 @Override
                 public void onClick(View v) {
@@ -122,7 +125,8 @@ public class Testyourself extends AppCompatActivity {
                 }
             });
 
-            b1.setOnClickListener(new View.OnClickListener() {
+
+            Back.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(Testyourself.this, MainActivity.class);
@@ -130,7 +134,8 @@ public class Testyourself extends AppCompatActivity {
                 }
             });
 
-            b2.setOnClickListener(new View.OnClickListener() {
+
+            Prev.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Log.v(TITLE, String.valueOf(currentIndex));
@@ -141,8 +146,9 @@ public class Testyourself extends AppCompatActivity {
                     qcard.setText(questions.get(currentIndex));
                 }
             });
-            b3.setOnClickListener(new View.OnClickListener() {
-                @Override
+
+            Next.setOnClickListener(new View.OnClickListener() {
+              @Override
                 public void onClick(View v) {
                     currentIndex++;
                     if (currentIndex >= questions.size()) {
@@ -156,37 +162,38 @@ public class Testyourself extends AppCompatActivity {
         }
     }
 
-        @Override
-        protected void onStart () {
-            super.onStart();
-            Log.v(TITLE, "On Start!");
-        }
+
+    @Override
+    protected void onStart () {
+        super.onStart();
+        Log.v(TITLE, "On Start!");
+    }
 
 
-        @Override
-        protected void onResume () {
-            super.onResume();
-            Log.v(TITLE, "On Resume!");
+    @Override
+    protected void onResume () {
+        super.onResume();
+        Log.v(TITLE, "On Resume!");
 
 
-        }
+    }
 
-        @Override
-        protected void onStop () {
-            super.onStop();
-            Log.v(TITLE, "On Stop");
-        }
+    @Override
+    protected void onStop () {
+        super.onStop();
+        Log.v(TITLE, "On Stop");
+    }
 
-        @Override
-        protected void onPause () {
-            super.onPause();
-            Log.v(TITLE, "On pause");
-        }
+    @Override
+    protected void onPause () {
+        super.onPause();
+        Log.v(TITLE, "On pause");
+    }
 
-        @Override
-        protected void onDestroy () {
-            super.onDestroy();
-            Log.v(TITLE, "On Destroy");
-        }
+    @Override
+    protected void onDestroy () {
+        super.onDestroy();
+        Log.v(TITLE, "On Destroy");
+    }
 
 }
