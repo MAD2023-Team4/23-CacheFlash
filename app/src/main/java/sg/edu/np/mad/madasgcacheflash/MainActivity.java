@@ -55,10 +55,15 @@ public class MainActivity extends AppCompatActivity {
         fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
+
+                // Start ShuffleCardActivity with the selected flashcard
+                startShuffleCardActivity(flashcard);
+
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                Intent intent = new Intent(MainActivity.this, FlashCardQuestionPage.class);
                 intent.putExtra("flashcard", flashcard);
                 startActivity(intent);
+
             }
         });
 
@@ -90,10 +95,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         //Call API
         //__________________________________________________________________________________________
-
 
 
         //Bottom Navigation View
@@ -112,11 +115,9 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(new Intent(getApplicationContext(), Dashboard.class));
                         overridePendingTransition(0, 0);
                         return true;
-                    }
-                    else if (id == R.id.home) {
+                    } else if (id == R.id.home) {
                         return true;
-                    }
-                    else if (id == R.id.about){
+                    } else if (id == R.id.about) {
                         startActivity(new Intent(getApplicationContext(), Profile.class));
                         overridePendingTransition(0, 0);
                         return true;
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+  
     private void createFlashcards() {
         // Create and add flashcards to the flashcardList
 
@@ -156,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         math.setQuestions(questions);
         math.setAnswers(answers);
         flashcardList.add(math);
-
+  
         Flashcard socialStudies = new Flashcard();
         socialStudies.setTitle("Social Studies");
         questions = new ArrayList<>();
@@ -170,6 +172,11 @@ public class MainActivity extends AppCompatActivity {
         socialStudies.setQuestions(questions);
         socialStudies.setAnswers(answers);
         flashcardList.add(socialStudies);
-        }
-}
+    }
 
+    private void startShuffleCardActivity(Flashcard flashcard) {
+        Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
+        shuffleCardIntent.putExtra("flashcard", flashcard);
+        startActivity(shuffleCardIntent);
+    }
+}

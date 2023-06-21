@@ -58,5 +58,5 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardViewHolder> 
     @Override
     public int getItemCount() {
         return flashcardList.size();
-        }
+    }
 }
