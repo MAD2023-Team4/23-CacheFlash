@@ -26,7 +26,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
+// comment on 18/6
 public class MainActivity extends AppCompatActivity {
     String title = "Main Activity";
     List<Flashcard> flashcardList = new ArrayList<>();
@@ -55,8 +55,15 @@ public class MainActivity extends AppCompatActivity {
         fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
+
                 // Start ShuffleCardActivity with the selected flashcard
                 startShuffleCardActivity(flashcard);
+
+                // Start FlashCardQuestionPage activity with the selected flashcard
+                Intent intent = new Intent(MainActivity.this, FlashCardQuestionPage.class);
+                intent.putExtra("flashcard", flashcard);
+                startActivity(intent);
+
             }
         });
 
@@ -76,6 +83,15 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(fcAdapter);
+            fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(Flashcard flashcard) {
+                    // Start FlashCardQuestionPage activity with the selected flashcard
+                    Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                    intent.putExtra("flashcard", flashcard);
+                    startActivity(intent);
+                }
+            });
         }
 
 
@@ -111,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+  
     private void createFlashcards() {
         // Create and add flashcards to the flashcardList
 
@@ -142,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         math.setQuestions(questions);
         math.setAnswers(answers);
         flashcardList.add(math);
-
+  
         Flashcard socialStudies = new Flashcard();
         socialStudies.setTitle("Social Studies");
         questions = new ArrayList<>();
@@ -164,5 +180,3 @@ public class MainActivity extends AppCompatActivity {
         startActivity(shuffleCardIntent);
     }
 }
-
-

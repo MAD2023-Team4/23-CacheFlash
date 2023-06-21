@@ -80,5 +80,5 @@ public class Flashcard implements Parcelable {
         dest.writeStringList(questions);
         dest.writeStringList(answers);
     }
-
 }
+

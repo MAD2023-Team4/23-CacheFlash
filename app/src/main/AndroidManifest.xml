@@ -20,6 +20,9 @@
         <activity
             android:name=".FlashCardQuestionPage"
             android:exported="false" />
+       <activity
+            android:name=".Testyourself"
+            android:exported="false" />
         <activity
             android:name=".Profile"
             android:exported="false" />
