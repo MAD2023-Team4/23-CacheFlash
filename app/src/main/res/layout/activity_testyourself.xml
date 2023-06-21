@@ -4,14 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".Testyourself">
+
+    <TextView
+        android:id="@+id/QCard"
+        android:layout_width="348dp"
+        android:layout_height="99dp"
+        android:layout_marginTop="152dp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="84dp"
+        android:layout_marginStart="68dp"
         android:layout_marginTop="444dp"
+        android:backgroundTint="#1400A9"
         android:text="@string/previous"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -21,33 +34,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="444dp"
-        android:layout_marginEnd="84dp"
+        android:layout_marginEnd="76dp"
+        android:backgroundTint="#1400A9"
         android:text="@string/next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="96dp"
-        android:layout_height="56dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="580dp"
-        android:text="@string/back"
+        android:layout_width="87dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="668dp"
+        android:backgroundTint="#1400A9"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
+        tools:text="@string/back" />
 
     <EditText
         android:id="@+id/Userinput"
         android:layout_width="342dp"
         android:layout_height="55dp"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="292dp"
         android:ems="10"
         android:inputType="text"
-        android:hint="Enter Your Answer Here"
-        android:textColorHint="#f00"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.594"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -55,23 +67,22 @@
         android:id="@+id/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="340dp"
+        android:layout_marginTop="648dp"
+        android:backgroundTint="#1400A9"
         android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.528"
+        app:layout_constraintHorizontal_bias="0.899"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/ftitle"
-        android:layout_width="385dp"
-        android:layout_height="56dp"
-        android:layout_marginTop="36dp"
+        android:layout_width="387dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="60dp"
         android:textAlignment="center"
-        android:textSize="34sp"
-        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.615"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -79,22 +90,9 @@
         android:id="@+id/ACard"
         android:layout_width="348dp"
         android:layout_height="95dp"
-        android:layout_marginTop="116dp"
-        android:layout_marginEnd="28dp"
+        android:layout_marginTop="152dp"
+        android:layout_marginEnd="32dp"
         android:textAlignment="center"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/QCard"
-        android:layout_width="348dp"
-        android:layout_height="99dp"
-        android:layout_marginTop="116dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.539"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,6 +42,7 @@ public class Testyourself extends AppCompatActivity {
             qcard.setText(questions.get(currentIndex));
             acard.setText(answers.get(currentIndex));
             acard.setVisibility(View.GONE);
+
             Button Back = findViewById(R.id.button3);
             Button Prev = findViewById(R.id.button);
             Button Next = findViewById(R.id.button2);
@@ -65,7 +66,9 @@ public class Testyourself extends AppCompatActivity {
 
             });
 
+
             Submit.setOnClickListener(new View.OnClickListener() {
+
 
                 @Override
                 public void onClick(View v) {
@@ -122,6 +125,7 @@ public class Testyourself extends AppCompatActivity {
                 }
             });
 
+
             Back.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -129,6 +133,7 @@ public class Testyourself extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+
 
             Prev.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -141,8 +146,9 @@ public class Testyourself extends AppCompatActivity {
                     qcard.setText(questions.get(currentIndex));
                 }
             });
+
             Next.setOnClickListener(new View.OnClickListener() {
-                @Override
+              @Override
                 public void onClick(View v) {
                     currentIndex++;
                     if (currentIndex >= questions.size()) {
@@ -155,6 +161,7 @@ public class Testyourself extends AppCompatActivity {
             Log.v(TITLE, "On Create!");
         }
     }
+
 
     @Override
     protected void onStart () {

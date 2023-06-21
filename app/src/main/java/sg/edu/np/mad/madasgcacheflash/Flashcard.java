@@ -80,5 +80,11 @@ public class Flashcard implements Parcelable {
         dest.writeStringList(questions);
         dest.writeStringList(answers);
     }
-
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeStringList(questions);
+        dest.writeStringList(answers);
+    }
 }
+
