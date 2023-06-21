@@ -59,7 +59,8 @@ public class Testyourself extends AppCompatActivity {
 
                     if (answer.equals(correctAnswer)) {
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
-                    } else {
+                    }
+                    else {
                         Toast.makeText(getApplicationContext(), "Incorrect. The correct answer is: " + correctAnswer, Toast.LENGTH_SHORT).show();
                         input.setText(correctAnswer); // Display the correct answer
                     }
@@ -113,7 +114,8 @@ public class Testyourself extends AppCompatActivity {
                         submit.setEnabled(false); // Disable the submit button
                         next.setEnabled(true); // Enable the next button
                         isAnswered = true;
-                    } else {
+                    }
+                    else {
                         qcard.setText(questions.get(currentIndex));
                         input.setText(""); // Clear the input field
                         input.setEnabled(true); // Enable the input field
