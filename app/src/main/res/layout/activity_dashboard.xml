@@ -4,25 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".Dashboard">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Dashboard"
-        android:textColor="@color/black"
+        android:text="Dashboard coming soon!"
+        android:textAlignment="center"
+        android:textColor="@color/darkBlue"
         android:textSize="50dp"
         android:textStyle="bold" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/bottom_navigator"
-        app:itemBackground="@color/blue"
-        app:itemTextColor="@drawable/serlector"
-        app:itemIconTint="@drawable/serlector"
-        app:menu="@menu/menu"
         android:layout_alignParentBottom="true"
-        />
+        app:itemBackground="@color/darkBlue"
+        app:itemIconTint="@drawable/serlector"
+        app:itemTextColor="@drawable/serlector"
+        app:menu="@menu/menu" />
 </RelativeLayout>

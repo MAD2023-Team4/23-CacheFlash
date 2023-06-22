@@ -59,7 +59,7 @@
         android:layout_marginTop="292dp"
         android:ems="10"
         android:inputType="text"
-        android:hint="@string/Prompt"
+        android:hint="@string/ansPrompt"
         android:textColorHint="#0f0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

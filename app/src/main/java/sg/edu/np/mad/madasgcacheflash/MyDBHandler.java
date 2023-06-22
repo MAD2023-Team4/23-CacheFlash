@@ -152,4 +152,19 @@ public class MyDBHandler extends SQLiteOpenHelper {
         Log.i("MyDBHandler", "Flashcards saved successfully");
     }
 
+    public String findUsername(String username) {
+        String query = "SELECT * FROM " + ACCOUNTS + " WHERE " +
+                COLUMN_USERNAME + "=\'" + username + "\'";
+        Log.i(title, "Query: " + query);
+
+        //SELECT * FROM ACCOUNTS
+        //WHERE COLUMN_USERNAME = 'username';
+
+        User queryResult = new User();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        db.close();
+        return username;
+    }
+
 }
