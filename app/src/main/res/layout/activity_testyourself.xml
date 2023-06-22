@@ -44,13 +44,12 @@
         android:id="@+id/button3"
         android:layout_width="87dp"
         android:layout_height="51dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="668dp"
-        android:text="@string/back"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="648dp"
         android:backgroundTint="#1400A9"
+        android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-         />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/Userinput"
@@ -83,11 +82,11 @@
         android:id="@+id/ftitle"
         android:layout_width="387dp"
         android:layout_height="44dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="96dp"
         android:textAlignment="center"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
+        app:layout_constraintHorizontal_bias="0.666"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
