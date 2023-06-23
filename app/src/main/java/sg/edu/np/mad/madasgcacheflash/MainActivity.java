@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 startShuffleCardActivity(flashcard);
 
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, FlashCardQuestionPage.class);
+                Intent intent = new Intent(MainActivity.this, ShuffleCardActivity.class);
                 intent.putExtra("flashcard", flashcard);
                 startActivity(intent);
             }

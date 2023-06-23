@@ -24,6 +24,11 @@
             android:name=".Dashboard"
             android:exported="false" />
         <activity
+            android:name=".ShuffleCardActivity"
+            android:exported="false" />
+        <activity android:name=".FlashCardQuestionPage"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
