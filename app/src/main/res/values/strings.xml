@@ -1,25 +1,40 @@
 <resources>
     <string name="app_name">MAD Asg CacheFlash</string>
     <string name="loginPageTitle">Login</string>
-    <string name="usernameText">Username</string>
-    <string name="passwordText">Password</string>
+    <string name="usernameText">Username:</string>
+    <string name="passwordText">Password:</string>
     <string name="loginButtonText">Login</string>
-    <string name="newUserText">New User? Click Here!</string>
+    <string name="newUserText">New user? Click here!</string>
 
     <string name="createAcctTitle">Create Account</string>
     <string name="confirmCreationText">Create</string>
     <string name="cancelCreationText">Cancel</string>
- 
+
     <string name="Prompt">Enter your Answer here</string>
 
+
     <string name="mainLandingPageTitle">Main Page</string>
-    <string name="learnTitle">Learn Yourself</string>
-    <string name="testTitle">Test Yourself</string>
+    <string name="learnTitle">Learn It Yourself!</string>
+    <string name="testTitle">Test Yourself!</string>
+    <string name="usernamePrompt">Enter username here</string>
+    <string name="passwordPrompt">Enter password here</string>
+    <string name="welcome_message">Welcome, %1$s!</string>
+    <string name="btn1">previous</string>
+    <string name="btn2">next</string>
+    <string name="b2h">Back to Home</string>
+
+    <string name="dashboard">Dashboard (coming soon!)</string>
+
+    <string name="otpText">OTP</string>
+    <string name="otpButton">Get OTP</string>
+
+
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="back">Back</string>
     <string name="submit">Submit</string>
 
-    <string name="btn1">previous</string>
-    <string name="btn2">next</string>
+    <string name="ansPrompt">Enter your answer here</string>
+    <string name="quote">"Learning never exhausts the mind." - Leonardo da Vinci</string>
+    <string name="testQuote">Ready for the test?</string>
 </resources>

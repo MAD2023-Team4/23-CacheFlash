@@ -2,6 +2,7 @@ package sg.edu.np.mad.madasgcacheflash;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,12 +12,15 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 public class Dashboard extends AppCompatActivity {
-
+    private String username;
     BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_dashboard);
+        Intent intent = getIntent();
+        username = intent.getStringExtra("Username");
 
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
@@ -31,12 +35,16 @@ public class Dashboard extends AppCompatActivity {
                         return true;
                     }
                     else if (id == R.id.home) {
-                        startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("Username", username);
+                        startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
                     }
                     else if (id == R.id.about){
-                        startActivity(new Intent(getApplicationContext(), Profile.class));
+                        Intent intent = new Intent(getApplicationContext(), Profile.class);
+                        intent.putExtra("Username", username);
+                        startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
                     }
@@ -44,7 +52,6 @@ public class Dashboard extends AppCompatActivity {
                 return false;
             }
         });
-
 
     }
 }

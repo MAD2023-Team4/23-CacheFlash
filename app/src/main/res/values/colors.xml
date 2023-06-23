@@ -3,6 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="purple_500">#6200EE</color>
+    <color name="orangeBrown">#CA631E</color>
+    <color name="darkBlue">#3339C3</color>
 
     <!--Blue color research
     // Source from:
