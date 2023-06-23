@@ -41,7 +41,8 @@
         <activity
             android:name=".ShuffleCardActivity"
             android:exported="false" />
-        <activity android:name=".FlashCardQuestionPage"
+        <activity
+            android:name=".FlashCardQuestionPage"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
