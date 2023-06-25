@@ -1,7 +1,7 @@
 package sg.edu.np.mad.madasgcacheflash;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 
 import android.animation.Animator;
@@ -35,20 +35,18 @@ public class FlashCardQuestionPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_flash_card_question_page);
         Button btnBackToHome = findViewById(R.id.btnBackToHome);
         updateTextViewClickListener();
         btnBackToHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Navigate back to the home activity
                 Intent intent = new Intent(FlashCardQuestionPage.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
-                finish();
             }
         });
-
-
         TextView textView = findViewById(R.id.textView);
         Button buttonNext = findViewById(R.id.button2);
         Button buttonPrev = findViewById(R.id.button);
@@ -229,36 +227,20 @@ public class FlashCardQuestionPage extends AppCompatActivity {
     private String getAnswerForQuestion(String question) {
         if (questions.contains(question)) {
             int index = questions.indexOf(question);
-            switch (index) {
-                case 0:
-                    return answers.get(0);
-                case 1:
-                    return answers.get(1);
-                case 2:
-                    return answers.get(2);
-            }
+            return answers.get(index);
         }
         return null;
     }
 
     private String getQuestionForAnswer(String answer) {
+        int index = 0;
         if (answers.contains(answer)) {
-            int index = answers.indexOf(answer);
-            switch (index) {
-                case 0:
-                    return questions.get(0);
-                case 1:
-                    return questions.get(1);
-                case 2:
-                    return questions.get(2);
-            }
-        } else {
-            if (answers.get(0).equals(answer)) {
-                return questions.get(0);
-            } else if (answers.get(1).equals(answer)) {
-                return questions.get(1);
-            } else if (answers.get(2).equals(answer)) {
-                return questions.get(2);
+            index = answers.indexOf(answer);
+            return questions.get(index);
+        }
+        else {
+            if (answers.get(index).equals(answer)) {
+                return questions.get(index);
             }
         }
         return null;

@@ -29,18 +29,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <Button
         android:id="@+id/button3"
         android:layout_width="87dp"
         android:layout_height="51dp"
-
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="620dp"
+        android:layout_marginBottom="616dp"
         android:backgroundTint="#1400A9"
         android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
 
     <EditText
         android:id="@+id/Userinput"
@@ -53,8 +52,6 @@
         android:textColorHint="#0f0"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.536"
-        android:hint="@string/Prompt"
-        android:textColorHint="#0f0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -62,11 +59,11 @@
         android:id="@+id/button4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="648dp"
+        android:layout_marginTop="576dp"
         android:backgroundTint="#1400A9"
         android:text="@string/submit"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.899"
+        app:layout_constraintHorizontal_bias="0.874"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
