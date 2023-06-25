@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
+
 
 import java.util.List;
 
@@ -83,7 +83,7 @@ public class MyDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.insert(ACCOUNTS, null, values);
 
-        Log.i(title, "Inserted/created user" + values.toString());
+        Log.i(title, "Inserted/created user" + values);
         db.close();
 
         //This concludes the function for CREATE (C). CRUD.

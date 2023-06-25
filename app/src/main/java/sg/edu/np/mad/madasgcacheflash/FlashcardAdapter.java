@@ -40,7 +40,8 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardViewHolder> 
 
         // Bind the data to the views in the flashcard_item.xml layout
         holder.titleTextView.setText(flashcard.getTitle());
-        holder.descTextView.setText(flashcard.getQuestions().size() + " questions");
+        String Number_of_questions=flashcard.getQuestions().size() + " questions";
+        holder.descTextView.setText(Number_of_questions);
         // Bind other views as needed
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
