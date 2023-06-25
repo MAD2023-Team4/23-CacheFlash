@@ -3,7 +3,7 @@
     <!-- Background shape -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/blue" /> <!-- Background color of the flashcard -->
+            <solid android:color="#cfcfcf" /> <!-- Background color of the flashcard -->
             <corners android:radius="16dp" /> <!-- Corner radius -->
         </shape>
     </item>
@@ -12,7 +12,7 @@
         <shape android:shape="rectangle">
             <solid android:color="#FFFFFF" /> <!-- Background color of the flashcard content -->
             <stroke
-                android:width="2dp" />
+                android:width="0dp" />
             <corners android:radius="16dp" /> <!-- Corner radius -->
         </shape>
     </item>
