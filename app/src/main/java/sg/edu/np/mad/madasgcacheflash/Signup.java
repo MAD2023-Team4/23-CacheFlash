@@ -4,27 +4,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class Signup extends AppCompatActivity {
 
-    String title = "Main Activity 2";
-    /*
-    private String GLOBAL_PREF = "MyPrefs";
-    private String MY_USERNAME = "MyUserName";
-    private String MY_PASSWORD = "MyPassword";
-    SharedPreferences sharedPreferences;
-     */
+    String title = "Main Activity 2"; //title
 
-    @Override
+    @Override //OnCreate
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); //Set to nightmode
         setContentView(R.layout.activity_signup);
         Intent intent = getIntent();
     }
@@ -43,36 +40,29 @@ public class Signup extends AppCompatActivity {
         createButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                /*
-                sharedPreferences = getSharedPreferences(GLOBAL_PREF,MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(MY_USERNAME, etUsername.getText().toString());
-                editor.putString(MY_PASSWORD, etPassword.getText().toString());
-                editor.commit();
-
-                Intent intent = new Intent(MainActivity2.this, MainActivity.class);
-                startActivity(intent);
-                */
 
                 User dbData = myDBHandler.findUser(etUsername.getText().toString());
-                if (dbData!=null && dbData.getUsername().equals(etUsername.getText().toString())) {
-                    Toast.makeText(Signup.this, "Username already exists!", Toast.LENGTH_SHORT).show();
-                }
-                else if (etUsername.getText().toString().isEmpty() ||
-                        etPassword.getText().toString().isEmpty()) {
-                    Toast.makeText(Signup.this, "Username already exists!", Toast.LENGTH_SHORT).show();
+                if (!etUsername.getText().toString().isEmpty() && !etPassword.getText().toString().isEmpty()) //if input not blank
+                {
+                    if (dbData != null && dbData.getUsername().equals(etUsername.getText().toString())) { //if can find in db
+                        Toast.makeText(Signup.this, "Username already exists!", Toast.LENGTH_SHORT).show();
+                    }
+                    else { //if cannot, create
+                        String dbUserName = etUsername.getText().toString();
+                        String dbPassword = etPassword.getText().toString();
+                        User dbUserData = new User(dbUserName, dbPassword);
 
+                        myDBHandler.addUser(dbUserData);
+                        Toast.makeText(Signup.this, "Username created!", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(Signup.this, Login.class);
+                        startActivity(intent);
+                    }
                 }
-                else {
-                    String dbUserName = etUsername.getText().toString();
-                    String dbPassword = etPassword.getText().toString();
-                    User dbUserData = new User(dbUserName, dbPassword);
+                else //if input blank
+                {
+                    Toast.makeText(Signup.this, "Please fill in both!", Toast.LENGTH_SHORT).show();
+                }
 
-                    myDBHandler.addUser(dbUserData);
-                    Toast.makeText(Signup.this, "Username created!", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(Signup.this, Login.class);
-                    startActivity(intent);
-                }
 
             }
         });
@@ -81,8 +71,9 @@ public class Signup extends AppCompatActivity {
             @Override
             public void onClick(View view){
                 Intent intent = new Intent(Signup.this, Login.class);
-                startActivity(intent);
+                startActivity(intent); //next activity
             }
         });
+
     }
 }
