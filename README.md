@@ -11,6 +11,22 @@ Wanting to study a particular topic, but struggle to do so? Don't worry, we can 
 - Test Yourself - user gets to access his/her own knowledge of the topic of choice, by recalling answer by typing answer out, the system will check if the answer typed out matches the correct answer. (John)
 - Profile page (Hui Ting)
 - App UI and logo (Victoria)
+- Uploading to play store (Samuel & Hui Ting)
+- Slides (Group)
+- Google feedback form for account deletion (John)
+- Merging of codes (Samuel & John)
+- Adminstrator of repo (Samuel)
+
+### GitHub Previous Commits
+Previously, we were experimenting GitHub, and we made mistakes on our previous repo. Hence, we shifted to a new repository, as it is the cleanest way to manage the problem. 
+#### Hui Ting's Previous Commits
+![image](https://github.com/MAD2023-Team4/MAD-Team4-CacheFlash-Final/assets/133575569/37539aa9-cc7f-45c8-939c-137c6b49fa86)
+![image](https://github.com/MAD2023-Team4/MAD-Team4-CacheFlash-Final/assets/133575569/0af23221-f998-4262-9dc1-2cce2ff6c236)
+![image](https://github.com/MAD2023-Team4/MAD-Team4-CacheFlash-Final/assets/133575569/7ee4983c-2ef6-4dd8-ae46-675e5bf1bef3)
+
+#### John's Previous Commits
+![image](https://github.com/MAD2023-Team4/MAD-Team4-CacheFlash-Final/assets/133575569/62cdd0f3-6e76-442b-833f-5cd0ad4020f4)
+
 
 ### Stage 2 - Proposed New Features:
  - Speedrun feature for users who want a challenge, and let them edit the time they have to answer (Hui Ting)
@@ -25,14 +41,6 @@ Wanting to study a particular topic, but struggle to do so? Don't worry, we can 
  [The forgetting curve](https://en.wikipedia.org/wiki/Forgetting_curve) can help remind the users when would they almost forget that information (the exact date and timing). This is done by sending them a notification when the retainability has reached a certain level as time passes. For example, a user has finished a deck of flashcards, and the app estimates that he/she will forget about 70% of information in 6 days. This means that R is reduced, until about R = 1 - 0.7 = 0.3. Hence, it will send a notification 6 days later to the user.
 
  #### How does the App Estimate How Well the User Remembers Information? (Samuel)
- The Forgetting Curve formula has to estimate R, as t, passes. Also, in the equation, another factor that determines R is S. However, S is assumed to be the same for everyone. This means that the equation can assume that everyone is equally good at remembering information. In reality, it is unfortunately not the case! This also shows that learning may not be personalised for everyone, based on the equation. Everyone is treated the same, so a user who may have trouble remembering is assumed to have the same standard of remembering information, just like everyone else. Hence, to personalise learning abilities for everyone, aka personalising S, we introduce another equation to estimate that.
- 
-$$ S = - \frac{t}{\ln{R}} $$
+ The Forgetting Curve formula has to estimate R, as t, passes. Also, in the equation, another factor that determines R is S. However, S is assumed to be the same for everyone. To customise everyone's S, we increase S for every question the user gets right in the "Test Yourself" feature, and vice versa. Substitute it into the Forgetting Curve formula, and you will get a curve. The app will then use that curve to estimate the duration, as mentioned above. (Refer to Explanation of New Feature if not sure)
 
-To estimate t for each flashcard question, measure the percentage of information retained immediately after learning (usually at time t = 0).
-To estimate r for each flashcard question, we would prompt the user to rate the confidence of each answer, be it correct or not.
-
-#### Why Rate Confidence of Answers to Estimate Memory Stability? (Samuel)
-Research on metacognition has suggested that to think about our own thinking, we need to monitor our understanding, see our confidence in answers, then finding out a solution from there. To [rate your confidence](https://brainscape.zendesk.com/hc/en-us/articles/115002736872-How-should-I-rate-my-confidences-When-should-I-rate-a-5-), simply indicate a sclate of 1-5. The more 1s rated, the more likely to see new cards since those cards rated 1 are new to the user. Let's say we have 10 flashcards. Hence 10 S values are calculated with the above formula. based on the 10 S values, calculate a good estimate of S overall, which is the mean of all 10 S. Substitute it into the Forgetting Curve Formula, and you will get a curve. The app will then use that curve to estimate the duration, as mentioned above. (Refer to Explanation of New Feature if not sure)
-
-[Referenced](https://github.com/peaceknight05/Pentagone) by Peaceknight05
+[Referenced by Peaceknight05](https://github.com/peaceknight05/Pentagone)
