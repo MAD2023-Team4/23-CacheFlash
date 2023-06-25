@@ -7,11 +7,53 @@
     android:background="#FFFFFF"
     tools:context=".Login">
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="180dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="28dp"
+        android:text="@string/newUserText"
+        android:textColor="#000000"
+        android:textSize="18dp"
+        app:layout_constraintBottom_toTopOf="@+id/privacy_policy_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextText"
+        android:layout_width="249dp"
+        android:layout_height="64dp"
+        android:layout_marginEnd="30dp"
+        android:backgroundTint="#000000"
+        android:ems="10"
+        android:hint="Enter here..."
+        android:inputType="text"
+        android:textColor="#1400A9"
+        android:textColorHint="#1400A9"
+        app:layout_constraintBottom_toTopOf="@+id/editTextText2"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextText2"
+        android:layout_width="251dp"
+        android:layout_height="55dp"
+        android:layout_marginEnd="28dp"
+        android:layout_marginBottom="9dp"
+        android:backgroundTint="#000000"
+        android:ems="10"
+        android:hint="Enter here..."
+        android:inputType="text"
+        android:textColor="#1400A9"
+        android:textColorHint="#1400A8"
+        app:layout_constraintBottom_toTopOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <Button
         android:id="@+id/button"
         android:layout_width="115dp"
-        android:layout_height="53dp"
-        android:layout_marginBottom="19dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="12dp"
         android:backgroundTint="#1400A9"
         android:text="@string/loginButtonText"
         android:textColor="#FFFFFF"
@@ -21,101 +63,80 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView4"
-        android:layout_width="0dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="37dp"
-        android:layout_marginEnd="37dp"
-        android:layout_marginBottom="164dp"
-        android:text="@string/newUserText"
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="85dp"
+        android:text="@string/passwordText"
         android:textColor="#000000"
-        android:textSize="18dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintStart_toStartOf="@+id/imageView3" />
-
-    <EditText
-        android:id="@+id/editTextText"
-        android:layout_width="0dp"
-        android:layout_height="49dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="#000000"
-        android:ems="10"
-        android:hint="Enter here..."
-        android:inputType="text"
-        android:textColor="#1400A9"
-        android:textColorHint="#1400A9"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView2" />
-
-    <EditText
-        android:id="@+id/editTextText2"
-        android:layout_width="0dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="82dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="84dp"
-        android:backgroundTint="#000000"
-        android:ems="10"
-        android:hint="Enter here..."
-        android:inputType="text"
-        android:textColor="#1400A9"
-        android:textColorHint="#1400A8"
-        app:layout_constraintBottom_toBottomOf="@+id/button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView6"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintEnd_toStartOf="@+id/editTextText2" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="309dp"
-        android:layout_marginEnd="9dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/usernameText"
         android:textColor="#000000"
         android:textSize="20dp"
-        app:layout_constraintEnd_toStartOf="@+id/editTextText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="27dp"
-        android:layout_marginEnd="7dp"
-        android:text="@string/passwordText"
-        android:textColor="#000000"
-        android:textSize="20dp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editTextText2"
-        app:layout_constraintEnd_toStartOf="@+id/editTextText2"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        app:layout_constraintEnd_toStartOf="@+id/editTextText" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="72dp"
-        android:layout_marginBottom="73dp"
+        android:layout_width="155dp"
+        android:layout_height="159dp"
         android:scaleType="centerCrop"
         android:src="@drawable/applogo"
-        app:layout_constraintBottom_toBottomOf="@+id/editTextText"
-        app:layout_constraintEnd_toEndOf="@+id/imageView3"
-        app:layout_constraintStart_toStartOf="@+id/imageView3"
-        app:layout_constraintTop_toTopOf="@+id/imageView3" />
+        app:layout_constraintBottom_toTopOf="@+id/editTextText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="79dp"
         android:layout_marginTop="52dp"
+        android:layout_marginEnd="78dp"
         android:scaleType="centerCrop"
         android:src="@drawable/cacheflash"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/privacy_policy_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="160dp"
+        android:layout_marginEnd="161dp"
+        android:layout_marginBottom="3dp"
+        android:onClick="openPrivacyPolicy"
+        android:text="Privacy Policy"
+        android:textColor="@color/darkBlue"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textView13"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="297dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="57dp"
+        android:layout_marginEnd="57dp"
+        android:layout_marginBottom="108dp"
+        android:text="By logging in or creating an account, you are agreeing with the privacy policy and that you are above 13 years old"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
