@@ -43,13 +43,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
             motion:layout_constraintStart_toStartOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
-            motion:layout_constraintTop_toBottomOf="@id/textView1"
             motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintHorizontal_bias="0.5"
-            motion:layout_constraintVertical_bias="0.864" />
+            motion:layout_constraintHorizontal_bias="0.786"
+            motion:layout_constraintVertical_bias="0.679"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/btnBackToHome"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="116dp"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="136dp"
+            android:layout_marginRight="136dp" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
