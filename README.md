@@ -1,25 +1,25 @@
 # MAD-Team4-CacheFlash-Final
+CacheFlash - Your flashcards app for studying anytime, anywhere
 ### About CacheFlash
-CacheFlash is a flashcards app-based tool that improves upon Spaced Repetition Systems (SRS). It helps everyone to study concepts, ranging from chemistry to social sciences, and custom-made topics.
+Wanting to study a particular topic, but struggle to do so? Don't worry, we can help! Introducing the CacheFlash flashcards app, where students from secondary school and junior college can memorise concepts on their own! Its self-directed approach in helping students in their exams can be done at anytime, anywhere. Stage 1 consists of basic features, while stage 2 consists of spaced repetition system (SRS) mode, and more advanced quizzing methods to the user.
 
 #### App Catergory: Education
 ### Stage 1 - App Features:
 - Login and sign-up page for users (Hui Ting)
-- Home page - Displays all the default flashcards (Samuel)
-- Learn (flashcards page) - the user gets to learn concepts using flashcards. (Bryan)
-- Test - the user gets to access his/her own knowledge of the topic of choice. (John)
-- Recall answer by typing answer out - the system will check if the answer typed out matches the correct answer. (John)
-- Profile page (Victoria)
+- Home page - Displays all the default flashcards, and the learn and test feature (Samuel)
+- Learn Yourself - user gets to learn concepts using flashcards. (Bryan)
+- Test Yourself - user gets to access his/her own knowledge of the topic of choice, by recalling answer by typing answer out, the system will check if the answer typed out matches the correct answer. (John)
+- Profile page (Hui Ting)
 - App UI and logo (Victoria)
 
 ### Stage 2 - Proposed New Features:
- - Calculates the timing to review the flashcards (Samuel)
  - Speedrun feature for users who want a challenge, and let them edit the time they have to answer (Hui Ting)
- - Dashboard Feature to track User Data(Forgetting Curve)[Samuel]
+ - Dashboard feature to track user data by calculating the timing to review the flashcards (Forgetting Curve) [Samuel]
  - Information Depository for users to key in notes outside of the flashcards (Hui Ting)
  - Image Relaxation (Bryan)
- - - Multiple choice style - there will be multiple choice questions, and the user selects the correct answer. (John)
-- Recall answer with flashcards simply by clicking - after recalling the piece of information, the user clicks the flashcard to view the correct answer. If user gets it correct, he/she presses "I got it right", and if wrong, vice versa. (John)
+ -  Multiple choice style - there will be multiple choice questions, and the user selects the correct answer. (John)
+ -  Creating flashcards - the user creates custom flashcards for own revision (Bryan)
+ -  Improvement of app UI (Victoria)
  
  #### Explanation of Calculation of Optimal Timing (Samuel)
  [The forgetting curve](https://en.wikipedia.org/wiki/Forgetting_curve) can help remind the users when would they almost forget that information (the exact date and timing). This is done by sending them a notification when the retainability has reached a certain level as time passes. For example, a user has finished a deck of flashcards, and the app estimates that he/she will forget about 70% of information in 6 days. This means that R is reduced, until about R = 1 - 0.7 = 0.3. Hence, it will send a notification 6 days later to the user.
@@ -29,7 +29,7 @@ CacheFlash is a flashcards app-based tool that improves upon Spaced Repetition S
  
 $$ S = - \frac{t}{\ln{R}} $$
 
-To estimate t for each flashcard question, we would take the timestamp of the current answer - timestamp of last correct answer.
+To estimate t for each flashcard question, measure the percentage of information retained immediately after learning (usually at time t = 0).
 To estimate r for each flashcard question, we would prompt the user to rate the confidence of each answer, be it correct or not.
 
 #### Why Rate Confidence of Answers to Estimate Memory Stability? (Samuel)
