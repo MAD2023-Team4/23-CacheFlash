@@ -20,7 +20,7 @@ public class Dashboard extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_dashboard);
         Intent intent = getIntent();
-        username = intent.getStringExtra("Username");
+        username = intent.getStringExtra("Username"); //get username
 
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);

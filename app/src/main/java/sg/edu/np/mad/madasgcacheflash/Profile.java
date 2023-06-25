@@ -29,11 +29,11 @@ public class Profile extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_profile);
         Intent intent = getIntent();
-        username = intent.getStringExtra("Username");
+        username = intent.getStringExtra("Username"); //get username
 
         Log.d("ProfileActivity", "Received username: " + username);
         usernameTextView = findViewById(R.id.textView8);
-        usernameTextView.setText(username);
+        usernameTextView.setText(username); //display username
 
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.about);
