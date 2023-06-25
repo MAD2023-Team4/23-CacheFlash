@@ -55,11 +55,14 @@ public class Signup extends AppCompatActivity {
                 */
 
                 User dbData = myDBHandler.findUser(etUsername.getText().toString());
-                if (dbData.getUsername().equals(etUsername.getText().toString())) {
+                if (dbData!=null && dbData.getUsername().equals(etUsername.getText().toString())) {
                     Toast.makeText(Signup.this, "Username already exists!", Toast.LENGTH_SHORT).show();
                 }
-                else if(dbData != null)
-                {Toast.makeText(Signup.this, "Username already exists!", Toast.LENGTH_SHORT).show();}
+                else if (etUsername.getText().toString().isEmpty() ||
+                        etPassword.getText().toString().isEmpty()) {
+                    Toast.makeText(Signup.this, "Username already exists!", Toast.LENGTH_SHORT).show();
+
+                }
                 else {
                     String dbUserName = etUsername.getText().toString();
                     String dbPassword = etPassword.getText().toString();
