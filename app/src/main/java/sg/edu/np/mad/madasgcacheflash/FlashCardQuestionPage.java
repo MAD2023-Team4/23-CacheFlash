@@ -43,7 +43,8 @@ public class FlashCardQuestionPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Navigate back to the home activity
-                onBackPressed();
+                Intent intent = new Intent(FlashCardQuestionPage.this, MainActivity.class);
+                startActivity(intent);
             }
         });
         TextView textView = findViewById(R.id.textView);
