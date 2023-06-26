@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+
+
 import java.util.List;
 
 public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardViewHolder> {
@@ -40,8 +42,7 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardViewHolder> 
 
         // Bind the data to the views in the flashcard_item.xml layout
         holder.titleTextView.setText(flashcard.getTitle());
-        String Number_of_questions=flashcard.getQuestions().size() + " questions";
-        holder.descTextView.setText(Number_of_questions);
+        holder.descTextView.setText(flashcard.getQuestions().size() + " questions");
         // Bind other views as needed
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {

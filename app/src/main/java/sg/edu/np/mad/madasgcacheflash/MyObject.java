@@ -20,7 +20,7 @@ public class MyObject {
 
     public void setText(String text) { this.text = text; }
     //public String getDesc() {
-        //return desc;
+    //return desc;
     //}
 
     //public void setDesc(String desc) { this.desc = desc; }

@@ -82,4 +82,3 @@ public class Flashcard implements Parcelable {
     }
 
 }
-
