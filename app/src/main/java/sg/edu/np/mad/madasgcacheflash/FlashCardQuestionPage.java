@@ -16,6 +16,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
+
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +45,7 @@ public class FlashCardQuestionPage extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 // Navigate back to the home activity
-                Intent intent = new Intent(FlashCardQuestionPage.this, MainActivity.class);
-                startActivity(intent);
+                onBackPressed();
             }
         });
         TextView textView = findViewById(R.id.textView);
