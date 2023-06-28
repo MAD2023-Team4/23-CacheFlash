@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, FlashCardQuestionPage.class);
                 intent.putExtra("flashcard", flashcard);
                 startActivity(intent);
+                startShuffleCardActivity(flashcard);
             }
         });
 
@@ -151,6 +152,11 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+    private void startShuffleCardActivity(Flashcard flashcard) {
+        Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
+        shuffleCardIntent.putExtra("flashcard", flashcard);
+        startActivity(shuffleCardIntent);
     }
     @Override
     protected void onResume() {

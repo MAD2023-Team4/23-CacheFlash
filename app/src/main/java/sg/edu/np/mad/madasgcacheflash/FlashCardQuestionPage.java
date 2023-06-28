@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FlashCardQuestionPage extends AppCompatActivity {
@@ -62,6 +63,24 @@ public class FlashCardQuestionPage extends AppCompatActivity {
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
             answers = flashcard.getAnswers();
+
+            // Shuffle the questions and answers lists together
+            List<String> combinedList = new ArrayList<>();
+            for (int i = 0; i < questions.size(); i++) {
+                combinedList.add(questions.get(i) + "|" + answers.get(i));
+            }
+            Collections.shuffle(combinedList);
+
+            // Clear the original questions and answers lists
+            questions.clear();
+            answers.clear();
+
+            // Separate the shuffled combined list into questions and answers lists
+            for (String item : combinedList) {
+                String[] parts = item.split("\\|");
+                questions.add(parts[0]);
+                answers.add(parts[1]);
+            }
 
             titleTextView.setText(flashcard.getTitle());
 

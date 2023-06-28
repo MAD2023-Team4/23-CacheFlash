@@ -125,15 +125,23 @@ public class ShuffleCardActivity extends AppCompatActivity {
     }
 
     private void startFlashcardActivity() {
-        Intent flashcardIntent = new Intent(this, FlashCardQuestionPage.class);
+        Intent flashcardIntent;
+        Class<?> targetActivity = (Class<?>) getIntent().getSerializableExtra("targetActivity");
+        if (targetActivity == null) {
+            // Default target activity
+            flashcardIntent = new Intent(this, FlashCardQuestionPage.class);
+        } else {
+            // Use the specified target activity
+            flashcardIntent = new Intent(this, targetActivity);
+        }
 
-        // Retrieve the flashcard from the intent in MainActivity
+        // Retrieve the flashcard from the intent
         Flashcard flashcard = getIntent().getParcelableExtra("flashcard");
 
-        // Pass the flashcard object to the FlashCardQuestionPage activity
+        // Pass the flashcard to the target activity
         flashcardIntent.putExtra("flashcard", flashcard);
 
-        // Clear the activity stack and start the FlashCardQuestionPage activity
+        // Clear the activity stack and start the target activity
         flashcardIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(flashcardIntent);
         finish();

@@ -49,6 +49,10 @@
             android:name=".Testyourself"
             android:exported="false">
         </activity>
+        <activity
+            android:name=".ShuffleCardActivity"
+            android:exported="false">
+        </activity>
 
 
     </application>
