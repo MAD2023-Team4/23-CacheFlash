@@ -24,6 +24,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -31,13 +32,39 @@ import java.util.ArrayList;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
+import java.util.Calendar;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
     String title = "Main Activity";
     List<Flashcard> flashcardList = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
     private String username;
-    private TextView quoteTxt;
+    private static final String QUOTE_API_URL = "https://api.example.com/quote";
+    private static final String SHARED_PREFS_NAME = "MyPrefs";
+    private static final String KEY_QUOTE = "quote";
+    private static final String KEY_AUTHOR = "author";
+    private static final String KEY_LAST_UPDATED = "last_updated";
+
+    private TextView quoteTextView;
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -67,22 +94,29 @@ public class MainActivity extends AppCompatActivity {
             Log.i(title, "The username is null, so it is a problem");
         }
 
+        quoteTextView = findViewById(R.id.textView11);
+        sharedPreferences = getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
 
-        quoteTxt = findViewById(R.id.textView11);
-        sharedPreferences = getSharedPreferences("QuotePreferences", Context.MODE_PRIVATE);
+        // Check if the quote needs to be updated
+        String lastUpdated = sharedPreferences.getString(KEY_LAST_UPDATED, "");
+        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-        // Display the quote
-        displayQuote();
+        if (!currentDate.equals(lastUpdated)) {
+            // Fetch a new quote from the API
+            fetchNewQuoteFromAPI();
+        } else {
+            // Display the stored quote
+            displayQuote();
+        }
 
-        // Add click listener to the TextView
-        quoteTxt.setOnClickListener(new View.OnClickListener() {
+        // Set a click listener on the text view to fetch a new quote
+        quoteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Fetch a new quote from the API on user click
                 fetchNewQuoteFromAPI();
             }
         });
-        // Create the flashcards
+            // Create the flashcards
         createFlashcards();
 
         RecyclerView recyclerView;
@@ -181,50 +215,55 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void displayQuote() {
-        String storedQuote = sharedPreferences.getString("quote", "");
-        String storedAuthor = sharedPreferences.getString("author", "");
-
-        if (!storedQuote.isEmpty() && !storedAuthor.isEmpty()) {
-            String quoteWithAuthor = storedQuote + " - " + storedAuthor;
-            quoteTxt.setText(quoteWithAuthor);
-        }
-    }
-
     private void fetchNewQuoteFromAPI() {
-        new AsyncTask<Void, Void, String[]>() {
+        Log.d("QuoteApp", "fetchNewQuoteFromAPI");
 
+        new AsyncTask<Void, Void, String>() {
             @Override
-            protected String[] doInBackground(Void... voids) {
+            protected String doInBackground(Void... voids) {
                 try {
-                    // Retrieve a new quote from the API
                     URL url = new URL("https://api.api-ninjas.com/v1/quotes?category=success");
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestProperty("accept", "application/json");
                     connection.setRequestProperty("X-Api-Key", "7N/Wm8b2g7xvfFYTnyr05g==HQKXwuwskx8e2Cor");
-                    InputStream responseStream = connection.getInputStream();
 
-                    // Parse the JSON response
-                    ObjectMapper mapper = new ObjectMapper();
-                    JsonNode root = mapper.readTree(responseStream);
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStream responseStream = connection.getInputStream();
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode root = mapper.readTree(responseStream);
 
-                    // Check if the response is an array and retrieve the first object
-                    if (root.isArray() && root.size() > 0) {
-                        JsonNode firstObject = root.get(0);
+                        // Log the API response for debugging
+                        Log.d("QuoteApp", "API Response: " + root.toString());
 
-                        // Retrieve the quote and author from the object
-                        String quote = firstObject.path("quote").asText();
-                        String author = firstObject.path("author").asText();
+                        // Check if the response contains a quote and author
+                        if (root.isArray() && root.size() > 0) {
+                            JsonNode quoteNode = root.get(0).path("quote");
+                            JsonNode authorNode = root.get(0).path("author");
 
-                        // Store the new quote and author
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("quote", quote);
-                        editor.putString("author", author);
-                        editor.apply();
+                            if (quoteNode.isTextual() && authorNode.isTextual()) {
+                                String quote = quoteNode.asText();
+                                String author = authorNode.asText();
 
-                        return new String[]{quote, author};
+                                // Store the new quote and author
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putString(KEY_QUOTE, quote);
+                                editor.putString(KEY_AUTHOR, author);
+                                editor.putString(KEY_LAST_UPDATED, new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
+                                editor.apply();
+
+                                return quote + "|" + author;
+                            } else {
+                                Log.d("QuoteApp", "Invalid quote or author field in API response.");
+                            }
+                        } else {
+                            Log.d("QuoteApp", "Empty or invalid API response.");
+                        }
+                    } else {
+                        Log.d("QuoteApp", "API request failed with response code: " + connection.getResponseCode());
                     }
-                } catch (Exception e) {
+
+                    connection.disconnect();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
 
@@ -232,14 +271,41 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            protected void onPostExecute(String[] result) {
+            protected void onPostExecute(String result) {
                 if (result != null) {
-                    String quoteWithAuthor = result[0] + " - " + result[1];
-                    quoteTxt.setText(quoteWithAuthor);
+                    String[] parts = result.split("\\|");
+                    String quote = parts[0];
+                    String author = parts[1];
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String formattedQuote = String.format(Locale.getDefault(), "%s\n- %s", quote, author);
+                            quoteTextView.setText(formattedQuote);
+                            Log.d("QuoteApp", "Received Quote: " + quote);
+                            Log.d("QuoteApp", "Author: " + author);
+                        }
+                    });
                 }
             }
         }.execute();
     }
+
+    private void displayQuote() {
+        String quote = sharedPreferences.getString(KEY_QUOTE, "");
+        String author = sharedPreferences.getString(KEY_AUTHOR, "");
+
+        if (!quote.isEmpty() && !author.isEmpty()) {
+            String formattedQuote = String.format(Locale.getDefault(), "%s\n- %s", quote, author);
+            quoteTextView.setText(formattedQuote);
+            Log.d("QuoteApp", "Displaying Quote: " + quote);
+            Log.d("QuoteApp", "Author: " + author);
+        } else {
+            // If the stored quote is empty, fetch a new quote from the API
+            fetchNewQuoteFromAPI();
+        }
+    }
+
     private void startShuffleCardActivity(Flashcard flashcard) {
         Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
         shuffleCardIntent.putExtra("flashcard", flashcard);
