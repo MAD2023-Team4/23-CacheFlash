@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FlashCardQuestionPage extends AppCompatActivity {
+public class LearnYourself extends AppCompatActivity {
 
     final String TITLE = "Flash Card Questions";
     private List<String> questions;
@@ -39,14 +39,16 @@ public class FlashCardQuestionPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        setContentView(R.layout.activity_flash_card_question_page);
+        setContentView(R.layout.learn_yourself);
         Button btnBackToHome = findViewById(R.id.btnBackToHome);
         updateTextViewClickListener();
         btnBackToHome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Navigate back to the home activity
-                onBackPressed();
+                Intent intent = new Intent(LearnYourself.this, MainActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
         TextView textView = findViewById(R.id.textView);
@@ -118,7 +120,7 @@ public class FlashCardQuestionPage extends AppCompatActivity {
                 isQuestionShowing = true;
 
                 // Apply the slide in animation from right to left to the textView
-                Animation slideInAnimation = AnimationUtils.loadAnimation(FlashCardQuestionPage.this, R.anim.slide_right);
+                Animation slideInAnimation = AnimationUtils.loadAnimation(LearnYourself.this, R.anim.slide_right);
                 textView.startAnimation(slideInAnimation);
                 // Stop the animation at the first question
                 if (currentQuestionIndex == 0) {
@@ -180,7 +182,7 @@ public class FlashCardQuestionPage extends AppCompatActivity {
                 isQuestionShowing = true;
 
                 // Apply the slide in animation from left to right to the textView
-                Animation slideInAnimation = AnimationUtils.loadAnimation(FlashCardQuestionPage.this, R.anim.slide_left);
+                Animation slideInAnimation = AnimationUtils.loadAnimation(LearnYourself.this, R.anim.slide_left);
                 textView.startAnimation(slideInAnimation);
                 // Stop the animation at the last question
                 if (currentQuestionIndex == questions.size() - 1) {

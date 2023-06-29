@@ -5,9 +5,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.os.Handler;
@@ -129,7 +126,7 @@ public class ShuffleCardActivity extends AppCompatActivity {
         Class<?> targetActivity = (Class<?>) getIntent().getSerializableExtra("targetActivity");
         if (targetActivity == null) {
             // Default target activity
-            flashcardIntent = new Intent(this, FlashCardQuestionPage.class);
+            flashcardIntent = new Intent(this, LearnYourself.class);
         } else {
             // Use the specified target activity
             flashcardIntent = new Intent(this, targetActivity);

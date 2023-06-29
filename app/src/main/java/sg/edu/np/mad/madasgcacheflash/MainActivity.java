@@ -7,10 +7,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 
@@ -25,13 +29,16 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     String title = "Main Activity";
     List<Flashcard> flashcardList = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
     private String username;
+    private TextView quoteTxt;
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,53 +66,22 @@ public class MainActivity extends AppCompatActivity {
         else{
             Log.i(title, "The username is null, so it is a problem");
         }
-        // Retrieve the quote from the API
-        new Thread(new Runnable() {
+
+
+        quoteTxt = findViewById(R.id.textView11);
+        sharedPreferences = getSharedPreferences("QuotePreferences", Context.MODE_PRIVATE);
+
+        // Display the quote
+        displayQuote();
+
+        // Add click listener to the TextView
+        quoteTxt.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                final String quote;
-                final String author;
-
-                try {
-                    URL url = new URL("https://api.api-ninjas.com/v1/quotes?category=success");
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                    connection.setRequestProperty("accept", "application/json");
-                    connection.setRequestProperty("X-Api-Key", "7N/Wm8b2g7xvfFYTnyr05g==HQKXwuwskx8e2Cor");
-                    InputStream responseStream = connection.getInputStream();
-
-                    // Parse the JSON response
-                    ObjectMapper mapper = new ObjectMapper();
-                    JsonNode root = mapper.readTree(responseStream);
-                    Log.d("JSON Response", root.toString());
-
-                    // Check if the response is an array and retrieve the first object
-                    if (root.isArray() && root.size() > 0) {
-                        JsonNode firstObject = root.get(0);
-
-                        // Retrieve the quote from the object
-                        quote = firstObject.path("quote").asText();
-                        author = firstObject.path("author").asText();
-                    } else {
-                        quote = "";
-                        author = "";
-                    }
-
-                    // Set the quote in the TextView
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView quoteTxt = findViewById(R.id.textView11);
-                            String quoteWithAuthor = quote + " - " + author;
-                            quoteTxt.setText(quoteWithAuthor);
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            public void onClick(View v) {
+                // Fetch a new quote from the API on user click
+                fetchNewQuoteFromAPI();
             }
-        }).start();
-
-
+        });
         // Create the flashcards
         createFlashcards();
 
@@ -130,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, FlashCardQuestionPage.class);
+                Intent intent = new Intent(MainActivity.this, LearnYourself.class);
                 intent.putExtra("flashcard", flashcard);
                 startActivity(intent);
                 startShuffleCardActivity(flashcard);
@@ -203,6 +179,66 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void displayQuote() {
+        String storedQuote = sharedPreferences.getString("quote", "");
+        String storedAuthor = sharedPreferences.getString("author", "");
+
+        if (!storedQuote.isEmpty() && !storedAuthor.isEmpty()) {
+            String quoteWithAuthor = storedQuote + " - " + storedAuthor;
+            quoteTxt.setText(quoteWithAuthor);
+        }
+    }
+
+    private void fetchNewQuoteFromAPI() {
+        new AsyncTask<Void, Void, String[]>() {
+
+            @Override
+            protected String[] doInBackground(Void... voids) {
+                try {
+                    // Retrieve a new quote from the API
+                    URL url = new URL("https://api.api-ninjas.com/v1/quotes?category=success");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestProperty("accept", "application/json");
+                    connection.setRequestProperty("X-Api-Key", "7N/Wm8b2g7xvfFYTnyr05g==HQKXwuwskx8e2Cor");
+                    InputStream responseStream = connection.getInputStream();
+
+                    // Parse the JSON response
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode root = mapper.readTree(responseStream);
+
+                    // Check if the response is an array and retrieve the first object
+                    if (root.isArray() && root.size() > 0) {
+                        JsonNode firstObject = root.get(0);
+
+                        // Retrieve the quote and author from the object
+                        String quote = firstObject.path("quote").asText();
+                        String author = firstObject.path("author").asText();
+
+                        // Store the new quote and author
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString("quote", quote);
+                        editor.putString("author", author);
+                        editor.apply();
+
+                        return new String[]{quote, author};
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String[] result) {
+                if (result != null) {
+                    String quoteWithAuthor = result[0] + " - " + result[1];
+                    quoteTxt.setText(quoteWithAuthor);
+                }
+            }
+        }.execute();
     }
     private void startShuffleCardActivity(Flashcard flashcard) {
         Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
