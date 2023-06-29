@@ -14,10 +14,15 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +59,52 @@ public class MainActivity extends AppCompatActivity {
         else{
             Log.i(title, "The username is null, so it is a problem");
         }
+        // Retrieve the quote from the API
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String quote;
+                final String author;
+
+                try {
+                    URL url = new URL("https://api.api-ninjas.com/v1/quotes?category=success");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestProperty("accept", "application/json");
+                    connection.setRequestProperty("X-Api-Key", "7N/Wm8b2g7xvfFYTnyr05g==HQKXwuwskx8e2Cor");
+                    InputStream responseStream = connection.getInputStream();
+
+                    // Parse the JSON response
+                    ObjectMapper mapper = new ObjectMapper();
+                    JsonNode root = mapper.readTree(responseStream);
+                    Log.d("JSON Response", root.toString());
+
+                    // Check if the response is an array and retrieve the first object
+                    if (root.isArray() && root.size() > 0) {
+                        JsonNode firstObject = root.get(0);
+
+                        // Retrieve the quote from the object
+                        quote = firstObject.path("quote").asText();
+                        author = firstObject.path("author").asText();
+                    } else {
+                        quote = "";
+                        author = "";
+                    }
+
+                    // Set the quote in the TextView
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView quoteTxt = findViewById(R.id.textView11);
+                            String quoteWithAuthor = quote + " - " + author;
+                            quoteTxt.setText(quoteWithAuthor);
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
 
         // Create the flashcards
         createFlashcards();

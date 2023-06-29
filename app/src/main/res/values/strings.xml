@@ -35,6 +35,5 @@
     <string name="submit">Submit</string>
 
     <string name="ansPrompt">Enter your answer here</string>
-    <string name="quote">"Learning never exhausts the mind." - Leonardo da Vinci</string>
     <string name="testQuote">Ready for the test?</string>
 </resources>
