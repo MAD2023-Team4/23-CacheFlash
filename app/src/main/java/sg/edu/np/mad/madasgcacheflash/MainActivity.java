@@ -6,66 +6,48 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-
-import java.io.IOException;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Calendar;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     String title = "Main Activity";
     List<Flashcard> flashcardList = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
     private String username;
-    private static final String QUOTE_API_URL = "https://api.example.com/quote";
-    private static final String SHARED_PREFS_NAME = "MyPrefs";
-    private static final String KEY_QUOTE = "quote";
-    private static final String KEY_AUTHOR = "author";
-    private static final String KEY_LAST_UPDATED = "last_updated";
-
     private TextView quoteTextView;
-    private SharedPreferences sharedPreferences;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Date lastUpdatedDate; // Store the last updated date
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,49 +56,35 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
-        MyDBHandler dbHandler = new MyDBHandler(this);
-        username = dbHandler.findUsername(username);
-        if (username != null) {
-            TextView welcomeTxt = findViewById(R.id.welcome);
-            // Create a StringBuilder object
-            StringBuilder builder = new StringBuilder();
+        Log.d("MainActivity", "Received Username: " + username);
 
-            // Append the welcome message
-            builder.append(getString(R.string.welcome_message, username));
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            TextView welcomeTxt = findViewById(R.id.welcomeText);
+            String welcomeMessage = getString(R.string.welcome_message);
+            String formattedMessage = String.format(welcomeMessage, username);
 
-            // Append an exclamation mark
-            builder.append("!");
-
-            // Set the text of the welcome text view
-            welcomeTxt.setText(builder);
-        }
-        else{
+            welcomeTxt.setText(formattedMessage);
+        } else {
             Log.i(title, "The username is null, so it is a problem");
         }
 
         quoteTextView = findViewById(R.id.textView11);
-        sharedPreferences = getSharedPreferences(SHARED_PREFS_NAME, MODE_PRIVATE);
-
-        // Check if the quote needs to be updated
-        String lastUpdated = sharedPreferences.getString(KEY_LAST_UPDATED, "");
-        String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
-
-        if (!currentDate.equals(lastUpdated)) {
-            // Fetch a new quote from the API
-            fetchNewQuoteFromAPI();
-        } else {
-            // Display the stored quote
-            displayQuote();
-        }
 
         // Set a click listener on the text view to fetch a new quote
+        // Fetch and display the quote from Firebase Firestore
+        fetchQuoteFromFirestore();
+
+        // Set up click listener for the quote text view
         quoteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Fetch a new quote from the API and update in Firebase Firestore
                 fetchNewQuoteFromAPI();
             }
         });
-            // Create the flashcards
+
+        // Create the flashcards
         createFlashcards();
 
         RecyclerView recyclerView;
@@ -152,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
             // You can perform operations or access its properties here
             String title = flashcard.getTitle();
 
-
             recyclerView = findViewById(R.id.recyclerView2);
             fcAdapter = new FlashcardAdapter(flashcardList);
             mLayoutManager = new LinearLayoutManager(this);
@@ -173,15 +140,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        //Call API
-        //__________________________________________________________________________________________
-
-
-
-        //Bottom Navigation View
-        //Source from: https://www.youtube.com/watch?v=lOTIedfP1OA
-        //__________________________________________________________________________________________
+        // Bottom Navigation View
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.home);
 
@@ -193,24 +152,53 @@ public class MainActivity extends AppCompatActivity {
 
                     if (id == R.id.dashboard) {
                         Intent intent = new Intent(getApplicationContext(), Dashboard.class);
-                        intent.putExtra("Username", dbHandler.findUsername(username)); // Replace 'username' with your actual variable name
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
-                    }
-                    else if (id == R.id.home) {
+                    } else if (id == R.id.home) {
                         return true;
-                    }
-                    else if (id == R.id.about){
+                    } else if (id == R.id.about) {
                         Intent intent = new Intent(getApplicationContext(), Profile.class);
-                        intent.putExtra("Username", dbHandler.findUsername(username)); // Replace 'username' with your actual variable name
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
                     }
-
                 }
                 return false;
+            }
+        });
+    }
+
+    private void fetchQuoteFromFirestore() {
+        DocumentReference quoteRef = db.collection("quotes").document("quote_of_the_day");
+        quoteRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+
+                    if (document.exists()) {
+                        String quote = document.getString("quote");
+                        String author = document.getString("author");
+                        lastUpdatedDate = document.getDate("lastUpdated");
+
+                        if (lastUpdatedDate != null && isSameDay(lastUpdatedDate, Calendar.getInstance().getTime())) {
+                            // Display the stored quote if it is the same day
+                            String formattedQuote = String.format(Locale.getDefault(), "%s\n- %s", quote, author);
+                            quoteTextView.setText(formattedQuote);
+                        } else {
+                            // Fetch a new quote from the API and update in Firebase Firestore
+                            fetchNewQuoteFromAPI();
+                        }
+                    } else {
+                        // Document does not exist, fetch a new quote from the API and update in Firebase Firestore
+                        fetchNewQuoteFromAPI();
+                    }
+                } else {
+                    Log.e("QuoteApp", "Error getting quote document", task.getException());
+                }
             }
         });
     }
@@ -244,67 +232,51 @@ public class MainActivity extends AppCompatActivity {
                                 String quote = quoteNode.asText();
                                 String author = authorNode.asText();
 
-                                // Store the new quote and author
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString(KEY_QUOTE, quote);
-                                editor.putString(KEY_AUTHOR, author);
-                                editor.putString(KEY_LAST_UPDATED, new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date()));
-                                editor.apply();
+                                // Store the new quote and author in Firebase Firestore
+                                Map<String, Object> quoteMap = new HashMap<>();
+                                quoteMap.put("quote", quote);
+                                quoteMap.put("author", author);
+                                quoteMap.put("lastUpdated", Calendar.getInstance().getTime());
 
-                                return quote + "|" + author;
-                            } else {
-                                Log.d("QuoteApp", "Invalid quote or author field in API response.");
+                                db.collection("quotes").document("quote_of_the_day")
+                                        .set(quoteMap)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                // Display the new quote
+                                                String formattedQuote = String.format(Locale.getDefault(), "%s\n- %s", quote, author);
+                                                quoteTextView.setText(formattedQuote);
+                                                Log.d("QuoteApp", "Received Quote: " + quote);
+                                                Log.d("QuoteApp", "Author: " + author);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.e("QuoteApp", "Failed to update quote", e);
+                                            }
+                                        });
                             }
-                        } else {
-                            Log.d("QuoteApp", "Empty or invalid API response.");
                         }
-                    } else {
-                        Log.d("QuoteApp", "API request failed with response code: " + connection.getResponseCode());
                     }
-
-                    connection.disconnect();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    Log.e("QuoteApp", "Error fetching quote from API", e);
                 }
 
                 return null;
             }
-
-            @Override
-            protected void onPostExecute(String result) {
-                if (result != null) {
-                    String[] parts = result.split("\\|");
-                    String quote = parts[0];
-                    String author = parts[1];
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String formattedQuote = String.format(Locale.getDefault(), "%s\n- %s", quote, author);
-                            quoteTextView.setText(formattedQuote);
-                            Log.d("QuoteApp", "Received Quote: " + quote);
-                            Log.d("QuoteApp", "Author: " + author);
-                        }
-                    });
-                }
-            }
         }.execute();
     }
-
-    private void displayQuote() {
-        String quote = sharedPreferences.getString(KEY_QUOTE, "");
-        String author = sharedPreferences.getString(KEY_AUTHOR, "");
-
-        if (!quote.isEmpty() && !author.isEmpty()) {
-            String formattedQuote = String.format(Locale.getDefault(), "%s\n- %s", quote, author);
-            quoteTextView.setText(formattedQuote);
-            Log.d("QuoteApp", "Displaying Quote: " + quote);
-            Log.d("QuoteApp", "Author: " + author);
-        } else {
-            // If the stored quote is empty, fetch a new quote from the API
-            fetchNewQuoteFromAPI();
-        }
+    private boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
     }
+
+
 
     private void startShuffleCardActivity(Flashcard flashcard) {
         Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
@@ -316,25 +288,22 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
-        if (username != null) {
-            TextView welcomeTxt = findViewById(R.id.welcome);
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            TextView welcomeTxt = findViewById(R.id.welcomeText);
             // Create a StringBuilder object
             StringBuilder builder = new StringBuilder();
 
             // Append the welcome message
             builder.append(getString(R.string.welcome_message, username));
-
-            // Append an exclamation mark
-            //builder.append("!");
+            builder.append("!");
 
             // Set the text of the welcome text view
-            welcomeTxt.setText(builder);
-        }
-        else{
+            welcomeTxt.setText(builder.toString());
+        } else {
             Log.i(title, "The username is null, so it is a problem");
         }
     }
-
 
 
 

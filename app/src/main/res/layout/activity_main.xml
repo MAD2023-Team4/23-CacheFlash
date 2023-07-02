@@ -75,7 +75,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/welcome"
+            android:id="@+id/welcomeText"
             android:layout_width="365dp"
             android:layout_height="51dp"
             android:layout_marginStart="16dp"

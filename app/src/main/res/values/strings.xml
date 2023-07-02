@@ -18,7 +18,7 @@
     <string name="testTitle">Test Yourself!</string>
     <string name="usernamePrompt">Enter username here</string>
     <string name="passwordPrompt">Enter password here</string>
-    <string name="welcome_message">Welcome, %1$s!</string>
+    <string name="welcome_message">Welcome, %s</string>
     <string name="btn1">previous</string>
     <string name="btn2">next</string>
     <string name="b2h">Back to Home</string>
