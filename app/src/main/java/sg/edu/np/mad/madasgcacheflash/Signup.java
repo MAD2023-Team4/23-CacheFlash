@@ -4,14 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -56,11 +53,15 @@ public class Signup extends AppCompatActivity {
                 }
 
                 else {
-                    if(password.length() < 6){
-                        Toast.makeText(Signup.this,"Length of password must be at least 6",Toast.LENGTH_SHORT).show();
+                    // Check if the username contains only letters and numbers
+                    if (!username.matches("^[a-zA-Z0-9]+$")) {
+                        Toast.makeText(Signup.this, "Username can only contain letters and numbers", Toast.LENGTH_SHORT).show();
+                    }
+                    else if (password.length() < 6) {
+                        Toast.makeText(Signup.this, "Length of password must be at least 6", Toast.LENGTH_SHORT).show();
                     }
                     else {
-                    signup(username,password);
+                        signup(username, password);
                     }
                 }
 
