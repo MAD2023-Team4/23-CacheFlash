@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">MAD Asg CacheFlash</string>
     <string name="loginPageTitle">Login</string>
-    <string name="usernameText">Username:</string>
-    <string name="passwordText">Password:</string>
+    <string name="usernameText">Username</string>
+    <string name="passwordText">Password</string>
     <string name="loginButtonText">Login</string>
     <string name="newUserText">New user? Click here!</string>
 
