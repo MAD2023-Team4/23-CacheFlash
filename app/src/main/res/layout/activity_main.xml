@@ -51,13 +51,31 @@
             android:layout_width="394dp"
             android:layout_height="115dp"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="190dp" />
+            android:layout_marginTop="208dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/welcomeText"
+            android:layout_width="365dp"
+            android:layout_height="51dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="190dp"
+            android:textColor="@color/darkBlue"
+            android:textSize="34sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/textView11"
             android:layout_width="318dp"
-            android:layout_height="42dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:maxLines="4"
+            android:ellipsize="end"
             android:layout_marginTop="105dp"
             android:text="@string/quote"
             android:textColor="@color/darkBlue"
@@ -99,7 +117,6 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
         </androidx.appcompat.widget.Toolbar>
 
 </RelativeLayout>
