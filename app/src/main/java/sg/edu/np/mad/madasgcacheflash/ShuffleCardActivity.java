@@ -5,6 +5,9 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.os.Handler;
@@ -122,26 +125,15 @@ public class ShuffleCardActivity extends AppCompatActivity {
     }
 
     private void startFlashcardActivity() {
-        Intent flashcardIntent;
-        Class<?> targetActivity = (Class<?>) getIntent().getSerializableExtra("targetActivity");
-        if (targetActivity == null) {
-            // Default target activity
-            flashcardIntent = new Intent(this, LearnYourself.class);
-        } else {
-            // Use the specified target activity
-            flashcardIntent = new Intent(this, targetActivity);
-        }
+        Intent flashcardIntent = new Intent(this, FlashCardQuestionPage.class);
 
-        // Retrieve the flashcard from the intent
+        // Retrieve the flashcard from the intent in MainActivity
         Flashcard flashcard = getIntent().getParcelableExtra("flashcard");
 
-        // Pass the flashcard to the target activity
+        // Pass the flashcard object to the FlashCardQuestionPage activity
         flashcardIntent.putExtra("flashcard", flashcard);
-        // Retrieve the username from the original intent
-        String username = getIntent().getStringExtra("Username");
-        flashcardIntent.putExtra("Username", username); // Add the username extra to the intent
 
-        // Clear the activity stack and start the target activity
+        // Clear the activity stack and start the FlashCardQuestionPage activity
         flashcardIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(flashcardIntent);
         finish();

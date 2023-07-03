@@ -11,9 +11,7 @@ public class Flashcard implements Parcelable {
     private List<String> questions;
     private List<String> answers;
     private String username;
-
-    public Flashcard() {
-    }
+    public Flashcard(){}
 
     public Flashcard(String title, List<String> questions, List<String> answers, String username) {
         this.title = title;
@@ -53,7 +51,6 @@ public class Flashcard implements Parcelable {
     public void setUsername(String username) {
         this.username = username;
     }
-
     protected Flashcard(Parcel in) {
         title = in.readString();
         questions = in.createStringArrayList();
@@ -83,4 +80,5 @@ public class Flashcard implements Parcelable {
         dest.writeStringList(questions);
         dest.writeStringList(answers);
     }
+
 }
