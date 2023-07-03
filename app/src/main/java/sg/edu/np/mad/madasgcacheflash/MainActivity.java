@@ -110,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
                 // Start FlashCardQuestionPage activity with the selected flashcard
                 Intent intent = new Intent(MainActivity.this, LearnYourself.class);
                 intent.putExtra("flashcard", flashcard);
+                Log.v("Username out:",username);
+                intent.putExtra("Username", username);
                 startActivity(intent);
                 startShuffleCardActivity(flashcard);
             }
@@ -281,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
     private void startShuffleCardActivity(Flashcard flashcard) {
         Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
         shuffleCardIntent.putExtra("flashcard", flashcard);
+        shuffleCardIntent.putExtra("Username",username);
         startActivity(shuffleCardIntent);
     }
     @Override

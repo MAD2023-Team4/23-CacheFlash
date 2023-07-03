@@ -26,6 +26,7 @@ public class LearnYourself extends AppCompatActivity {
 
     final String TITLE = "Flash Card Questions";
     private List<String> questions;
+    private String username;
 
     private List<String> answers;
     private int currentQuestionIndex;
@@ -42,15 +43,7 @@ public class LearnYourself extends AppCompatActivity {
         setContentView(R.layout.learn_yourself);
         Button btnBackToHome = findViewById(R.id.btnBackToHome);
         updateTextViewClickListener();
-        btnBackToHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Navigate back to the home activity
-                Intent intent = new Intent(LearnYourself.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+
         TextView textView = findViewById(R.id.textView);
         Button buttonNext = findViewById(R.id.button2);
         Button buttonPrev = findViewById(R.id.button);
@@ -61,6 +54,12 @@ public class LearnYourself extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("flashcard")) {
             Flashcard flashcard = intent.getParcelableExtra("flashcard");
+             username = intent.getStringExtra("Username");
+            if (username != null) {
+                Log.d(TITLE, username);
+            } else {
+                Log.d(TITLE, "Username is null");
+            }
 
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
@@ -93,12 +92,21 @@ public class LearnYourself extends AppCompatActivity {
 
             // Display the first question
             textView.setText(questions.get(currentQuestionIndex));
+            btnBackToHome.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // Navigate back to the home activity
+                    Intent intent = new Intent(LearnYourself.this, MainActivity.class);
+                    intent.putExtra("Username", username);  // Pass the username back as an extra
+                    startActivity(intent);
+                    finish();
+                }
+            });
         }
 
         motionLayout = findViewById(R.id.motionLayout);
 
         motionLayout.transitionToEnd();
-
 
         buttonPrev.setEnabled(false);
         buttonPrev.setOnClickListener(new View.OnClickListener() {

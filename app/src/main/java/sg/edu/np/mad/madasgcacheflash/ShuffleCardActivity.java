@@ -137,6 +137,9 @@ public class ShuffleCardActivity extends AppCompatActivity {
 
         // Pass the flashcard to the target activity
         flashcardIntent.putExtra("flashcard", flashcard);
+        // Retrieve the username from the original intent
+        String username = getIntent().getStringExtra("Username");
+        flashcardIntent.putExtra("Username", username); // Add the username extra to the intent
 
         // Clear the activity stack and start the target activity
         flashcardIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
