@@ -6,27 +6,48 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
-
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-
-
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Date;
+import java.util.Locale;
+import java.util.Calendar;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     String title = "Main Activity";
     List<Flashcard> flashcardList = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
     private String username;
+    private TextView quoteTextView;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private Date lastUpdatedDate; // Store the last updated date
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,25 +56,33 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
-        MyDBHandler dbHandler = new MyDBHandler(this);
-        username = dbHandler.findUsername(username);
-        if (username != null) {
-            TextView welcomeTxt = findViewById(R.id.welcome);
-            // Create a StringBuilder object
-            StringBuilder builder = new StringBuilder();
+        Log.d("MainActivity", "Received Username: " + username);
 
-            // Append the welcome message
-            builder.append(getString(R.string.welcome_message, username));
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            TextView welcomeTxt = findViewById(R.id.welcomeText);
+            String welcomeMessage = getString(R.string.welcome_message);
+            String formattedMessage = String.format(welcomeMessage, username);
 
-            // Append an exclamation mark
-            builder.append("!");
-
-            // Set the text of the welcome text view
-            welcomeTxt.setText(builder);
-        }
-        else{
+            welcomeTxt.setText(formattedMessage);
+        } else {
             Log.i(title, "The username is null, so it is a problem");
         }
+
+        quoteTextView = findViewById(R.id.textView11);
+
+        // Set a click listener on the text view to fetch a new quote
+        // Fetch and display the quote from Firebase Firestore
+        fetchQuoteFromFirestore();
+
+        // Set up click listener for the quote text view
+        quoteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Fetch a new quote from the API and update in Firebase Firestore
+                fetchNewQuoteFromAPI();
+            }
+        });
 
         // Create the flashcards
         createFlashcards();
@@ -79,9 +108,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, FlashCardQuestionPage.class);
+                Intent intent = new Intent(MainActivity.this, LearnYourself.class);
                 intent.putExtra("flashcard", flashcard);
+                Log.v("Username out:",username);
+                intent.putExtra("Username", username);
                 startActivity(intent);
+                startShuffleCardActivity(flashcard);
             }
         });
 
@@ -89,7 +121,6 @@ public class MainActivity extends AppCompatActivity {
             // Access the current flashcard
             // You can perform operations or access its properties here
             String title = flashcard.getTitle();
-
 
             recyclerView = findViewById(R.id.recyclerView2);
             fcAdapter = new FlashcardAdapter(flashcardList);
@@ -111,15 +142,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        //Call API
-        //__________________________________________________________________________________________
-
-
-
-        //Bottom Navigation View
-        //Source from: https://www.youtube.com/watch?v=lOTIedfP1OA
-        //__________________________________________________________________________________________
+        // Bottom Navigation View
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.home);
 
@@ -131,51 +154,159 @@ public class MainActivity extends AppCompatActivity {
 
                     if (id == R.id.dashboard) {
                         Intent intent = new Intent(getApplicationContext(), Dashboard.class);
-                        intent.putExtra("Username", dbHandler.findUsername(username)); // Replace 'username' with your actual variable name
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
-                    }
-                    else if (id == R.id.home) {
+                    } else if (id == R.id.home) {
                         return true;
-                    }
-                    else if (id == R.id.about){
+                    } else if (id == R.id.about) {
                         Intent intent = new Intent(getApplicationContext(), Profile.class);
-                        intent.putExtra("Username", dbHandler.findUsername(username)); // Replace 'username' with your actual variable name
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
                     }
-
                 }
                 return false;
             }
         });
+    }
+
+    private void fetchQuoteFromFirestore() {
+        DocumentReference quoteRef = db.collection("quotes").document("quote_of_the_day");
+        quoteRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+
+                    if (document.exists()) {
+                        String quote = document.getString("quote");
+                        String author = document.getString("author");
+                        lastUpdatedDate = document.getDate("lastUpdated");
+
+                        if (lastUpdatedDate != null && isSameDay(lastUpdatedDate, Calendar.getInstance().getTime())) {
+                            // Display the stored quote if it is the same day
+                            String formattedQuote = String.format(Locale.getDefault(), "%s\n- %s", quote, author);
+                            quoteTextView.setText(formattedQuote);
+                        } else {
+                            // Fetch a new quote from the API and update in Firebase Firestore
+                            fetchNewQuoteFromAPI();
+                        }
+                    } else {
+                        // Document does not exist, fetch a new quote from the API and update in Firebase Firestore
+                        fetchNewQuoteFromAPI();
+                    }
+                } else {
+                    Log.e("QuoteApp", "Error getting quote document", task.getException());
+                }
+            }
+        });
+    }
+
+    private void fetchNewQuoteFromAPI() {
+        Log.d("QuoteApp", "fetchNewQuoteFromAPI");
+
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    URL url = new URL("https://api.api-ninjas.com/v1/quotes?category=success");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestProperty("accept", "application/json");
+                    connection.setRequestProperty("X-Api-Key", "7N/Wm8b2g7xvfFYTnyr05g==HQKXwuwskx8e2Cor");
+
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStream responseStream = connection.getInputStream();
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode root = mapper.readTree(responseStream);
+
+                        // Log the API response for debugging
+                        Log.d("QuoteApp", "API Response: " + root.toString());
+
+                        // Check if the response contains a quote and author
+                        if (root.isArray() && root.size() > 0) {
+                            JsonNode quoteNode = root.get(0).path("quote");
+                            JsonNode authorNode = root.get(0).path("author");
+
+                            if (quoteNode.isTextual() && authorNode.isTextual()) {
+                                String quote = quoteNode.asText();
+                                String author = authorNode.asText();
+
+                                // Store the new quote and author in Firebase Firestore
+                                Map<String, Object> quoteMap = new HashMap<>();
+                                quoteMap.put("quote", quote);
+                                quoteMap.put("author", author);
+                                quoteMap.put("lastUpdated", Calendar.getInstance().getTime());
+
+                                db.collection("quotes").document("quote_of_the_day")
+                                        .set(quoteMap)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                // Display the new quote
+                                                String formattedQuote = String.format(Locale.getDefault(), "%s\n- %s", quote, author);
+                                                quoteTextView.setText(formattedQuote);
+                                                Log.d("QuoteApp", "Received Quote: " + quote);
+                                                Log.d("QuoteApp", "Author: " + author);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.e("QuoteApp", "Failed to update quote", e);
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e("QuoteApp", "Error fetching quote from API", e);
+                }
+
+                return null;
+            }
+        }.execute();
+    }
+    private boolean isSameDay(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
+
+
+
+    private void startShuffleCardActivity(Flashcard flashcard) {
+        Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
+        shuffleCardIntent.putExtra("flashcard", flashcard);
+        shuffleCardIntent.putExtra("Username",username);
+        startActivity(shuffleCardIntent);
     }
     @Override
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
-        if (username != null) {
-            TextView welcomeTxt = findViewById(R.id.welcome);
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            TextView welcomeTxt = findViewById(R.id.welcomeText);
             // Create a StringBuilder object
             StringBuilder builder = new StringBuilder();
 
             // Append the welcome message
             builder.append(getString(R.string.welcome_message, username));
-
-            // Append an exclamation mark
-            //builder.append("!");
+            builder.append("!");
 
             // Set the text of the welcome text view
-            welcomeTxt.setText(builder);
-        }
-        else{
+            welcomeTxt.setText(builder.toString());
+        } else {
             Log.i(title, "The username is null, so it is a problem");
         }
     }
-
 
 
 

@@ -75,7 +75,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/welcome"
+            android:id="@+id/welcomeText"
             android:layout_width="365dp"
             android:layout_height="51dp"
             android:layout_marginStart="16dp"
@@ -88,13 +88,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <TextView
             android:id="@+id/textView11"
             android:layout_width="318dp"
-            android:layout_height="42dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="80dp"
-            android:text="@string/quote"
+            android:maxLines="4"
+            android:ellipsize="end"
             android:textColor="@color/darkBlue"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
