@@ -14,6 +14,9 @@ import com.google.android.material.navigation.NavigationBarView;
 
 public class Dashboard extends AppCompatActivity {
     private String username;
+    int score;
+    int total;
+    Flashcard flashcard;
     BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +25,13 @@ public class Dashboard extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
         Intent intent = getIntent();
         username = intent.getStringExtra("Username"); //get username
+        if (intent.hasExtra("Score") && intent.hasExtra("Total")) {
+            // The intent contains the "score" key
+            flashcard = intent.getParcelableExtra("flashcard");
+            score = intent.getIntExtra("Score", 0); // Retrieve the value of "score" key, use 0 as default value if not found
+            total = intent.getIntExtra("Total",0);
+        }
+
 
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);

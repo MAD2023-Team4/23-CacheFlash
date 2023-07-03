@@ -26,6 +26,7 @@ public class Testyourself extends AppCompatActivity {
     List<String> answers = new ArrayList<>();
     List<Integer> answeredQuestions = new ArrayList<>(); // New list to track answered questions
     boolean isAnswered = false;
+    Flashcard flashcard;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class Testyourself extends AppCompatActivity {
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("flashcard")) {
-            Flashcard flashcard = intent.getParcelableExtra("flashcard");
+            flashcard = intent.getParcelableExtra("flashcard");
 
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
@@ -178,10 +179,11 @@ public class Testyourself extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setMessage(text)
-                .setPositiveButton("View", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Dashboard", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Do something when the "OK" button is clicked
-                        Intent intent = new Intent(Testyourself.this, MainActivity.class);
+                        Intent intent = new Intent(Testyourself.this, Dashboard.class);
+                        intent.putExtra("flashcards", flashcard);
                         intent.putExtra("Score", score);
                         intent.putExtra("Total", total);
                         startActivity(intent);
