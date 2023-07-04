@@ -47,6 +47,10 @@ public class Login extends AppCompatActivity {
         super.onStart();
         Log.i(title, "Starting App Login Page");
         TextView newUser = findViewById(R.id.textView4);
+        mAuth = FirebaseAuth.getInstance();
+
+        EditText etUsername = findViewById(R.id.editTextText);
+        EditText etPassword = findViewById(R.id.editTextText2);
 
         newUser.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -101,24 +105,34 @@ public class Login extends AppCompatActivity {
             }
         });
     }
-    MyDBHandler myDBHandler = new MyDBHandler(this);
-    public boolean isValidCredentials(String username, String password){
-        /*
-        sharedPreferences = getSharedPreferences(GLOBAL_PREF, MODE_PRIVATE);
-        String sharedUsername = sharedPreferences.getString(MY_USERNAME,"");
-        String sharedPassword = sharedPreferences.getString(MY_PASSWORD,"");
 
-        if (sharedUsername.equals(username) && sharedPassword.equals(password)){
-            return true;
-        }
-        return false; */
 
-        User dbData = myDBHandler.findUser(username);
-        if (dbData != null) {
-            if (dbData.getUsername().equals(username) && dbData.getPassword().equals(password)) {
-                return true;
-            }
-        }
-        return false;
+    private void signIn(String username, String password) {
+        mAuth.signInWithEmailAndPassword(username + "@gmail.com", password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Login successful
+                        String standardizedUsername = username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase();
+                        Log.d("Login", "Username: " + username);
+                        Toast.makeText(Login.this, "Login successful! Welcome " + standardizedUsername, Toast.LENGTH_SHORT).show();
+                        // Start the MainActivity
+                        Intent intent = new Intent(Login.this, MainActivity.class);
+                        intent.putExtra("Username",standardizedUsername);
+                        startActivity(intent);
+                    } else {
+                        // Login failed
+                        if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                            // Invalid username
+                            Toast.makeText(Login.this, "Invalid username", Toast.LENGTH_SHORT).show();
+                        } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            // Invalid password
+                            Toast.makeText(Login.this, "Invalid password", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Other login error
+                            Toast.makeText(Login.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
     }
+
 }
