@@ -55,46 +55,31 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/welcomeText"
-            android:layout_width="365dp"
-            android:layout_height="51dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="190dp"
-            android:textColor="@color/darkBlue"
-            android:textSize="34sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <TextView
+        android:id="@+id/textView11"
+        android:layout_width="355dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginTop="70dp"
+        android:ellipsize="end"
+        android:maxLines="4"
+        android:textColor="@color/darkBlue"
+        android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/textView11"
-            android:layout_width="318dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:maxLines="4"
-            android:ellipsize="end"
-            android:layout_marginTop="105dp"
-            android:text="@string/quote"
-            android:textColor="@color/darkBlue"
-            android:textSize="16sp" />
-
-        <TextView
+    <TextView
             android:id="@+id/textView10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
-            android:layout_marginTop="73dp"
+            android:layout_marginTop="400dp"
             android:text="@string/testQuote"
             android:textColor="@color/darkBlue"
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <androidx.appcompat.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_width="409dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
@@ -103,20 +88,21 @@
             android:background="@color/darkBlue"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme">
+    </androidx.appcompat.widget.Toolbar>
 
-            <TextView
-                android:id="@+id/welcome"
-                android:layout_width="365dp"
-                android:layout_height="51dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="6dp"
-                android:textColor="@color/white"
-                android:textSize="34sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.appcompat.widget.Toolbar>
+    <TextView
+        android:id="@+id/welcomeText"
+        android:layout_width="365dp"
+        android:layout_height="51dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </RelativeLayout>

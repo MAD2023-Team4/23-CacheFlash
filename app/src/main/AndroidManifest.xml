@@ -49,6 +49,8 @@
             android:name=".Testyourself"
             android:exported="false">
         </activity>
+        <activity android:name="sg.edu.np.mad.madasgcacheflash.ShuffleCardActivity" />
+
 
 
     </application>

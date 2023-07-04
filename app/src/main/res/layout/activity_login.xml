@@ -26,7 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
-            android:textSize="16sp">
+            android:textSize="16sp"
+            android:singleLine="true">
 
         </com.google.android.material.textfield.TextInputEditText>
 
@@ -51,7 +52,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
-            android:textSize="16sp">
+            android:textSize="16sp"
+            android:singleLine="true">
 
         </com.google.android.material.textfield.TextInputEditText>
 
@@ -108,7 +110,6 @@
         android:layout_width="115dp"
         android:layout_height="25dp"
         android:layout_marginStart="150dp"
-        android:layout_marginEnd="150dp"
         android:layout_marginTop="550dp"
         android:onClick="openPrivacyPolicy"
         android:text="Privacy Policy"
