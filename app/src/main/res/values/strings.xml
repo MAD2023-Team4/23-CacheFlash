@@ -36,4 +36,12 @@
 
     <string name="ansPrompt">Enter your answer here</string>
     <string name="testQuote">Ready for the test?</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="change_your_password">Change Your Password</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="change_my_password">Change my password</string>
+    <string name="password_must_contain">Password must contain:</string>
+    <string name="at_least_6_characters">At least 6 characters</string>
+    <string name="at_least_1_number_0_9">At least 1 number(0-9)</string>
 </resources>

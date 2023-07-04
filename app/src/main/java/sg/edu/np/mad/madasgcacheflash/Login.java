@@ -52,6 +52,7 @@ public class Login extends AppCompatActivity {
         Log.i(title, "Starting App Login Page");
         TextView newUser = findViewById(R.id.textView4);
         mAuth = FirebaseAuth.getInstance();
+
         EditText etUsername = findViewById(R.id.editTextText);
         EditText etPassword = findViewById(R.id.editTextText2);
         newUser.setOnTouchListener(new View.OnTouchListener() {
@@ -85,6 +86,7 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+
     private void signIn(String username, String password) {
         mAuth.signInWithEmailAndPassword(username + "@gmail.com", password)
                 .addOnCompleteListener(this, task -> {
