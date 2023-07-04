@@ -15,15 +15,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.gson.Gson;
 
 public class Login extends AppCompatActivity {
 
     String title = "Main activity";
-    private FirebaseAuth mAuth;
     /*
     private String GLOBAL_PREF = "MyPrefs";
     private String MY_USERNAME = "MyUserName";
@@ -55,6 +51,7 @@ public class Login extends AppCompatActivity {
 
         EditText etUsername = findViewById(R.id.editTextText);
         EditText etPassword = findViewById(R.id.editTextText2);
+
         newUser.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -69,23 +66,46 @@ public class Login extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                String username = etUsername.getText().toString();
-                String password = etPassword.getText().toString();
-                if(username.isEmpty() && password.isEmpty()){
-                    Toast.makeText(Login.this, "Please enter username and password,do not leave it blank", Toast.LENGTH_SHORT).show();
+
+                EditText etUsername = findViewById(R.id.editTextText);
+                EditText etPassword = findViewById(R.id.editTextText2);
+
+                if(!(etUsername.getText().toString().isEmpty() ||
+                        etPassword.getText().toString().isEmpty())){
+                    if(isValidCredentials(etUsername.getText().toString(),
+                            etPassword.getText().toString())){
+
+                        Bundle extras = new Bundle();
+                        extras.putString("Username", etUsername.getText().toString());
+                        extras.putString("Password",etPassword.getText().toString());
+                        Intent intent = new Intent(Login.this, MainActivity.class);
+                        intent.putExtras(extras);
+                        startActivity(intent);
+                    }
+
+                    else{
+                        Toast.makeText(Login.this, "Invalid username/password!",
+                                Toast.LENGTH_SHORT).show();
+                    }
                 }
-                else if (password.isEmpty()) {
-                    Toast.makeText(Login.this, "Please enter password,do not leave it blank", Toast.LENGTH_SHORT).show();
+
+                /*
+                else if (etUsername.getText().toString() == null ||
+                        etPassword.getText().toString() == null) {
+                    Toast.makeText(MainActivity.this, "Username/password is empty!",
+                            Toast.LENGTH_SHORT).show();
                 }
-                else if(username.isEmpty()){
-                    Toast.makeText(Login.this, "Please enter username,do not leave it blank", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    signIn(username,password);
+*/
+
+
+                else{
+                    Toast.makeText(Login.this,"Username/password is empty!",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
 
     private void signIn(String username, String password) {
         mAuth.signInWithEmailAndPassword(username + "@gmail.com", password)

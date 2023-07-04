@@ -24,6 +24,7 @@
         android:theme="@style/Theme.MADAsgCacheFlash"
         tools:targetApi="31">
         <activity
+
             android:name=".ChangePassword"
             android:exported="false" />
         <activity
@@ -63,6 +64,7 @@
             android:name=".Profile$NotificationReceiver"
             android:enabled="true"
             android:exported="true" />
+            
 
     </application>
 
