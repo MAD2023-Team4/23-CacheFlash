@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "587602424644",
+    "firebase_url": "https://cacheflash-952be-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cacheflash-952be",
+    "storage_bucket": "cacheflash-952be.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:587602424644:android:ab32cf13423d29ee47dd11",
+        "android_client_info": {
+          "package_name": "sg.edu.np.mad.madasgcacheflash"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "587602424644-q62avecvkhk9ps51o11pfac75ql0qpkd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATRMZBP73xUMZz02NHAWsKnMo5Fjt40a4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "587602424644-q62avecvkhk9ps51o11pfac75ql0qpkd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
