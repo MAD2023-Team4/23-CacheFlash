@@ -1,5 +1,15 @@
 package sg.edu.np.mad.madasgcacheflash;
 
+import static android.content.ContentValues.TAG;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.jakewharton.threetenabp.AndroidThreeTen;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,18 +18,28 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.work.Constraints;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.ExistingWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.WorkRequest;
 
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -29,6 +49,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -40,22 +61,37 @@ import android.Manifest;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import org.threeten.bp.Duration;
+import org.threeten.bp.LocalTime;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
 
 
 public class Profile extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     private static final String CHANNEL_ID = "my_channel_id";
+    private static final String PREFS_NAME = "MyPrefs";
+    private static final String WORK_TAG = "notification_work";
+    private String selectedTime;
 
     private TextView usernameTextView;
+    private SharedPreferences sharedPreferences;
+    private DatabaseReference desiredTimeRef;
     // Firebase Database reference
     private DatabaseReference notificationStatusRef;
 
     private static final int PERMISSION_REQUEST_CODE = 2001;
     private static final int NOTIFICATION_REQUEST_CODE = 1001;
     private String username;
+    private static final String NOTIFICATION_STATUS_KEY = "notification_status";
+    private MyFirebaseMessagingService firebaseMessagingService;
 
 
     @Override
@@ -63,14 +99,41 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_profile);
-        Intent intent = getIntent();
-        username = intent.getStringExtra("Username"); //get username
+
         TextView textViewPasswordReset;
         TextView textViewPreference;
-        TextView textViewNotifications;
         TextView textViewStreak;
+
+        Intent intent = getIntent();
+        username = intent.getStringExtra("Username"); //get username
+
+        firebaseMessagingService = new MyFirebaseMessagingService();
+        AndroidThreeTen.init(this);
         Switch switch_notification = findViewById(R.id.switch1);
+
         textViewPasswordReset = findViewById(R.id.password_reset);
+        textViewPreference = findViewById(R.id.study_preference);
+        // Add the code snippet here
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        // Log and toast
+                        String msg = getString(R.string.msg_token_fmt, token);
+                        Log.d(TAG, msg);
+                        Toast.makeText(Profile.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+
+                });
+
         textViewPasswordReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,28 +157,52 @@ public class Profile extends AppCompatActivity {
                 builder.show();
             }
         });
-        notificationStatusRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("notificationStatus");
 
-        // Retrieve notification status from Firebase and set the switch accordingly
-        notificationStatusRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful() && task.getResult() != null) {
-                Boolean notificationEnabled = task.getResult().getValue(Boolean.class);
-                switch_notification.setChecked(notificationEnabled != null && notificationEnabled);
+
+        // Get the notification status from SharedPreferences
+        // Initialize Firebase Database references
+        notificationStatusRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("notificationStatus");
+        desiredTimeRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("desiredTime");
+        sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        boolean isNotificationEnabled = sharedPreferences.getBoolean(NOTIFICATION_STATUS_KEY, false);
+        textViewPreference.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showTimePickerDialog();
             }
         });
+        startPeriodicTimeCheck();
+        // Set the initial state of the switch
+        switch_notification.setChecked(isNotificationEnabled);
+
+        // Set switch listener
         switch_notification.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    scheduleNotification();
                     Toast.makeText(Profile.this, "Notification enabled", Toast.LENGTH_SHORT).show();
+
+                    // Update the notification status in SharedPreferences
+                    sharedPreferences.edit().putBoolean(NOTIFICATION_STATUS_KEY, true).apply();
+                    notificationStatusRef.setValue(true);
+
                 } else {
-                    cancelNotification();
                     Toast.makeText(Profile.this, "Notification disabled", Toast.LENGTH_SHORT).show();
+
+                    // Update the notification status in SharedPreferences
+                    sharedPreferences.edit().putBoolean(NOTIFICATION_STATUS_KEY, false).apply();
+                    notificationStatusRef.setValue(false);
+                    // Cancel the scheduled notification
+
                 }
-                notificationStatusRef.setValue(isChecked);
             }
         });
+        // Create notification channel for Android Oreo and above
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "My Notification", NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel);
+        }
 
         Log.d("ProfileActivity", "Received username: " + username);
         usernameTextView = findViewById(R.id.textView8);
@@ -151,133 +238,121 @@ public class Profile extends AppCompatActivity {
         });
     }
 
-    private void showNotification() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // Create the notification channel for API level 26 and above
-            CharSequence channelName = "Flashcard";
-            String channelDescription = "Reminder";
-            int importance = NotificationManager.IMPORTANCE_HIGH;
 
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, channelName, importance);
-            channel.setDescription(channelDescription);
+    private void showTimePickerDialog() {
+        Calendar currentTime = Calendar.getInstance();
+        int hour = currentTime.get(Calendar.HOUR_OF_DAY);
+        int minute = currentTime.get(Calendar.MINUTE);
 
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
-        }
+        // Inflate the custom layout for the TimePicker
+        View dialogView = getLayoutInflater().inflate(R.layout.custom_time_picker_title, null);
+        TextView titleTextView = dialogView.findViewById(R.id.titleTextView);
+        titleTextView.setText("Choose your study time");
 
-        try {
-            Intent intent = new Intent(this, NotificationReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+        TimePicker timePicker = dialogView.findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(false);
+        timePicker.setCurrentHour(hour);
+        timePicker.setCurrentMinute(minute);
 
-            NotificationCompat.Builder builder;
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                builder = new NotificationCompat.Builder(this, CHANNEL_ID);
-            } else {
-                builder = new NotificationCompat.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(dialogView);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // Get the selected time from the TimePicker
+                int hourOfDay = timePicker.getCurrentHour();
+                int minute = timePicker.getCurrentMinute();
+
+                // Handle the selected time here
+                selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+                Log.d("SelectedTime", selectedTime); // Log the selected time
+
+                // Update the selected time in Firebase Realtime Database
+                desiredTimeRef.setValue(selectedTime);
             }
+        });
+        builder.setNegativeButton("Cancel", null);
 
-            builder.setSmallIcon(R.drawable.notification)
-                    .setContentTitle("Notification Title")
-                    .setContentText("This is the notification text")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setCategory(NotificationCompat.CATEGORY_CALL)
-                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true);
+        AlertDialog timePickerDialog = builder.create();
+        timePickerDialog.show();
+    }
 
-            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-            notificationManager.notify(NOTIFICATION_REQUEST_CODE, builder.build());
-            Log.d("ProfileActivity", "Notification sent");
-        } catch (SecurityException e) {
-            Toast.makeText(this, "Failed to send notification: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("ProfileActivity", "Failed to send notification: " + e.getMessage());
+    private void sendNotification() {
+        // Create a notification message
+        String title = "Study Reminder";
+        String message = "It is time to study!";
+
+        // Build the notification
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channel_id")
+                .setSmallIcon(R.drawable.cacheflash)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        // Create an explicit intent for the MainActivity
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(pendingIntent);
+
+        // Show the notification
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
         }
+        notificationManager.notify(1, builder.build());
     }
+    private void startPeriodicTimeCheck() {
+        // Create a TimerTask to periodically check the time
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                // Get the current time
+                Calendar currentTime = Calendar.getInstance();
+                int currentHour = currentTime.get(Calendar.HOUR_OF_DAY);
+                int currentMinute = currentTime.get(Calendar.MINUTE);
 
+                // Retrieve the user's selected time from Firebase Realtime Database
+                desiredTimeRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        String selectedTime = dataSnapshot.getValue(String.class);
+                        if (selectedTime != null) {
+                            // Parse the selected time to get the hour and minute
+                            String[] timeParts = selectedTime.split(":");
+                            int selectedHour = Integer.parseInt(timeParts[0]);
+                            int selectedMinute = Integer.parseInt(timeParts[1]);
 
-    private void scheduleNotification() {
-        // Create a Calendar instance and set the desired timezone
-        Calendar calendar = Calendar.getInstance();
-        TimeZone timeZone = TimeZone.getTimeZone("Asia/Singapore");
-        calendar.setTimeZone(timeZone);
+                            // Compare the current time with the user's selected time
+                            if (currentHour == selectedHour && currentMinute == selectedMinute) {
+                                // Call a method to send the push notification
+                                sendNotification();
+                            }
+                        }
+                    }
 
-        // Set the desired time for the notification (10:45 PM)
-        calendar.set(Calendar.HOUR_OF_DAY, 22);
-        calendar.set(Calendar.MINUTE, 56);
-
-        // Check if the desired time has already passed
-        if (calendar.getTimeInMillis() < System.currentTimeMillis()) {
-            // If it has passed, add one day to the calendar to schedule the notification for the next day
-            calendar.add(Calendar.DAY_OF_YEAR, 1);
-        }
-
-        // Convert the scheduled time to a human-readable format for logging
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        sdf.setTimeZone(timeZone);
-        String scheduledTime = sdf.format(new Date(calendar.getTimeInMillis()));
-        Log.d("Notification", "Scheduled time: " + scheduledTime);
-
-        // Create an intent to trigger the BroadcastReceiver
-        Intent intent = new Intent(this, NotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
-
-        // Get the AlarmManager service and schedule the notification
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
-    }
-
-
-    private void cancelNotification() {
-        // Create the same intent used for scheduling and cancel the notification
-        Intent intent = new Intent(this, NotificationReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATION_REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
-
-        // Get the AlarmManager service and cancel the notification
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
-    }
-
-    public static class NotificationReceiver extends BroadcastReceiver {
-        private static final int NOTIFICATION_ID = 123; // Unique ID for the notification
-        private static final String CHANNEL_ID = "flashcard_channel"; // Unique ID for the notification channel
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Log.d("NotificationReceiver", "Notification received");
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.VIBRATE) == PackageManager.PERMISSION_GRANTED) {
-                // Create an intent to open the app when the notification is clicked
-                Intent appIntent = new Intent(context, Profile.class);
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, NOTIFICATION_ID, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                // Create the notification channel (required for API 26 and above)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    CharSequence channelName = "Flashcard Channel";
-                    int importance = NotificationManager.IMPORTANCE_HIGH;
-                    NotificationChannel channel = new NotificationChannel(CHANNEL_ID, channelName, importance);
-                    NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-                    notificationManager.createNotificationChannel(channel);
-                }
-
-                // Create the notification
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.notification)
-                        .setContentTitle("Flashcard Notification")
-                        .setContentText("It's time to study!")
-                        .setContentIntent(pendingIntent)
-                        .setAutoCancel(true)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setCategory(NotificationCompat.CATEGORY_REMINDER)
-                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-
-                // Show the notification
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-                notificationManager.notify(NOTIFICATION_ID, builder.build());
-            } else {
-                // Handle the case where the required permission is not granted
-                Log.e("NotificationReceiver", "Vibration permission not granted");
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Handle the error
+                    }
+                });
             }
-        }
+        };
+
+        // Schedule the TimerTask to run every minute
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(timerTask, 0, 60000); // Run every minute
     }
+
+
+
 
 
     @Override
