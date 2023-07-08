@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="sg.edu.np.mad.madasgcacheflash"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -7,6 +8,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
     <uses-permission android:name="android.permission.Notif" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
@@ -24,7 +26,6 @@
         android:theme="@style/Theme.MADAsgCacheFlash"
         tools:targetApi="31">
         <activity
-
             android:name=".ChangePassword"
             android:exported="false" />
         <activity
@@ -60,11 +61,17 @@
         <activity
             android:name=".ShuffleCardActivity"
             android:exported="false" />
-        <receiver
-            android:name=".Profile$NotificationReceiver"
-            android:enabled="true"
-            android:exported="true" />
-            
+
+        <service
+            android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/cacheflash" />
 
     </application>
 

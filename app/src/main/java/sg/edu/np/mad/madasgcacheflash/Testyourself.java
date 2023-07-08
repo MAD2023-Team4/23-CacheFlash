@@ -1,5 +1,6 @@
 package sg.edu.np.mad.madasgcacheflash;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -14,11 +15,34 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Testyourself extends AppCompatActivity {
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+    String username;
     int score = 0;
     final String TITLE = "Testyourself";
     int currentIndex = 0;
@@ -37,7 +61,7 @@ public class Testyourself extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("flashcard")) {
             flashcard = intent.getParcelableExtra("flashcard");
-
+            username = intent.getStringExtra("username");
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
             answers = flashcard.getAnswers();
@@ -63,6 +87,7 @@ public class Testyourself extends AppCompatActivity {
 
                     if (answer.equals(correctAnswer)) {
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
+                        score++;
                     } else {
                         Toast.makeText(getApplicationContext(), "Incorrect. The correct answer is: " + correctAnswer, Toast.LENGTH_SHORT).show();
                         input.setText(correctAnswer); // Display the correct answer
@@ -105,12 +130,19 @@ public class Testyourself extends AppCompatActivity {
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    score++;
                     currentIndex++;
+
                     if(currentIndex == flashcard.getQuestions().size()){
                         //make a toast message of the score
                         showAlert("Quiz Finished", "Your score: " + score, score, flashcard.getQuestions().size());
+                        double percentage = score/flashcard.getQuestions().size();
+
+                        //Update the flashcard's score locally
+                        flashcard.setPercentage(percentage);
+                        // Posting performance of the user into firebase
+                        postPerformance(flashcard, score);
                     }
+
                     if (currentIndex >= questions.size()) {
                         currentIndex = questions.size() - 1;
                     }
@@ -196,5 +228,37 @@ public class Testyourself extends AppCompatActivity {
                 })
                 .show();
     }
+
+    private void postPerformance(Flashcard flashcard, int score) {
+        DatabaseReference flashcardsRef = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(username).child("flashcards");
+
+        Query query = flashcardsRef.orderByChild("title").equalTo(flashcard.getTitle());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String flashcardKey = snapshot.getKey();
+                        DatabaseReference flashcardRef = flashcardsRef.child(flashcardKey);
+
+                        flashcardRef.child("score").setValue(score);
+                        flashcardRef.child("percentage").setValue(calculatePercentage(score, flashcard.getQuestions().size()));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("QuoteApp", "Error searching for flashcard scores", databaseError.toException());
+            }
+        });
+    }
+
+    private float calculatePercentage(int score, int totalQuestions) {
+        return ((float) score / totalQuestions) * 100;
+    }
+
 
 }

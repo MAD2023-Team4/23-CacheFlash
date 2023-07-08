@@ -3,6 +3,7 @@ package sg.edu.np.mad.madasgcacheflash;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -64,17 +65,18 @@ public class ChangePassword extends AppCompatActivity {
                             Toast.makeText(ChangePassword.this,"New Password set minimum length must be at least 6",Toast.LENGTH_SHORT).show();
                         }
                         else{
-                        // User successfully reauthenticated, validate new and confirm passwords
-                        if(newPassword.matches(".*\\d.*")){
-                            if (newPassword.equals(confirmNewPassword)) {
-                                updatePassword(newPassword);
-                            } else {
-                                Toast.makeText(ChangePassword.this, "New password and confirm password do not match", Toast.LENGTH_SHORT).show();
+                            // User successfully reauthenticated, validate new and confirm passwords
+                            if(newPassword.matches(".*\\d.*")){
+                                if (newPassword.equals(confirmNewPassword)) {
+                                    updatePassword(newPassword);
+
+                                } else {
+                                    Toast.makeText(ChangePassword.this, "New password and confirm password do not match", Toast.LENGTH_SHORT).show();
+                                }
                             }
-                        }
-                        else {
-                            Toast.makeText(ChangePassword.this, "New password must contain at least a number", Toast.LENGTH_SHORT).show();
-                        }
+                            else {
+                                Toast.makeText(ChangePassword.this, "New password must contain at least a number", Toast.LENGTH_SHORT).show();
+                            }
 
                         }
                     }
@@ -95,6 +97,10 @@ public class ChangePassword extends AppCompatActivity {
                     public void onSuccess(Void aVoid) {
                         // Password successfully updated
                         Toast.makeText(ChangePassword.this, "Password updated successfully.", Toast.LENGTH_SHORT).show();
+                        // Start the Profile activity
+                       // Intent intent = new Intent(ChangePassword.this, Profile.class);
+                       // startActivity(intent);
+                        finish();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
