@@ -398,10 +398,11 @@ public class MainActivity extends AppCompatActivity {
         questions.add("What is the product rule of logarithm?");
         questions.add("What is the quotient rule of logarithm?");
         questions.add("What is the notation for differentiation?");
-
+        questions.add("What is the pythagoras theorem?");
         answers.add("logb(xy) = logb x + logb y");
         answers.add("loga(x/y)  = loga x – loga y");
         answers.add("dy/dx or f'(x)");
+        answers.add("a2 + b2 = c2");
         math.setQuestions(questions);
         math.setAnswers(answers);
         flashcardList.add(math);
