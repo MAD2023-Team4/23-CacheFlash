@@ -21,6 +21,7 @@ import java.util.Random;
 public class MCQuiz extends AppCompatActivity {
     final String TITLE = "Testyourself";
     int currentIndex = 0;
+    String username;
     List<String> questions = new ArrayList<>();
     List<String> answers = new ArrayList<>();
     List<String> answerscheck = new ArrayList<>();
@@ -38,6 +39,7 @@ public class MCQuiz extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("flashcard")) {
             Flashcard flashcard = intent.getParcelableExtra("flashcard");
+            username = intent.getStringExtra("Username");
 
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();

@@ -1,11 +1,14 @@
 package sg.edu.np.mad.madasgcacheflash;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -144,12 +147,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                Intent intent = new Intent(MainActivity.this, MCQuiz.class);
                 intent.putExtra("flashcard", flashcard);
                 intent.putExtra("username",username);
                 startActivity(intent);
             }
         });
+
 
         // Bottom Navigation View
         bottomNavigationView = findViewById(R.id.bottom_navigator);
@@ -394,6 +398,7 @@ public class MainActivity extends AppCompatActivity {
         questions.add("What is the product rule of logarithm?");
         questions.add("What is the quotient rule of logarithm?");
         questions.add("What is the notation for differentiation?");
+
         answers.add("logb(xy) = logb x + logb y");
         answers.add("loga(x/y)  = loga x – loga y");
         answers.add("dy/dx or f'(x)");
@@ -527,6 +532,31 @@ public class MainActivity extends AppCompatActivity {
         economics.setQuestions(questions);
         economics.setAnswers(answers);
         flashcardList.add(economics);
+    }
+    public void querytest(Flashcard flashcard){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Test Yourself!");
+        builder.setMessage("What kind of test would You Like");
+        builder.setCancelable(true);
+        builder.setPositiveButton("MCQUiz", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                intent.putExtra("flashcard", flashcard);
+                intent.putExtra("username",username);
+                startActivity(intent);
+
+            }
+        });
+        builder.setNegativeButton("Testyourself", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                intent.putExtra("flashcard", flashcard);
+                intent.putExtra("username",username);
+                startActivity(intent);
+
+            }
+        });
+
     }
 }
 
