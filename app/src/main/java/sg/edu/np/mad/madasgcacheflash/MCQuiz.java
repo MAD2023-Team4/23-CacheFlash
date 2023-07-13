@@ -21,6 +21,7 @@ import java.util.Random;
 public class MCQuiz extends AppCompatActivity {
     final String TITLE = "Testyourself";
     int currentIndex = 0;
+    int score=0;
     String username;
     List<String> questions = new ArrayList<>();
     List<String> answers = new ArrayList<>();
@@ -122,6 +123,7 @@ public class MCQuiz extends AppCompatActivity {
                     currentIndex++;
                     if (currentIndex >= questions.size()) {
                         currentIndex = questions.size() - 1;
+                        //score
                     }
                     QuestionView.setText(questions.get(currentIndex));
                     changequestion(QuestionView,next,option1,option2,option3,option4,answers,questions,answerscheck,optionsList);
@@ -206,6 +208,7 @@ public class MCQuiz extends AppCompatActivity {
         {
             Log.v(TITLE,"here");
             b.setBackgroundColor(Color.GREEN);
+            score+=1;
 
         }
         else{

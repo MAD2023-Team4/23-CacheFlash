@@ -147,10 +147,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, MCQuiz.class);
-                intent.putExtra("flashcard", flashcard);
-                intent.putExtra("username",username);
-                startActivity(intent);
+                querytest(flashcard);
             }
         });
 
@@ -559,6 +556,8 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+       AlertDialog alertDialog = builder.create();
+        alertDialog.show();
 
     }
 }
