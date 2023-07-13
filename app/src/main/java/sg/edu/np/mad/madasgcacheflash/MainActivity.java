@@ -384,9 +384,11 @@ public class MainActivity extends AppCompatActivity {
         questions.add("What is the capital of France?");
         questions.add("What is the largest city in France?");
         questions.add("What is the national language of France?");
+        questions.add("What is Frances national Dish");
         answers.add("Paris");
         answers.add("Lyon");
         answers.add("French");
+        answers.add("Pot-Au-Feu");
         france.setQuestions(questions);
         france.setAnswers(answers);
         flashcardList.add(france);
