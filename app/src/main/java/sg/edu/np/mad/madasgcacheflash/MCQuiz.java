@@ -1,8 +1,11 @@
 package sg.edu.np.mad.madasgcacheflash;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -10,6 +13,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +33,7 @@ public class MCQuiz extends AppCompatActivity {
     int currentIndex = 0;
     int score=0;
     String username;
+    Flashcard flashcard;
     List<String> questions = new ArrayList<>();
     List<String> answers = new ArrayList<>();
     List<String> answerscheck = new ArrayList<>();
@@ -121,6 +132,16 @@ public class MCQuiz extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     currentIndex++;
+                    if(currentIndex == flashcard.getQuestions().size()){
+                        //make a toast message of the score
+                        showAlert("Quiz Finished", "Your score: " + score, score, flashcard.getQuestions().size());
+                        double percentage = score/flashcard.getQuestions().size();
+
+                        //Update the flashcard's score locally
+                        flashcard.setPercentage(percentage);
+                        // Posting performance of the user into firebase
+                        postPerformance(flashcard, score);
+                    }
                     if (currentIndex >= questions.size()) {
                         currentIndex = questions.size() - 1;
                         //score
@@ -233,6 +254,58 @@ public class MCQuiz extends AppCompatActivity {
         b4.setEnabled(false);
         next.setEnabled(true);
 
+    }
+    private void showAlert(String title, String text, int score, int total) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setMessage(text)
+                .setPositiveButton("Dashboard", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Do something when the "OK" button is clicked
+                        Intent intent = new Intent(MCQuiz.this, Dashboard.class);
+                        intent.putExtra("flashcards", flashcard);
+                        intent.putExtra("Score", score);
+                        intent.putExtra("Total", total);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Do something when the "Cancel" button is clicked
+                    }
+                })
+                .show();
+    }
+
+    private void postPerformance(Flashcard flashcard, int score) {
+        DatabaseReference flashcardsRef = FirebaseDatabase.getInstance().getReference()
+                .child("users").child(username).child("flashcards");
+
+        Query query = flashcardsRef.orderByChild("title").equalTo(flashcard.getTitle());
+
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        String flashcardKey = snapshot.getKey();
+                        DatabaseReference flashcardRef = flashcardsRef.child(flashcardKey);
+
+                        flashcardRef.child("score").setValue(score);
+                        flashcardRef.child("percentage").setValue(calculatePercentage(score, flashcard.getQuestions().size()));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("QuoteApp", "Error searching for flashcard scores", databaseError.toException());
+            }
+        });
+    }
+
+    private float calculatePercentage(int score, int totalQuestions) {
+        return ((float) score / totalQuestions) * 100;
     }
 
 
