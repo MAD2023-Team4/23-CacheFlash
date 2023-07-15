@@ -11,7 +11,6 @@ public class Flashcard implements Parcelable {
     private List<String> questions;
     private List<String> answers;
     private String username;
-    private double percentage;
 
     public Flashcard() {
     }
@@ -53,14 +52,6 @@ public class Flashcard implements Parcelable {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public double getPercentage() {
-        return percentage;
-    }
-
-    public void setPercentage(double percentage) {
-        this.percentage = percentage;
     }
 
     protected Flashcard(Parcel in) {

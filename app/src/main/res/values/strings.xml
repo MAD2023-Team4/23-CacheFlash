@@ -24,7 +24,7 @@
     <string name="btn2">next</string>
     <string name="b2h">Back to Home</string>
 
-    <string name="dashboard">Refer to logcat to look at the flashcard values</string>
+    <string name="dashboard">Dashboard (coming soon!)</string>
 
     <string name="otpText">OTP</string>
     <string name="otpButton">Get OTP</string>

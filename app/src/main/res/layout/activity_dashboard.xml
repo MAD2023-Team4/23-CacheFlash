@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Refer to logcat for scores of flashcards"
+        android:text="Dashboard coming soon!"
         android:textAlignment="center"
         android:textColor="@color/darkBlue"
         android:textSize="50dp"
