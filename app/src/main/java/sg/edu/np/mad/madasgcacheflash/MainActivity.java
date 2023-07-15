@@ -88,13 +88,9 @@ public class MainActivity extends AppCompatActivity {
 
 // Create an intent to start the StreakUpdateService
         Intent serviceIntent = new Intent(this, StreakUpdateService.class);
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-// Get the AlarmManager instance
-        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-// Set the repeating alarm
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + intervalMillis, intervalMillis, pendingIntent);
+        serviceIntent.putExtra("Username",username);
+// Start the service
+        startService(serviceIntent);
 
 
         quoteTextView = findViewById(R.id.textView11);

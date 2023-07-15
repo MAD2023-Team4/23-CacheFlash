@@ -112,7 +112,7 @@ public class StreakUpdateService extends Service {
 
     private long calculateTotalDays(Date startDate, Date endDate) {
         if (startDate == null) {
-            return 0;
+            return 1;
         }
 
         long startTime = startDate.getTime();

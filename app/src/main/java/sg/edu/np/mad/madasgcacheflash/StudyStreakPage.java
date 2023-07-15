@@ -100,7 +100,7 @@ public class StudyStreakPage extends AppCompatActivity {
                     currentStreak = dataSnapshot.child("currentStreak").getValue(Integer.class);
                     streakText.setText(String.valueOf(currentStreak));
                     progressBar.setProgress(currentStreak);
-                    currentStreak = 10;
+
 
                     unlockMedal(currentStreak);
                     medalStatusRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -132,6 +132,9 @@ public class StudyStreakPage extends AppCompatActivity {
                                 medal20DaysColored.setVisibility(View.INVISIBLE);
                                 medal30DaysOutline.setVisibility(View.VISIBLE);
                                 medal30DaysColored.setVisibility(View.INVISIBLE);
+                                medalStatusRef.child("10DayMedal").setValue(false);
+                                medalStatusRef.child("20DayMedal").setValue(false);
+                                medalStatusRef.child("30DayMedal").setValue(false);
                             }
                         }
 
@@ -156,9 +159,22 @@ public class StudyStreakPage extends AppCompatActivity {
                     }
                 }
 
-                // Calculate and display the total number of days
-                long totalDays = calculateTotalDays(startDate, currentDate);
-                totalDaysText.setText(String.valueOf(totalDays));
+                // Retrieve the "Total Days" value from Firebase
+                totalDaysRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            long totalDays = dataSnapshot.getValue(Long.class);
+                            totalDaysText.setText(String.valueOf(totalDays));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        // Handle the error if needed
+                        Log.e("TotalDays", "Error getting total days: " + databaseError.getMessage());
+                    }
+                });
             }
 
             @Override
@@ -223,16 +239,6 @@ public class StudyStreakPage extends AppCompatActivity {
         lineChartView.setLineChartData(chartData);*/
     }
 
-
-    private long calculateTotalDays(Date startDate, Date currentDate) {
-        if (startDate != null) {
-            long startTime = startDate.getTime();
-            long currentTime = currentDate.getTime();
-            long differenceMillis = currentTime - startTime;
-            return TimeUnit.MILLISECONDS.toDays(differenceMillis);
-        }
-        return 0;
-    }
     private void unlockMedal(int streak) {
         if (streak == 10) {
             medalStatusRef.child("10DayMedal").setValue(true);
