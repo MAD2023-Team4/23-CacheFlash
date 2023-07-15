@@ -6,6 +6,10 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,8 +28,11 @@ import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -75,6 +82,16 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.i(title, "The username is null, so it is a problem");
         }
+
+        // Set the interval for updating the streak (e.g., every 24 hours)
+        long intervalMillis = 24 * 60 * 60 * 1000; // 24 hours
+
+// Create an intent to start the StreakUpdateService
+        Intent serviceIntent = new Intent(this, StreakUpdateService.class);
+        serviceIntent.putExtra("Username",username);
+// Start the service
+        startService(serviceIntent);
+
 
         quoteTextView = findViewById(R.id.textView11);
 
@@ -146,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
                 // Start FlashCardQuestionPage activity with the selected flashcard
                 Intent intent = new Intent(MainActivity.this, Testyourself.class);
                 intent.putExtra("flashcard", flashcard);
-                intent.putExtra("username",username);
                 startActivity(intent);
             }
         });
@@ -280,34 +296,37 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void postFlashCards(List<Flashcard> flashcards) {
-        // Delete existing flashcards in Firebase Realtime Database
-        DatabaseReference flashcardsRef = FirebaseDatabase.getInstance().getReference("users").child("sam").child("flashcards");
-        flashcardsRef.setValue(null)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
+        // Delete existing flashcards in Firebase Firestore
+        db.collection("flashcards")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        // Upload new flashcards to Firebase Realtime Database
-                        uploadNewFlashcards(flashcards);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("QuoteApp", "Error deleting existing flashcards", e);
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                document.getReference().delete();
+                            }
+
+                            // Upload new flashcards to Firebase Firestore
+                            uploadNewFlashcards(flashcards);
+                        } else {
+                            Log.e("QuoteApp", "Error deleting existing flashcards", task.getException());
+                        }
                     }
                 });
     }
 
     private void uploadNewFlashcards(List<Flashcard> flashcards) {
-        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-        DatabaseReference flashcardsRef = usersRef.child(username).child("flashcards");
-
+        // Upload new flashcards to Firebase Firestore
         for (Flashcard flashcard : flashcards) {
-            String flashcardName = flashcard.getTitle();
+            Map<String, Object> flashcardMap = new HashMap<>();
+            flashcardMap.put("question", flashcard.getQuestions());
+            flashcardMap.put("answer", flashcard.getAnswers());
+            String flashcardName = flashcard.getTitle(); // Replace `flashcard.getTitle()` with the appropriate method to get the flashcard name
 
-            DatabaseReference flashcardRef = flashcardsRef.child(flashcardName); // Use the flashcard name as the key
-
-            flashcardRef.setValue(flashcard)
+            db.collection("flashcards")
+                    .document(flashcardName)
+                    .set(flashcardMap)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -322,9 +341,6 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
     }
-
-
-
 
 
 
@@ -345,28 +361,43 @@ public class MainActivity extends AppCompatActivity {
         shuffleCardIntent.putExtra("Username",username);
         startActivity(shuffleCardIntent);
     }
-
     @Override
     protected void onResume() {
         super.onResume();
-        Intent intent = getIntent();
-        username = intent.getStringExtra("Username");
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            TextView welcomeTxt = findViewById(R.id.welcomeText);
-            // Create a StringBuilder object
-            StringBuilder builder = new StringBuilder();
 
-            // Append the welcome message
-            builder.append(getString(R.string.welcome_message, username));
-            builder.append("!");
+        // Check if the activity was launched from a notification click
+        if (getIntent().getAction() != null && getIntent().getAction().equals("NOTIFICATION_CLICKED")) {
+            // Retrieve the username from the intent's extras
+            String username = getIntent().getStringExtra("Username");
+            Log.v("Received username", username);
 
-            // Set the text of the welcome text view
-            welcomeTxt.setText(builder.toString());
+            if (username != null) {
+                // Update the UI with the retrieved username
+                TextView welcomeTxt = findViewById(R.id.welcomeText);
+                String welcomeMessage = getString(R.string.welcome_message);
+                String formattedMessage = String.format(welcomeMessage, username);
+                welcomeTxt.setText(formattedMessage);
+            }
         } else {
-            Log.i(title, "The username is null, so it is a problem");
+            // The activity was not launched from a notification click, handle as usual
+            FirebaseUser user = mAuth.getCurrentUser();
+            if (user != null) {
+                TextView welcomeTxt = findViewById(R.id.welcomeText);
+                // Create a StringBuilder object
+                StringBuilder builder = new StringBuilder();
+
+                // Append the welcome message
+                builder.append(getString(R.string.welcome_message, username));
+                builder.append("!");
+
+                // Set the text of the welcome text view
+                welcomeTxt.setText(builder.toString());
+            } else {
+                Log.i(title, "The username is null, so it is a problem");
+            }
         }
     }
+
 
 
 

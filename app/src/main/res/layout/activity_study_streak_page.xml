@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".StudyStreakPage"
+    tools:visibility="visible">
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="61dp"
+        android:layout_height="76dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_profile"
+        app:tint="@color/darkBlue"
+        tools:ignore="ContentDescription" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="357dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="9dp"
+        android:max="10"
+        android:progress="0"
+        android:progressDrawable="@drawable/custom_progress_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView23" />
+
+
+    <LinearLayout
+        android:id="@+id/linearLayoutStats1"
+        android:layout_width="190dp"
+        android:layout_height="102dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/rectangle"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar">
+
+        <TextView
+            android:id="@+id/textViewStudyStreak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="Study Streak"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/textView22"
+            android:layout_width="159dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="10"
+            android:textColor="@color/black"
+            android:textSize="45dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutStats2"
+        android:layout_width="190dp"
+        android:layout_height="102dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rectangle"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_constraintStart_toEndOf="@+id/linearLayoutStats1"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar">
+
+        <TextView
+            android:id="@+id/textViewNumberDays"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="Number of Days"
+            android:textColor="@color/black"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/textView21"
+            android:layout_width="159dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/black"
+            android:textSize="45dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView20"
+        android:layout_width="163dp"
+        android:layout_height="74dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="28dp"
+        android:gravity="center_vertical"
+        android:text="User"
+        android:textColor="@color/darkBlue"
+        android:textSize="40dp"
+        app:layout_constraintStart_toEndOf="@+id/imageView5"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView23"
+        android:layout_width="267dp"
+        android:layout_height="66dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="27dp"
+        android:text="Streak Progress"
+        android:textSize="35dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView5" />
+
+    <TextView
+        android:id="@+id/textView24"
+        android:layout_width="123dp"
+        android:layout_height="45dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="5dp"
+        android:text="(Press and hold to see progress)"
+        android:textSize="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+
+
+    <TextView
+        android:id="@+id/achievementText"
+        android:layout_width="109dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="64dp"
+        android:text="20 Days Achiever"
+        android:textSize="20sp"
+        android:visibility="visible"
+        app:layout_constraintStart_toEndOf="@+id/achievementText3"
+        app:layout_constraintTop_toBottomOf="@+id/textView25" />
+
+    <TextView
+        android:id="@+id/achievementText3"
+        android:layout_width="109dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="64dp"
+        android:text="10 Days Beginner"
+        android:textSize="20sp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView25" />
+
+    <TextView
+        android:id="@+id/achievementText5"
+        android:layout_width="109dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="145dp"
+        android:text="30 Days Expert"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/achievementText"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutStats2"
+        tools:visibility="invisible" />
+    <ImageView
+        android:id="@+id/medal10DaysOutline"
+        android:layout_width="132dp"
+        android:layout_height="119dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="7dp"
+        android:src="@drawable/applogo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/achievementText3" />
+    <ImageView
+        android:id="@+id/medal10DaysColored"
+        android:layout_width="132dp"
+        android:layout_height="119dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="7dp"
+        android:src="@drawable/first_medal"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/achievementText3" />
+
+    <ImageView
+        android:id="@+id/medal20DaysOutline"
+        android:layout_width="132dp"
+        android:layout_height="119dp"
+        android:layout_marginTop="7dp"
+        android:src="@drawable/applogo"
+        app:layout_constraintStart_toEndOf="@+id/medal10DaysColored"
+        app:layout_constraintTop_toBottomOf="@+id/achievementText" />
+
+    <ImageView
+        android:id="@+id/medal20DaysColored"
+        android:layout_width="132dp"
+        android:layout_height="119dp"
+        android:layout_marginTop="7dp"
+        android:src="@drawable/second_medal"
+        app:layout_constraintStart_toEndOf="@+id/medal10DaysColored"
+        app:layout_constraintTop_toBottomOf="@+id/achievementText" />
+
+    <ImageView
+        android:id="@+id/medal30DaysOutline"
+        android:layout_width="132dp"
+        android:layout_height="119dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="7dp"
+        android:src="@drawable/study_icon"
+        app:layout_constraintStart_toEndOf="@+id/medal20DaysColored"
+        app:layout_constraintTop_toBottomOf="@+id/achievementText5" />
+
+    <ImageView
+        android:id="@+id/medal30DaysColored"
+        android:layout_width="132dp"
+        android:layout_height="119dp"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="7dp"
+        android:src="@drawable/third_medal"
+        app:layout_constraintStart_toEndOf="@+id/medal20DaysColored"
+        app:layout_constraintTop_toBottomOf="@+id/achievementText5" />
+
+    <TextView
+        android:id="@+id/textView25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="14dp"
+        android:layout_marginTop="27dp"
+        android:text="Achievements"
+        android:textSize="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayoutStats1" />
+
+    <TextView
+        android:id="@+id/backToProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="22dp"
+        android:layout_marginTop="59dp"
+        android:text="Profile"
+        android:textColor="@color/darkBlue"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/textView20"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

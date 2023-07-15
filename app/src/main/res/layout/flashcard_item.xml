@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/flashcard_border"
-    android:elevation="12dp">
+    android:background="@drawable/flashcard_border">
 
     <TextView
         android:id="@+id/titleTextView"
