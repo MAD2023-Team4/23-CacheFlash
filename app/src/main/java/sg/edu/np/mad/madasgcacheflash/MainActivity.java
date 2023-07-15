@@ -1,6 +1,7 @@
 package sg.edu.np.mad.madasgcacheflash;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -296,37 +297,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void postFlashCards(List<Flashcard> flashcards) {
-        // Delete existing flashcards in Firebase Firestore
-        db.collection("flashcards")
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        // Delete existing flashcards in Firebase Realtime Database
+        DatabaseReference flashcardsRef = FirebaseDatabase.getInstance().getReference("users").child("sam").child("flashcards");
+        flashcardsRef.setValue(null)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                document.getReference().delete();
-                            }
-
-                            // Upload new flashcards to Firebase Firestore
-                            uploadNewFlashcards(flashcards);
-                        } else {
-                            Log.e("QuoteApp", "Error deleting existing flashcards", task.getException());
-                        }
+                    public void onSuccess(Void aVoid) {
+                        // Upload new flashcards to Firebase Realtime Database
+                        uploadNewFlashcards(flashcards, username);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("QuoteApp", "Error deleting existing flashcards", e);
                     }
                 });
     }
 
-    private void uploadNewFlashcards(List<Flashcard> flashcards) {
-        // Upload new flashcards to Firebase Firestore
-        for (Flashcard flashcard : flashcards) {
-            Map<String, Object> flashcardMap = new HashMap<>();
-            flashcardMap.put("question", flashcard.getQuestions());
-            flashcardMap.put("answer", flashcard.getAnswers());
-            String flashcardName = flashcard.getTitle(); // Replace `flashcard.getTitle()` with the appropriate method to get the flashcard name
+    private void uploadNewFlashcards(List<Flashcard> flashcards, String username) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
+        DatabaseReference flashcardsRef = usersRef.child(username).child("flashcards");
 
-            db.collection("flashcards")
-                    .document(flashcardName)
-                    .set(flashcardMap)
+        for (Flashcard flashcard : flashcards) {
+            String flashcardName = flashcard.getTitle();
+
+            DatabaseReference flashcardRef = flashcardsRef.child(flashcardName); // Use the flashcard name as the key
+
+            flashcardRef.setValue(flashcard)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
@@ -341,6 +339,8 @@ public class MainActivity extends AppCompatActivity {
                     });
         }
     }
+
+
 
 
 
