@@ -1,16 +1,11 @@
 package sg.edu.np.mad.madasgcacheflash;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,8 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -550,7 +544,6 @@ public class MainActivity extends AppCompatActivity {
         flashcardList.add(economics);
     }
     private void createCategories() {
-
         // Iterate through the flashcardList and organize flashcards into categories
         for (Flashcard flashcard : flashcardList) {
             String categoryTitle = flashcard.getCategory();
@@ -559,16 +552,16 @@ public class MainActivity extends AppCompatActivity {
 
             if (category == null) {
                 // If the category doesn't exist yet, create a new one
-                category = new Category();
-                category.setName(categoryTitle);
-                category.setFlashcards(new ArrayList<>());
+                List<Flashcard> flashcardsInCategory = new ArrayList<>();
+                flashcardsInCategory.add(flashcard);
+                category = new Category(categoryTitle, flashcardsInCategory);
                 categories.add(category);
                 Log.d("DEBUG", "New category created: " + categoryTitle);
+            } else {
+                // Add the flashcard to the existing category
+                category.getFlashcards().add(flashcard);
+                Log.d("DEBUG", "Flashcard added to category: " + categoryTitle);
             }
-
-            // Add the flashcard to the category
-            category.getFlashcards().add(flashcard);
-            Log.d("DEBUG", "Flashcard added to category: " + categoryTitle);
         }
         // At this point, the flashcards are organized into categories based on their titles
     }
