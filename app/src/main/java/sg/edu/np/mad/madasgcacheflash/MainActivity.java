@@ -54,6 +54,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     String title = "Main Activity";
     List<Flashcard> flashcardList = new ArrayList<>();
+    List<Category> categories = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
     private String username;
     private TextView quoteTextView;
@@ -111,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Create the flashcards
         createFlashcards();
-        postFlashCards(flashcardList);
+        createCategories();
+        uploadNewFlashcards(categories,username);
 
         RecyclerView recyclerView;
         FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
@@ -296,49 +298,34 @@ public class MainActivity extends AppCompatActivity {
         }.execute();
     }
 
-    private void postFlashCards(List<Flashcard> flashcards) {
-        // Delete existing flashcards in Firebase Realtime Database
-        DatabaseReference flashcardsRef = FirebaseDatabase.getInstance().getReference("users").child("sam").child("flashcards");
-        flashcardsRef.setValue(null)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Upload new flashcards to Firebase Realtime Database
-                        uploadNewFlashcards(flashcards, username);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("QuoteApp", "Error deleting existing flashcards", e);
-                    }
-                });
-    }
-
-    private void uploadNewFlashcards(List<Flashcard> flashcards, String username) {
+    private void uploadNewFlashcards(List<Category> categories, String username) {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-        DatabaseReference flashcardsRef = usersRef.child(username).child("flashcards");
 
-        for (Flashcard flashcard : flashcards) {
-            String flashcardName = flashcard.getTitle();
+        for (Category category : categories) {
+            String categoryName = category.getName();
+            DatabaseReference categoryRef = usersRef.child(username).child("categories").child(categoryName);
 
-            DatabaseReference flashcardRef = flashcardsRef.child(flashcardName); // Use the flashcard name as the key
+            for (Flashcard flashcard : category.getFlashcards()) {
+                String flashcardName = flashcard.getTitle();
+                DatabaseReference flashcardRef = categoryRef.child(flashcardName); // Use the flashcard name as the key
 
-            flashcardRef.setValue(flashcard)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("QuoteApp", "Flashcard uploaded with name: " + flashcardName);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e("QuoteApp", "Failed to upload flashcard", e);
-                        }
-                    });
+                flashcardRef.setValue(flashcard)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("QuoteApp", "Flashcard uploaded with name: " + flashcardName);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e("QuoteApp", "Failed to upload flashcard", e);
+                            }
+                        });
+            }
         }
     }
+
 
 
 
@@ -416,6 +403,7 @@ public class MainActivity extends AppCompatActivity {
         answers.add("French");
         france.setQuestions(questions);
         france.setAnswers(answers);
+        france.setCategory("Social Studies");
         flashcardList.add(france);
 
         Flashcard math = new Flashcard();
@@ -430,6 +418,7 @@ public class MainActivity extends AppCompatActivity {
         answers.add("dy/dx or f'(x)");
         math.setQuestions(questions);
         math.setAnswers(answers);
+        math.setCategory("Math");
         flashcardList.add(math);
 
         Flashcard socialStudies = new Flashcard();
@@ -473,9 +462,9 @@ public class MainActivity extends AppCompatActivity {
         answers.add("Benjamin Sheares Bridge");
         answers.add("Marina Bay Sands SkyPark Observation Deck");
         answers.add("Netball");
-
         socialStudies.setQuestions(questions);
         socialStudies.setAnswers(answers);
+        socialStudies.setCategory("Social Studies");
         flashcardList.add(socialStudies);
 
         Flashcard economics = new Flashcard();
@@ -557,8 +546,43 @@ public class MainActivity extends AppCompatActivity {
 
         economics.setQuestions(questions);
         economics.setAnswers(answers);
+        economics.setCategory("Economic");
         flashcardList.add(economics);
     }
+    private void createCategories() {
+
+        // Iterate through the flashcardList and organize flashcards into categories
+        for (Flashcard flashcard : flashcardList) {
+            String categoryTitle = flashcard.getCategory();
+            Log.d("DEBUG", "Processing flashcard with title: " + flashcard.getTitle() + ", category: " + categoryTitle);
+            Category category = getCategoryByName(categories, categoryTitle);
+
+            if (category == null) {
+                // If the category doesn't exist yet, create a new one
+                category = new Category();
+                category.setName(categoryTitle);
+                category.setFlashcards(new ArrayList<>());
+                categories.add(category);
+                Log.d("DEBUG", "New category created: " + categoryTitle);
+            }
+
+            // Add the flashcard to the category
+            category.getFlashcards().add(flashcard);
+            Log.d("DEBUG", "Flashcard added to category: " + categoryTitle);
+        }
+        // At this point, the flashcards are organized into categories based on their titles
+    }
+
+    // Helper method to get a category by its name
+    private Category getCategoryByName(List<Category> categories, String categoryName) {
+        for (Category category : categories) {
+            if (category.getName().equals(categoryName)) {
+                return category;
+            }
+        }
+        return null; // Category not found
+    }
+
 }
 
 

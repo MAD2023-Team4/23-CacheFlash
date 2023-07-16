@@ -47,10 +47,12 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RemoteViews;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -87,7 +89,7 @@ public class Profile extends AppCompatActivity {
     private static final String PREFS_NAME = "MyPrefs";
     private static final String WORK_TAG = "notification_work";
     private String selectedTime;
-
+    private DatabaseReference categoryRef;
     private TextView usernameTextView;
     private SharedPreferences sharedPreferences;
     private DatabaseReference desiredTimeRef;
@@ -100,6 +102,7 @@ public class Profile extends AppCompatActivity {
     private String username;
     private static final String NOTIFICATION_STATUS_KEY = "notification_status";
     private MyFirebaseMessagingService firebaseMessagingService;
+    String[] categoryOptions = {"Option 1", "Option 2", "Option 3"};
 
 
     @Override
@@ -107,6 +110,7 @@ public class Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_profile);
+
 
         TextView textViewPasswordReset;
         TextView textViewPreference;
@@ -172,6 +176,7 @@ public class Profile extends AppCompatActivity {
         // Initialize Firebase Database references
         notificationStatusRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("notificationStatus");
         desiredTimeRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("desiredTime");
+        categoryRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("category");
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
         boolean isNotificationEnabled = sharedPreferences.getBoolean(NOTIFICATION_STATUS_KEY, false);
         notificationStatusRef.setValue(false);
@@ -206,7 +211,21 @@ public class Profile extends AppCompatActivity {
         textViewPreference.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePickerDialog();
+                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+                builder.setTitle("Choose an option")
+                        .setItems(new String[]{"Favorite Category", "Study Time"}, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (which == 0) {
+                                    // Show Spinner for selecting favorite category
+                                    showFavoriteCategorySpinner();
+                                }
+                                else if (which == 1) {
+                                    showTimePickerDialog();
+                                }
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
@@ -276,6 +295,35 @@ public class Profile extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    private void showFavoriteCategorySpinner() {
+        // Create a Spinner component
+        Spinner spinner = new Spinner(Profile.this);
+
+        // Create an ArrayAdapter to populate the Spinner with category options
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(Profile.this, android.R.layout.simple_spinner_item, categoryOptions);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        // Create a dialog to display the Spinner
+        AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+        builder.setTitle("Select Favorite Category")
+                .setView(spinner)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Retrieve the selected category from the Spinner
+                        String selectedCategory = (String) spinner.getSelectedItem();
+                        // Use the selected category as needed
+                        Toast.makeText(Profile.this, "Selected Category: " + selectedCategory, Toast.LENGTH_SHORT).show();
+                       // categoryRef.setValue(selectedCategory);
+                    }
+                })
+                .setNegativeButton("Cancel", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
