@@ -18,6 +18,7 @@
         app:menu="@menu/menu" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewDashboard"
         android:layout_width="match_parent"
         android:layout_height="509dp" />
 </RelativeLayout>

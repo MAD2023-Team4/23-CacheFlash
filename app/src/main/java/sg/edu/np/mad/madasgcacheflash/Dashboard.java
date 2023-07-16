@@ -11,10 +11,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,25 +39,40 @@ public class Dashboard extends AppCompatActivity {
         Intent intent = getIntent();
         username = intent.getStringExtra("Username"); //get username
 
+        queryFlashcardsByCategory(username);
 
-        //set up recycler view object
-        //__________________________________________________________________________________________
-        RecyclerView recyclerView;
-        FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
-        LinearLayoutManager mLayoutManager;
-        int spacingInPixels;
+        List<FlashcardPair> flashcardPairList = new ArrayList<>();
+        // Assuming flashcardList contains the individual Flashcard objects
+        for (int i = 0; i < flashcardList.size(); i += 2) {
+            Flashcard firstFlashcard = flashcardList.get(i);
+            Flashcard secondFlashcard = null;
 
-        for (Flashcard flashcard : flashcardList) {
-            recyclerView = findViewById(R.id.recyclerView1);
-            fcAdapter = new FlashcardAdapter(flashcardList);
-            mLayoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(new LinearLayoutManager(
-                    this, LinearLayoutManager.HORIZONTAL, false));
-            spacingInPixels = 4;
-            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(fcAdapter);
+            if (i + 1 < flashcardList.size()) {
+                secondFlashcard = flashcardList.get(i + 1);
+            }
+
+            FlashcardPair flashcardPair = new FlashcardPair(firstFlashcard, secondFlashcard);
+            flashcardPairList.add(flashcardPair);
+            for (FlashcardPair f : flashcardPairList) {
+                Log.v("FlashcardPair", f.getFirstFlashcard().getTitle());
+            }
         }
+
+        for (Flashcard f : flashcardList) {
+            Log.v("FlashcardPair", f.toString());
+        }
+
+        Log.v("FlashcardPair", "FInished");
+        // Set up RecyclerView object
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewDashboard);
+        FlashcardPairAdapter fcPairAdapter = new FlashcardPairAdapter(flashcardPairList);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
+        int spacingInPixels = 4;
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(fcPairAdapter);
+
 
 
         bottomNavigationView = findViewById(R.id.bottom_navigator);
@@ -84,4 +107,37 @@ public class Dashboard extends AppCompatActivity {
         });
 
     }
+    public void queryFlashcardsByCategory(String username) {
+        String capitalizedUsername = username.substring(0, 1).toUpperCase() + username.substring(1);
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        Query query = usersRef.child(capitalizedUsername).child("categories");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot categorySnapshot : dataSnapshot.getChildren()) {
+                    for (DataSnapshot flashcardSnapshot : categorySnapshot.getChildren()) {
+                        Flashcard flashcard = flashcardSnapshot.getValue(Flashcard.class);
+                        Log.v("danger",flashcard.getTitle());
+                        flashcardList.add(flashcard);
+
+                        for (Flashcard f : flashcardList){
+                            Log.v("lol",f.getTitle());
+                        }
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle any errors that occur
+            }
+        });
+    }
+
+
+
+
+
+
 }
