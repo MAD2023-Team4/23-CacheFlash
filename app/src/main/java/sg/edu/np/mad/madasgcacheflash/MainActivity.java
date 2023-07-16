@@ -556,6 +556,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+
         // Set up the RecyclerView with the filtered flashcardList
         //Learn Yourself
          recyclerView = findViewById(R.id.recyclerView1);
