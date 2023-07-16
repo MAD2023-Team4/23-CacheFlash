@@ -109,60 +109,26 @@ public class MainActivity extends AppCompatActivity {
         createCategories();
         uploadNewFlashcards(categories,username);
 
-        RecyclerView recyclerView;
-        FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
-        LinearLayoutManager mLayoutManager;
-        int spacingInPixels;
-
-        for (Flashcard flashcard : flashcardList) {
-            recyclerView = findViewById(R.id.recyclerView1);
-            fcAdapter = new FlashcardAdapter(flashcardList);
-            mLayoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(new LinearLayoutManager(
-                    this, LinearLayoutManager.HORIZONTAL, false));
-            spacingInPixels = 4;
-            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(fcAdapter);
-        }
-
-        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
+        userRef.child("favoriteCategory").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onItemClick(Flashcard flashcard) {
-                // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, LearnYourself.class);
-                intent.putExtra("flashcard", flashcard);
-                Log.v("Username out:",username);
-                intent.putExtra("Username", username);
-                startActivity(intent);
-                startShuffleCardActivity(flashcard);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String selectedCategory = snapshot.getValue(String.class);
+                    // Call the method to display flashcards based on the selected category
+                    displayFlashcardsByCategory(selectedCategory);
+                } else {
+                    // If there is no selected category, display all flashcards
+                    displayAllFlashcards();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle any errors that occur while fetching the data (optional).
             }
         });
 
-        for (Flashcard flashcard : flashcardList) {
-            // Access the current flashcard
-            // You can perform operations or access its properties here
-            String title = flashcard.getTitle();
-
-            recyclerView = findViewById(R.id.recyclerView2);
-            fcAdapter = new FlashcardAdapter(flashcardList);
-            mLayoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(new LinearLayoutManager(
-                    this, LinearLayoutManager.HORIZONTAL, false));
-            spacingInPixels = 4;
-            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(fcAdapter);
-        }
-        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Flashcard flashcard) {
-                // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, Testyourself.class);
-                intent.putExtra("flashcard", flashcard);
-                startActivity(intent);
-            }
-        });
 
         // Bottom Navigation View
         bottomNavigationView = findViewById(R.id.bottom_navigator);
@@ -574,6 +540,125 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return null; // Category not found
+    }
+
+    private void displayFlashcardsByCategory(String selectedCategory) {
+        List<Flashcard> flashcardsToShow = new ArrayList<>();
+        RecyclerView recyclerView;
+        FlashcardAdapter fcAdapter;
+        LinearLayoutManager mLayoutManager;
+        int spacingInPixels;
+
+        for (Flashcard flashcard : flashcardList) {
+            // Check if the flashcard belongs to the selected category
+            if (flashcard.getCategory().equals(selectedCategory)) {
+                flashcardsToShow.add(flashcard);
+            }
+        }
+
+        // Set up the RecyclerView with the filtered flashcardList
+        //Learn Yourself
+         recyclerView = findViewById(R.id.recyclerView1);
+         fcAdapter = new FlashcardAdapter(flashcardsToShow);
+         mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false));
+         spacingInPixels = 4;
+        recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(fcAdapter);
+
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Flashcard flashcard) {
+                // Start FlashCardQuestionPage activity with the selected flashcard
+                Intent intent = new Intent(MainActivity.this, LearnYourself.class);
+                intent.putExtra("flashcard", flashcard);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+                startShuffleCardActivity(flashcard);
+            }
+        });
+
+        // Set up the RecyclerView with the filtered flashcardList
+        //Test Yourself
+         recyclerView = findViewById(R.id.recyclerView2);
+        fcAdapter = new FlashcardAdapter(flashcardsToShow);
+         mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false));
+         spacingInPixels = 4;
+        recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(fcAdapter);
+
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Flashcard flashcard) {
+                // Start FlashCardQuestionPage activity with the selected flashcard
+                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                intent.putExtra("flashcard", flashcard);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+                startShuffleCardActivity(flashcard);
+            }
+        });
+    }
+    private void displayAllFlashcards(){
+        RecyclerView recyclerView;
+        FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
+        LinearLayoutManager mLayoutManager;
+        int spacingInPixels;
+
+        for (Flashcard flashcard : flashcardList) {
+            recyclerView = findViewById(R.id.recyclerView1);
+            fcAdapter = new FlashcardAdapter(flashcardList);
+            mLayoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(new LinearLayoutManager(
+                    this, LinearLayoutManager.HORIZONTAL, false));
+            spacingInPixels = 4;
+            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(fcAdapter);
+        }
+
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Flashcard flashcard) {
+                // Start FlashCardQuestionPage activity with the selected flashcard
+                Intent intent = new Intent(MainActivity.this, LearnYourself.class);
+                intent.putExtra("flashcard", flashcard);
+                Log.v("Username out:",username);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+                startShuffleCardActivity(flashcard);
+            }
+        });
+
+        for (Flashcard flashcard : flashcardList) {
+            // Access the current flashcard
+            // You can perform operations or access its properties here
+            String title = flashcard.getTitle();
+
+            recyclerView = findViewById(R.id.recyclerView2);
+            fcAdapter = new FlashcardAdapter(flashcardList);
+            mLayoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(new LinearLayoutManager(
+                    this, LinearLayoutManager.HORIZONTAL, false));
+            spacingInPixels = 4;
+            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(fcAdapter);
+        }
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Flashcard flashcard) {
+                // Start FlashCardQuestionPage activity with the selected flashcard
+                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                intent.putExtra("flashcard", flashcard);
+                startActivity(intent);
+            }
+        });
     }
 
 }
