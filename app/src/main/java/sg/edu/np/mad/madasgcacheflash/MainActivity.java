@@ -1,16 +1,11 @@
 package sg.edu.np.mad.madasgcacheflash;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,8 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
+
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -54,6 +48,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     String title = "Main Activity";
     List<Flashcard> flashcardList = new ArrayList<>();
+    List<Category> categories = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
     private String username;
     private TextView quoteTextView;
@@ -111,62 +106,29 @@ public class MainActivity extends AppCompatActivity {
 
         // Create the flashcards
         createFlashcards();
-        postFlashCards(flashcardList);
+        createCategories();
+        uploadNewFlashcards(categories,username);
 
-        RecyclerView recyclerView;
-        FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
-        LinearLayoutManager mLayoutManager;
-        int spacingInPixels;
-
-        for (Flashcard flashcard : flashcardList) {
-            recyclerView = findViewById(R.id.recyclerView1);
-            fcAdapter = new FlashcardAdapter(flashcardList);
-            mLayoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(new LinearLayoutManager(
-                    this, LinearLayoutManager.HORIZONTAL, false));
-            spacingInPixels = 4;
-            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(fcAdapter);
-        }
-
-        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
+        userRef.child("favoriteCategory").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onItemClick(Flashcard flashcard) {
-                // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, LearnYourself.class);
-                intent.putExtra("flashcard", flashcard);
-                Log.v("Username out:",username);
-                intent.putExtra("Username", username);
-                startActivity(intent);
-                startShuffleCardActivity(flashcard);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    String selectedCategory = snapshot.getValue(String.class);
+                    // Call the method to display flashcards based on the selected category
+                    displayFlashcardsByCategory(selectedCategory);
+                } else {
+                    // If there is no selected category, display all flashcards
+                    displayAllFlashcards();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle any errors that occur while fetching the data (optional).
             }
         });
 
-        for (Flashcard flashcard : flashcardList) {
-            // Access the current flashcard
-            // You can perform operations or access its properties here
-            String title = flashcard.getTitle();
-
-            recyclerView = findViewById(R.id.recyclerView2);
-            fcAdapter = new FlashcardAdapter(flashcardList);
-            mLayoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(new LinearLayoutManager(
-                    this, LinearLayoutManager.HORIZONTAL, false));
-            spacingInPixels = 4;
-            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(fcAdapter);
-        }
-        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Flashcard flashcard) {
-                // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, Testyourself.class);
-                intent.putExtra("flashcard", flashcard);
-                startActivity(intent);
-            }
-        });
 
         // Bottom Navigation View
         bottomNavigationView = findViewById(R.id.bottom_navigator);
@@ -296,49 +258,34 @@ public class MainActivity extends AppCompatActivity {
         }.execute();
     }
 
-    private void postFlashCards(List<Flashcard> flashcards) {
-        // Delete existing flashcards in Firebase Realtime Database
-        DatabaseReference flashcardsRef = FirebaseDatabase.getInstance().getReference("users").child("sam").child("flashcards");
-        flashcardsRef.setValue(null)
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // Upload new flashcards to Firebase Realtime Database
-                        uploadNewFlashcards(flashcards, username);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.e("QuoteApp", "Error deleting existing flashcards", e);
-                    }
-                });
-    }
-
-    private void uploadNewFlashcards(List<Flashcard> flashcards, String username) {
+    private void uploadNewFlashcards(List<Category> categories, String username) {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
-        DatabaseReference flashcardsRef = usersRef.child(username).child("flashcards");
 
-        for (Flashcard flashcard : flashcards) {
-            String flashcardName = flashcard.getTitle();
+        for (Category category : categories) {
+            String categoryName = category.getName();
+            DatabaseReference categoryRef = usersRef.child(username).child("categories").child(categoryName);
 
-            DatabaseReference flashcardRef = flashcardsRef.child(flashcardName); // Use the flashcard name as the key
+            for (Flashcard flashcard : category.getFlashcards()) {
+                String flashcardName = flashcard.getTitle();
+                DatabaseReference flashcardRef = categoryRef.child(flashcardName); // Use the flashcard name as the key
 
-            flashcardRef.setValue(flashcard)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            Log.d("QuoteApp", "Flashcard uploaded with name: " + flashcardName);
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e("QuoteApp", "Failed to upload flashcard", e);
-                        }
-                    });
+                flashcardRef.setValue(flashcard)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Log.d("QuoteApp", "Flashcard uploaded with name: " + flashcardName);
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.e("QuoteApp", "Failed to upload flashcard", e);
+                            }
+                        });
+            }
         }
     }
+
 
 
 
@@ -416,6 +363,7 @@ public class MainActivity extends AppCompatActivity {
         answers.add("French");
         france.setQuestions(questions);
         france.setAnswers(answers);
+        france.setCategory("Social Studies");
         flashcardList.add(france);
 
         Flashcard math = new Flashcard();
@@ -430,6 +378,7 @@ public class MainActivity extends AppCompatActivity {
         answers.add("dy/dx or f'(x)");
         math.setQuestions(questions);
         math.setAnswers(answers);
+        math.setCategory("Math");
         flashcardList.add(math);
 
         Flashcard socialStudies = new Flashcard();
@@ -473,9 +422,9 @@ public class MainActivity extends AppCompatActivity {
         answers.add("Benjamin Sheares Bridge");
         answers.add("Marina Bay Sands SkyPark Observation Deck");
         answers.add("Netball");
-
         socialStudies.setQuestions(questions);
         socialStudies.setAnswers(answers);
+        socialStudies.setCategory("Social Studies");
         flashcardList.add(socialStudies);
 
         Flashcard economics = new Flashcard();
@@ -557,8 +506,162 @@ public class MainActivity extends AppCompatActivity {
 
         economics.setQuestions(questions);
         economics.setAnswers(answers);
+        economics.setCategory("Economic");
         flashcardList.add(economics);
     }
+    private void createCategories() {
+        // Iterate through the flashcardList and organize flashcards into categories
+        for (Flashcard flashcard : flashcardList) {
+            String categoryTitle = flashcard.getCategory();
+            Log.d("DEBUG", "Processing flashcard with title: " + flashcard.getTitle() + ", category: " + categoryTitle);
+            Category category = getCategoryByName(categories, categoryTitle);
+
+            if (category == null) {
+                // If the category doesn't exist yet, create a new one
+                List<Flashcard> flashcardsInCategory = new ArrayList<>();
+                flashcardsInCategory.add(flashcard);
+                category = new Category(categoryTitle, flashcardsInCategory);
+                categories.add(category);
+                Log.d("DEBUG", "New category created: " + categoryTitle);
+            } else {
+                // Add the flashcard to the existing category
+                category.getFlashcards().add(flashcard);
+                Log.d("DEBUG", "Flashcard added to category: " + categoryTitle);
+            }
+        }
+        // At this point, the flashcards are organized into categories based on their titles
+    }
+
+    // Helper method to get a category by its name
+    private Category getCategoryByName(List<Category> categories, String categoryName) {
+        for (Category category : categories) {
+            if (category.getName().equals(categoryName)) {
+                return category;
+            }
+        }
+        return null; // Category not found
+    }
+
+    private void displayFlashcardsByCategory(String selectedCategory) {
+        List<Flashcard> flashcardsToShow = new ArrayList<>();
+        RecyclerView recyclerView;
+        FlashcardAdapter fcAdapter;
+        LinearLayoutManager mLayoutManager;
+        int spacingInPixels;
+
+        for (Flashcard flashcard : flashcardList) {
+            // Check if the flashcard belongs to the selected category
+            if (flashcard.getCategory().equals(selectedCategory)) {
+                flashcardsToShow.add(flashcard);
+            }
+        }
+
+
+        // Set up the RecyclerView with the filtered flashcardList
+        //Learn Yourself
+         recyclerView = findViewById(R.id.recyclerView1);
+         fcAdapter = new FlashcardAdapter(flashcardsToShow);
+         mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false));
+         spacingInPixels = 4;
+        recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(fcAdapter);
+
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Flashcard flashcard) {
+                // Start FlashCardQuestionPage activity with the selected flashcard
+                Intent intent = new Intent(MainActivity.this, LearnYourself.class);
+                intent.putExtra("flashcard", flashcard);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+                startShuffleCardActivity(flashcard);
+            }
+        });
+
+        // Set up the RecyclerView with the filtered flashcardList
+        //Test Yourself
+         recyclerView = findViewById(R.id.recyclerView2);
+        fcAdapter = new FlashcardAdapter(flashcardsToShow);
+         mLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(new LinearLayoutManager(
+                this, LinearLayoutManager.HORIZONTAL, false));
+         spacingInPixels = 4;
+        recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(fcAdapter);
+
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Flashcard flashcard) {
+                // Start FlashCardQuestionPage activity with the selected flashcard
+                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                intent.putExtra("flashcard", flashcard);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+                startShuffleCardActivity(flashcard);
+            }
+        });
+    }
+    private void displayAllFlashcards(){
+        RecyclerView recyclerView;
+        FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
+        LinearLayoutManager mLayoutManager;
+        int spacingInPixels;
+
+        for (Flashcard flashcard : flashcardList) {
+            recyclerView = findViewById(R.id.recyclerView1);
+            fcAdapter = new FlashcardAdapter(flashcardList);
+            mLayoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(new LinearLayoutManager(
+                    this, LinearLayoutManager.HORIZONTAL, false));
+            spacingInPixels = 4;
+            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(fcAdapter);
+        }
+
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Flashcard flashcard) {
+                // Start FlashCardQuestionPage activity with the selected flashcard
+                Intent intent = new Intent(MainActivity.this, LearnYourself.class);
+                intent.putExtra("flashcard", flashcard);
+                Log.v("Username out:",username);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+                startShuffleCardActivity(flashcard);
+            }
+        });
+
+        for (Flashcard flashcard : flashcardList) {
+            // Access the current flashcard
+            // You can perform operations or access its properties here
+            String title = flashcard.getTitle();
+
+            recyclerView = findViewById(R.id.recyclerView2);
+            fcAdapter = new FlashcardAdapter(flashcardList);
+            mLayoutManager = new LinearLayoutManager(this);
+            recyclerView.setLayoutManager(new LinearLayoutManager(
+                    this, LinearLayoutManager.HORIZONTAL, false));
+            spacingInPixels = 4;
+            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(fcAdapter);
+        }
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Flashcard flashcard) {
+                // Start FlashCardQuestionPage activity with the selected flashcard
+                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                intent.putExtra("flashcard", flashcard);
+                startActivity(intent);
+            }
+        });
+    }
+
 }
 
 
