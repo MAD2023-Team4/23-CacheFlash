@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the interval for updating the streak (e.g., every 24 hours)
         long intervalMillis = 24 * 60 * 60 * 1000; // 24 hours
+        Log.d("MainActivity", "Username before starting service: " + username);
 
 // Create an intent to start the StreakUpdateService
         Intent serviceIntent = new Intent(this, StreakUpdateService.class);
@@ -588,7 +589,7 @@ public class MainActivity extends AppCompatActivity {
          mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 this, LinearLayoutManager.HORIZONTAL, false));
-         spacingInPixels = 4;
+         spacingInPixels = 12;
         recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(fcAdapter);
@@ -601,7 +602,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("flashcard", flashcard);
                 intent.putExtra("Username", username);
                 startActivity(intent);
-                startShuffleCardActivity(flashcard);
+                //startShuffleCardActivity(flashcard);
             }
         });
     }
@@ -646,7 +647,7 @@ public class MainActivity extends AppCompatActivity {
             mLayoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(new LinearLayoutManager(
                     this, LinearLayoutManager.HORIZONTAL, false));
-            spacingInPixels = 4;
+            spacingInPixels = 12;
             recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(fcAdapter);
