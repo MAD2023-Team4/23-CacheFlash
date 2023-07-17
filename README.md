@@ -32,15 +32,24 @@ Previously, we were experimenting GitHub, and we made mistakes on our previous r
  - Speedrun feature for users who want a challenge, and let them edit the time they have to answer (Hui Ting)
  - Dashboard feature to track user data by calculating the timing to review the flashcards (Forgetting Curve) [Samuel]
  - Information Depository for users to key in notes outside of the flashcards (Hui Ting)
- - Image Relaxation (Bryan)
  -  Multiple choice style - there will be multiple choice questions, and the user selects the correct answer. (John)
  -  Creating flashcards - the user creates custom flashcards for own revision (Bryan)
- -  Improvement of app UI (Victoria)
+ -  ###### Within Profile:
+   1. Password Management - User can change password (Bryan)
+   2. Study Preference - User gets to filter a certain category of flashcards to be displayed in the home page. (Bryan)
+   3. Study Time - User sets a study time, and when the time is up, the app will remind the user to study (Bryan) 
+   4. Notification - User can enable or disable notifications for the app (Bryan)
+   5. Study Streak - If the user logs into the app continuously for n days, there will be a streak of n days.
+       - If n >= 10, user achieves a Beginner medal
+       - Else if n >= 20, user achieves an Achiever medal
+       - Else if n >= 30, user achieves an Expert medal
+       - User can press and hold the Streak Progress bar to see progress
+ ### Improvements:
+ -  App UI (Whole team)
+ -  Enhance profile page - Hui Ting
  
  #### Explanation of Calculation of Optimal Timing (Samuel)
  [The forgetting curve](https://en.wikipedia.org/wiki/Forgetting_curve) can help remind the users when would they almost forget that information (the exact date and timing). This is done by sending them a notification when the retainability has reached a certain level as time passes. For example, a user has finished a deck of flashcards, and the app estimates that he/she will forget about 70% of information in 6 days. This means that R is reduced, until about R = 1 - 0.7 = 0.3. Hence, it will send a notification 6 days later to the user.
-
- #### How does the App Estimate How Well the User Remembers Information? (Samuel)
  The Forgetting Curve formula has to estimate R, as t, passes. Also, in the equation, another factor that determines R is S. However, S is assumed to be the same for everyone. To customise everyone's S, we increase S for every question the user gets right in the "Test Yourself" feature, and vice versa. Substitute it into the Forgetting Curve formula, and you will get a curve. The app will then use that curve to estimate the duration, as mentioned above. (Refer to Explanation of New Feature if not sure)
 
 [Referenced by Peaceknight05](https://github.com/peaceknight05/Pentagone)
