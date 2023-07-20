@@ -8,12 +8,75 @@
     android:background="#FFFFFF"
     tools:context=".Profile">
 
+    <TextView
+        android:id="@+id/textView26"
+        android:layout_width="101dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="32dp"
+        android:gravity="left"
+        android:padding="15sp"
+        android:text="@string/usernameText"
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtAbout" />
+
+    <TextView
+        android:id="@+id/password_resetDesc4"
+        android:layout_width="220dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="292dp"
+        android:layout_marginEnd="84dp"
+        android:text="Earn badges for logging in everyday!"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <TextView
+        android:id="@+id/password_resetDesc3"
+        android:layout_width="220dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="210dp"
+        android:layout_marginEnd="84dp"
+        android:text="Enable or disable app notifications"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <TextView
+        android:id="@+id/password_resetDesc2"
+        android:layout_width="220dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="130dp"
+        android:layout_marginEnd="80dp"
+        android:text="Sets favourite category or study time"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+    <TextView
+        android:id="@+id/password_resetDesc"
+        android:layout_width="219dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="44dp"
+        android:layout_marginEnd="80dp"
+        android:text="Changes user password"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
+
     <ImageView
         android:id="@+id/imageView8"
-        android:layout_width="62dp"
-        android:layout_height="57dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="18dp"
+        android:layout_width="64dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:src="@drawable/notification"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3" />
@@ -22,8 +85,8 @@
         android:id="@+id/imageView9"
         android:layout_width="62dp"
         android:layout_height="57dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="108dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="96dp"
         android:src="@drawable/streak"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider3" />
@@ -32,7 +95,7 @@
         android:id="@+id/imageView6"
         android:layout_width="62dp"
         android:layout_height="57dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="12dp"
         android:src="@drawable/study_icon"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,16 +103,20 @@
 
     <TextView
         android:id="@+id/study_preference"
-        android:layout_width="278dp"
-        android:layout_height="78dp"
+        android:layout_width="220dp"
+        android:layout_height="25dp"
         android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="31dp"
+        android:layout_marginBottom="3dp"
         android:gravity="center_vertical"
         android:text="Study Preference"
-        android:textColor="@color/darkBlue"
-        android:textSize="25dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/divider3"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageView6"
         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
@@ -67,14 +134,15 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="145dp"
-        android:layout_height="105dp"
-        android:layout_marginTop="69dp"
+        android:layout_width="82dp"
+        android:layout_height="79dp"
+        android:layout_marginTop="76dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.047"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txtAbout"
         app:srcCompat="@drawable/ic_profile"
-        app:tint="@color/darkBlue" />
+        app:tint="@color/black" />
 
     <TextView
         android:id="@+id/txtAbout"
@@ -83,7 +151,7 @@
         android:layout_marginTop="16dp"
         android:gravity="center"
         android:text="About"
-        android:textColor="#3339C3"
+        android:textColor="@color/black"
         android:textSize="50dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,30 +161,18 @@
 
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="101dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="192dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="92dp"
-        android:layout_marginBottom="25dp"
-        android:text="TextView"
-        android:textColor="@color/darkBlue"
-        android:textSize="30dp"
-        app:layout_constraintBottom_toTopOf="@+id/divider"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="17dp"
+        android:gravity="left"
         android:padding="15sp"
-        android:text="@string/usernameText"
-        android:textColor="@color/darkBlue"
-        android:textSize="30dp"
+        android:textAlignment="textStart"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@+id/divider"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+        app:layout_constraintTop_toBottomOf="@+id/txtAbout" />
 
     <View
         android:id="@+id/divider"
@@ -125,30 +181,31 @@
         android:layout_marginTop="10dp"
         android:background="@color/black"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <TextView
         android:id="@+id/password_reset"
-        android:layout_width="290dp"
-        android:layout_height="76dp"
-        android:layout_marginStart="11dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
+        android:layout_width="219dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="80dp"
         android:text="Password Management"
-        android:textColor="@color/darkBlue"
-        android:textSize="25dp"
-        app:layout_constraintStart_toEndOf="@+id/imageView4"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
     <ImageView
         android:id="@+id/imageView4"
         android:layout_width="62dp"
         android:layout_height="57dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="11dp"
         android:src="@drawable/password_logo"
         app:layout_constraintEnd_toStartOf="@+id/password_reset"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
@@ -167,7 +224,7 @@
         android:layout_width="409dp"
         android:layout_height="1dp"
         android:layout_marginStart="1dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="44dp"
         android:background="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/study_preference" />
@@ -176,34 +233,34 @@
         android:id="@+id/divider4"
         android:layout_width="409dp"
         android:layout_height="1dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="44dp"
         android:background="@color/black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notification" />
 
     <TextView
         android:id="@+id/notification"
-        android:layout_width="170dp"
-        android:layout_height="84dp"
-        android:layout_marginStart="21dp"
+        android:layout_width="161dp"
+        android:layout_height="27dp"
+        android:layout_marginStart="28dp"
         android:layout_marginTop="9dp"
         android:layout_marginBottom="4dp"
         android:gravity="center_vertical"
-        android:text="Notification"
-        android:textColor="@color/darkBlue"
-        android:textSize="25dp"
+        android:text="Notifications"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/divider4"
         app:layout_constraintStart_toEndOf="@+id/imageView8"
         app:layout_constraintTop_toBottomOf="@+id/divider3" />
 
     <Switch
         android:id="@+id/switch1"
-        style="@style/SwitchStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="27dp"
-        android:layout_marginEnd="46dp"
+        style="@style/SmallSwitchStyle"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
         android:minHeight="48dp"
         android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -211,14 +268,15 @@
 
     <TextView
         android:id="@+id/study_streak"
-        android:layout_width="227dp"
-        android:layout_height="83dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="80dp"
+        android:layout_width="178dp"
+        android:layout_height="33dp"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="128dp"
         android:gravity="center_vertical"
         android:text="Study Streak"
-        android:textColor="@color/darkBlue"
-        android:textSize="25dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/notification" />
 

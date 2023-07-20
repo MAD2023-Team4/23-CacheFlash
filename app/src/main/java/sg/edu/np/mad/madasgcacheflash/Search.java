@@ -1,12 +1,14 @@
 package sg.edu.np.mad.madasgcacheflash;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,8 +48,17 @@ public class Search extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(cuAdapter);
 
-        queryFlashcardsByCategory(username, cuAdapter); // Pass the adapter as a parameter
+        //On click listener for the recycler view
+        //________________________________________________________________
+        cuAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener(){
+            @Override
+            public void onItemClick(Flashcard flashcard){
+                Log.v("hi", flashcard.getTitle());
+                showAlert("Profile", flashcard);
+            }
+        });
 
+        queryFlashcardsByCategory(username, cuAdapter); // Pass the adapter as a parameter
 
         //SearchView
         //____________________________________________________
@@ -139,12 +150,32 @@ public class Search extends AppCompatActivity {
             if (f.getTitle().toLowerCase().contains(text.toLowerCase())){
                 filteredList.add(f);
             }
-            if (filteredList.isEmpty()){
-                Toast.makeText(this, "No data", Toast.LENGTH_SHORT).show();
-            }
-            else{
-                cuAdapter.setFilteredList(filteredList);
-            }
+            cuAdapter.setFilteredList(filteredList);
+
         }
+    }
+
+    public void showAlert(String title, Flashcard f) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(title)
+                .setMessage("Learn Mode (5 points)\nTest Mode (10 points)")
+                .setPositiveButton("Test", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // Do something when the "OK" button is clicked
+                        Intent intent = new Intent(Search.this, LearnYourself.class);
+                        intent.putExtra("Username", username);
+                        intent.putExtra("flashcard", f);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Learn", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent intent = new Intent(Search.this, Testyourself.class);
+                        intent.putExtra("Username", username);
+                        intent.putExtra("flashcard", f);
+                        startActivity(intent);
+                    }
+                })
+                .show();
     }
 }

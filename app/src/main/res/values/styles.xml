@@ -4,4 +4,9 @@
         <item name="android:thumb">@drawable/custom_switch_thumb</item>
         <item name="android:track">@drawable/custom_switch_track</item>
     </style>
+
+    <style name="SmallSwitchStyle" parent="Widget.AppCompat.CompoundButton.Switch">
+        <!-- Add any additional attributes you want to customize -->
+        <item name="android:textSize">20sp</item> <!-- Set a smaller text size -->
+    </style>
 </resources>
