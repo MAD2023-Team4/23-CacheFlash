@@ -85,6 +85,7 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+
     private void signIn(String username, String password) {
         mAuth.signInWithEmailAndPassword(username + "@gmail.com", password)
                 .addOnCompleteListener(this, task -> {

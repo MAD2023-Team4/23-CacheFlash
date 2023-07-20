@@ -3,12 +3,13 @@ package sg.edu.np.mad.madasgcacheflash;
 import static android.content.ContentValues.TAG;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.jakewharton.threetenabp.AndroidThreeTen;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -18,23 +19,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
-import androidx.work.Constraints;
-import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.ExistingWorkPolicy;
-import androidx.work.NetworkType;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
-import androidx.work.WorkRequest;
+
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TimePickerDialog;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -42,15 +33,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -63,31 +52,24 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import android.Manifest;
 
-import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
-import org.threeten.bp.Duration;
-import org.threeten.bp.LocalTime;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
 
 
 public class Profile extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
-    private static final String CHANNEL_ID = "my_channel_id";
     private boolean isTimeCheckRunning = false;
     private static final String PREFS_NAME = "MyPrefs";
-    private static final String WORK_TAG = "notification_work";
     private String selectedTime;
-
+    private DatabaseReference categoryRef;
     private TextView usernameTextView;
     private SharedPreferences sharedPreferences;
     private DatabaseReference desiredTimeRef;
@@ -100,6 +82,8 @@ public class Profile extends AppCompatActivity {
     private String username;
     private static final String NOTIFICATION_STATUS_KEY = "notification_status";
     private MyFirebaseMessagingService firebaseMessagingService;
+    String[] categoryOptions = {};
+
 
 
     @Override
@@ -108,15 +92,19 @@ public class Profile extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_profile);
 
+
         TextView textViewPasswordReset;
         TextView textViewPreference;
         TextView textViewStreak;
 
         Intent intent = getIntent();
         username = intent.getStringExtra("Username"); //get username
+        // Retrieve the categories list from the intent
+
+
+
 
         firebaseMessagingService = new MyFirebaseMessagingService();
-        AndroidThreeTen.init(this);
         Switch switch_notification = findViewById(R.id.switch1);
 
         textViewPasswordReset = findViewById(R.id.password_reset);
@@ -173,8 +161,40 @@ public class Profile extends AppCompatActivity {
         notificationStatusRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("notificationStatus");
         desiredTimeRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("desiredTime");
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        DatabaseReference userCategoriesRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("categories");
         boolean isNotificationEnabled = sharedPreferences.getBoolean(NOTIFICATION_STATUS_KEY, false);
         notificationStatusRef.setValue(false);
+
+        userCategoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Log.d("ProfileActivity", "onDataChange: Categories data retrieved from Firebase.");
+                    List<String> categoryNames = new ArrayList<>();
+
+                    for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                        String categoryName = categorySnapshot.getKey();
+                        if (categoryName != null) {
+                            categoryNames.add(categoryName);
+                            Log.d("ProfileActivity", "Category name retrieved: " + categoryName);
+                        } else {
+                            Log.e("ProfileActivity", "Category name is null for key: " + categorySnapshot.getKey());
+                        }
+                    }
+
+                    // Populate the categoryOptions array with the category names
+                    categoryOptions = categoryNames.toArray(new String[0]);
+                } else {
+                    Log.d("ProfileActivity", "No categories found in Firebase.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
 
 
         // Set the initial state of the switch
@@ -206,7 +226,21 @@ public class Profile extends AppCompatActivity {
         textViewPreference.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePickerDialog();
+                AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+                builder.setTitle("Choose an option")
+                        .setItems(new String[]{"Favorite Category", "Study Time"}, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (which == 0) {
+                                    // Show Spinner for selecting favorite category
+                                    showFavoriteCategorySpinner();
+                                }
+                                else if (which == 1) {
+                                    showTimePickerDialog();
+                                }
+                            }
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
@@ -259,23 +293,86 @@ public class Profile extends AppCompatActivity {
 
                     if (id == R.id.dashboard) {
                         Intent intent = new Intent(getApplicationContext(), Dashboard.class);
-                        intent.putExtra("Username", username);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
-                    } else if (id == R.id.home) {
+                    }
+
+                    else if (id == R.id.search) {
+                        Intent intent = new Intent(getApplicationContext(), Search.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+                    }
+
+                    else if (id == R.id.home) {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("Username", username);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
-                    } else if (id == R.id.about) {
+
+                    }
+                    else if (id == R.id.leaderboard) {
+                        Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+                    }
+                    else if (id == R.id.about) {
                         return true;
                     }
                 }
                 return false;
             }
         });
+    }
+
+    private void showFavoriteCategorySpinner() {
+        // Create a Spinner component
+        Spinner spinner = new Spinner(Profile.this);
+
+        // Create an ArrayAdapter to populate the Spinner with category options
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(Profile.this, android.R.layout.simple_spinner_item, categoryOptions);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        // Create a dialog to display the Spinner
+        AlertDialog.Builder builder = new AlertDialog.Builder(Profile.this);
+        builder.setTitle("Select Favorite Category")
+                .setView(spinner)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Retrieve the selected category from the Spinner
+                        String selectedCategory = (String) spinner.getSelectedItem();
+                        // Use the selected category as needed
+                        Toast.makeText(Profile.this, "Selected Category: " + selectedCategory, Toast.LENGTH_SHORT).show();
+
+                        // Store the selected category as the favorite category under the user's data
+                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
+                        userRef.child("favoriteCategory").setValue(selectedCategory)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Log.d("ProfileFavCat:","Favourite Category stored");
+                                    }
+                                })
+                                .addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d("ProfileFavCat:","Failed");
+                                    }
+                                });
+                    }
+                })
+                .setNegativeButton("Cancel", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
