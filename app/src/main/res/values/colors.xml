@@ -5,6 +5,13 @@
     <color name="purple_500">#6200EE</color>
     <color name="orangeBrown">#CA631E</color>
     <color name="darkBlue">#3339C3</color>
+    <color name="progressStartColor">#FF3D66</color>
+    <color name="progressCenterColor">#FFA500</color>
+    <color name="progressEndColor">#FFD700</color>
+    <color name="grey">#808080</color>
+    <color name="green">#00FF00</color>
+    <color name="very_light_gray">#F5F5F5</color>
+
 
     <!--Blue color research
     // Source from:

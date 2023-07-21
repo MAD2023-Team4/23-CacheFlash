@@ -24,6 +24,7 @@ public class Login extends AppCompatActivity {
 
     String title = "Main activity";
     private FirebaseAuth mAuth;
+
     /*
     private String GLOBAL_PREF = "MyPrefs";
     private String MY_USERNAME = "MyUserName";
@@ -35,7 +36,6 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_login);
-
         TextView privacyPolicyTextView = findViewById(R.id.privacy_policy_text);
         privacyPolicyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +85,7 @@ public class Login extends AppCompatActivity {
             }
         });
     }
+
     private void signIn(String username, String password) {
         mAuth.signInWithEmailAndPassword(username + "@gmail.com", password)
                 .addOnCompleteListener(this, task -> {

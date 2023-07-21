@@ -4,15 +4,24 @@
         android:id="@+id/dashboard"
         android:icon="@drawable/ic_dashboard"
         android:title="Dashboard"/>
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search"
+        android:title="Search"/>
+
     <item
         android:id="@+id/home"
         android:icon="@drawable/ic_home"
         android:title="Home"/>
 
     <item
+        android:id="@+id/leaderboard"
+        android:icon="@drawable/ic_leaderboard"
+        android:title="Leaderboard"/>
+
+    <item
         android:id="@+id/about"
         android:icon="@drawable/ic_profile"
         android:title="Profile"/>
-
-
 </menu>

@@ -3,18 +3,33 @@ package sg.edu.np.mad.madasgcacheflash;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Dashboard extends AppCompatActivity {
     private String username;
+    List<Flashcard> allFlashcards = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
+    private RecyclerView recyclerView;
+    private DashboardAdapter fcAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +37,13 @@ public class Dashboard extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
         Intent intent = getIntent();
         username = intent.getStringExtra("Username"); //get username
+        queryFlashCards();
+        recyclerView = findViewById(R.id.recyclerViewDashboard);
+        fcAdapter = new DashboardAdapter(allFlashcards);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(8), true));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(fcAdapter);
 
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
@@ -35,16 +57,33 @@ public class Dashboard extends AppCompatActivity {
                     if (id == R.id.dashboard) {
                         return true;
                     }
-                    else if (id == R.id.home) {
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("Username", username);
+
+                    else if (id == R.id.search) {
+                        Intent intent = new Intent(getApplicationContext(), Search.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
                     }
-                    else if (id == R.id.about){
+
+                    else if (id == R.id.home) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    }
+                    else if (id == R.id.leaderboard) {
+                        Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+                    }
+                    else if (id == R.id.about) {
                         Intent intent = new Intent(getApplicationContext(), Profile.class);
-                        intent.putExtra("Username", username);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
@@ -54,5 +93,38 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
+
+    }
+    private void queryFlashCards(){
+        DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference()
+                .child("users")
+                .child(username)
+                .child("categories");
+
+        categoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot flashcardSnapshot : categorySnapshot.getChildren()) {
+                        Flashcard flashcard = flashcardSnapshot.getValue(Flashcard.class);
+                        if (flashcard != null) {
+                            allFlashcards.add(flashcard);
+                        }
+                    }
+                }
+                fcAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle any errors that occur while fetching the data (optional).
+            }
+        });
+    }
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
     }
 }

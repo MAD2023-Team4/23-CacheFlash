@@ -3,6 +3,7 @@ package sg.edu.np.mad.madasgcacheflash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.security.PublicKey;
 import java.util.List;
 //__________________________________________________________________________________________________
 // Source from: Bard AI - https://bard.google.com/?hl=en_GB
@@ -12,14 +13,17 @@ public class Flashcard implements Parcelable {
     private List<String> answers;
     private String username;
 
+    private String category;
+
     public Flashcard() {
     }
 
-    public Flashcard(String title, List<String> questions, List<String> answers, String username) {
+    public Flashcard(String title, List<String> questions, List<String> answers, String username, String category) {
         this.title = title;
         this.questions = questions;
         this.answers = answers;
         this.username = username;
+        this.category = category;
     }
 
     public String getTitle() {
@@ -53,6 +57,13 @@ public class Flashcard implements Parcelable {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public String getCategory() { return category; }
+
+    public  void setCategory(String category)  { this.category = category; }
+
+
+
 
     protected Flashcard(Parcel in) {
         title = in.readString();
