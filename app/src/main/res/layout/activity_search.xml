@@ -16,28 +16,45 @@
         app:itemIconTint="@drawable/serlector"
         app:itemTextColor="@drawable/serlector"
         app:menu="@menu/menu" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="643dp">
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
-            android:layout_width="357dp"
-            android:layout_height="46dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:background="@drawable/search_view_bg"
-            android:elevation="12dp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:iconifiedByDefault="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.043"
+            app:layout_constraintVertical_bias="0.001"
             app:queryHint="Search here..." />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchRecyclerView"
             android:layout_width="411dp"
-            android:layout_height="512dp"
-            android:layout_marginTop="40dp"
+            android:layout_height="523dp"
+            android:layout_marginTop="60dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/searchView" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="305dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="16dp"
+            android:text="All Flashcards Available"
+            android:textSize="24sp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
