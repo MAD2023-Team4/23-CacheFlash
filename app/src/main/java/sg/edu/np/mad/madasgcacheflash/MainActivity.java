@@ -34,6 +34,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -54,6 +55,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView quoteTextView;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private DatabaseReference quoteRef;
     private Date lastUpdatedDate; // Store the last updated date
 
 
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set the interval for updating the streak (e.g., every 24 hours)
         long intervalMillis = 24 * 60 * 60 * 1000; // 24 hours
+        Log.d("MainActivity", "Username before starting service: " + username);
 
 // Create an intent to start the StreakUpdateService
         Intent serviceIntent = new Intent(this, StreakUpdateService.class);
@@ -99,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
         quoteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Fetch a new quote from the API and update in Firebase Firestore
-                fetchNewQuoteFromAPI();
+                // Fetch a new quote from the API and update in database
+                fetchQuoteFromDatabase();
             }
         });
 
@@ -253,6 +257,66 @@ public class MainActivity extends AppCompatActivity {
                     Log.e("QuoteApp", "Error fetching quote from API", e);
                 }
 
+                return null;
+            }
+        }.execute();
+    }
+
+    private void fetchQuoteFromDatabase() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    URL url = new URL("https://api.api-ninjas.com/v1/quotes?category=success");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestProperty("accept", "application/json");
+                    connection.setRequestProperty("X-Api-Key", "7N/Wm8b2g7xvfFYTnyr05g==HQKXwuwskx8e2Cor");
+
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStream responseStream = connection.getInputStream();
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode root = mapper.readTree(responseStream);
+
+                        // Log the API response for debugging
+                        Log.d("QuoteApp", "API Response: " + root.toString());
+
+                        // Check if the response contains a quote and author
+                        if (root.isArray() && root.size() > 0) {
+                            JsonNode quoteNode = root.get(0).path("quote");
+                            JsonNode authorNode = root.get(0).path("author");
+
+                            if (quoteNode.isTextual() && authorNode.isTextual()) {
+                                String quote = quoteNode.asText();
+                                String author = authorNode.asText();
+
+                                // Store the new quote and author in Firebase Realtime Database
+                                DatabaseReference quoteRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("quote");
+                                Map<String, Object> quoteMap = new HashMap<>();
+                                quoteMap.put("quote", quote);
+                                quoteMap.put("author", author);
+                                quoteRef.setValue(quoteMap)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                // Display the new quote
+                                                String formattedQuote = String.format(Locale.getDefault(), "%s\n- %s", quote, author);
+                                                quoteTextView.setText(formattedQuote);
+                                                Log.d("QuoteApp", "Received Quote: " + quote);
+                                                Log.d("QuoteApp", "Author: " + author);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.e("QuoteApp", "Failed to update quote", e);
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    Log.e("QuoteApp", "Error fetching quote from API", e);
+                }
                 return null;
             }
         }.execute();
@@ -559,12 +623,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up the RecyclerView with the filtered flashcardList
         //Learn Yourself
-         recyclerView = findViewById(R.id.recyclerView1);
-         fcAdapter = new FlashcardAdapter(flashcardsToShow);
-         mLayoutManager = new LinearLayoutManager(this);
+        recyclerView = findViewById(R.id.recyclerView1);
+        fcAdapter = new FlashcardAdapter(flashcardsToShow);
+        mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 this, LinearLayoutManager.HORIZONTAL, false));
-         spacingInPixels = 4;
+        spacingInPixels = 4;
         recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(fcAdapter);
@@ -583,12 +647,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up the RecyclerView with the filtered flashcardList
         //Test Yourself
-         recyclerView = findViewById(R.id.recyclerView2);
+        recyclerView = findViewById(R.id.recyclerView2);
         fcAdapter = new FlashcardAdapter(flashcardsToShow);
-         mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(
                 this, LinearLayoutManager.HORIZONTAL, false));
-         spacingInPixels = 4;
+        spacingInPixels = 12;
         recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(fcAdapter);
@@ -601,7 +665,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("flashcard", flashcard);
                 intent.putExtra("Username", username);
                 startActivity(intent);
-                startShuffleCardActivity(flashcard);
+                //startShuffleCardActivity(flashcard);
             }
         });
     }
@@ -646,7 +710,7 @@ public class MainActivity extends AppCompatActivity {
             mLayoutManager = new LinearLayoutManager(this);
             recyclerView.setLayoutManager(new LinearLayoutManager(
                     this, LinearLayoutManager.HORIZONTAL, false));
-            spacingInPixels = 4;
+            spacingInPixels = 12;
             recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             recyclerView.setAdapter(fcAdapter);
@@ -663,5 +727,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
-
