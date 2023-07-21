@@ -67,6 +67,9 @@
         <activity
             android:name=".ShuffleCardActivity"
             android:exported="false" />
+        <activity
+            android:name=".MCQuiz"
+            android:exported="false"/>
         <service
             android:name=".StreakUpdateService"
             android:enabled="true"

@@ -61,6 +61,7 @@
 
     <TextView
         android:id="@+id/textView4"
+
         android:layout_width="190dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="500dp"
@@ -74,20 +75,49 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="146dp"
-        android:layout_height="61dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="130dp"
-        android:layout_marginEnd="130dp"
-        android:layout_marginTop="430dp"
+
+        android:layout_width="115dp"
+        android:layout_height="51dp"
+        android:layout_marginBottom="8dp"
         android:backgroundTint="#1400A9"
         android:text="@string/loginButtonText"
         android:textColor="#FFFFFF"
-        android:textSize="18sp" />
+        android:textSize="18dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.847"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="85dp"
+        android:text="@string/passwordText"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintEnd_toStartOf="@+id/editTextText2" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/usernameText"
+        android:textColor="#000000"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/textView6"
+        app:layout_constraintEnd_toStartOf="@+id/editTextText" />
+
+
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="155dp"
+
         android:layout_height="155dp"
         android:layout_marginTop="138dp"
         android:layout_marginStart="125dp"
@@ -126,7 +156,31 @@
         android:layout_marginStart="57dp"
         android:layout_marginTop="580dp"
         android:layout_marginEnd="57dp"
+
+        android:layout_marginBottom="104dp"
         android:text="By logging in or creating an account, you are agreeing with the privacy policy and that you are above 13 years old"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/button6"
+        android:layout_width="125dp"
+        android:layout_height="62dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="420dp"
+        android:text="Forgot Password"
+        app:layout_constraintBottom_toTopOf="@+id/textView4"
+        app:layout_constraintEnd_toStartOf="@+id/button"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.963" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
 
 </RelativeLayout>
+
