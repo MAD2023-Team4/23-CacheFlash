@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="sg.edu.np.mad.madasgcacheflash"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="sg.edu.np.mad.madasgcacheflash">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SET_ALARM" />
@@ -12,10 +12,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
-
     <application
-
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -25,6 +22,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MADAsgCacheFlash"
         tools:targetApi="31">
+        <activity
+            android:name=".Search"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".Leaderboard"
+            android:exported="false" />
+        <activity
+            android:name=".StudyStreakPage"
+            android:exported="false" />
         <activity
             android:name=".ChangePassword"
             android:exported="false" />
@@ -64,7 +70,10 @@
         <activity
             android:name=".MCQuiz"
             android:exported="false"/>
-
+        <service
+            android:name=".StreakUpdateService"
+            android:enabled="true"
+            android:exported="false" />
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
@@ -72,10 +81,10 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/cacheflash" />
-
     </application>
 
 </manifest>

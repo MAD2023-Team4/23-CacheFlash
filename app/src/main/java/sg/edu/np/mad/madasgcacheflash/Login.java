@@ -33,6 +33,7 @@ public class Login extends AppCompatActivity {
 
     String title = "Main activity";
     private FirebaseAuth mAuth;
+
     public ProgressDialog loginprogress;
 
     /*
@@ -46,7 +47,6 @@ public class Login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_login);
-
         TextView privacyPolicyTextView = findViewById(R.id.privacy_policy_text);
         privacyPolicyTextView.setOnClickListener(new View.OnClickListener() {
             @Override

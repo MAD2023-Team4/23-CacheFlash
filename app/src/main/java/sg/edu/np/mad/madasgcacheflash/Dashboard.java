@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -26,14 +26,10 @@ import java.util.List;
 
 public class Dashboard extends AppCompatActivity {
     private String username;
-    int score;
-    int total;
-    Flashcard flashcard;
-    List<Integer> scoreList = new ArrayList<>();
-    List<Float> percentageList = new ArrayList<>();
-    List<Flashcard> flashcardList = new ArrayList<>();
-
+    List<Flashcard> allFlashcards = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
+    private RecyclerView recyclerView;
+    private DashboardAdapter fcAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,48 +37,13 @@ public class Dashboard extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
         Intent intent = getIntent();
         username = intent.getStringExtra("Username"); //get username
-
-        if (username != null) {
-            queryFlashcardsData(username);
-        } else {
-            // Handle the case when the username is null
-            Log.e("QuoteApp", "Username is null");
-        }
-
-        /*
-        if (intent.hasExtra("Score") && intent.hasExtra("Total")) {
-            // The intent contains the "score" key
-            flashcard = intent.getParcelableExtra("flashcard");
-            score = intent.getIntExtra("Score", 0); // Retrieve the value of "score" key, use 0 as default value if not found
-            total = intent.getIntExtra("Total",0);
-        }
-        */
-
-        /*
-        RecyclerView recyclerView;
-        FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
-        LinearLayoutManager mLayoutManager;
-        int spacingInPixels;
-
-
-        for (Flashcard flashcard : flashcardList) {
-            // Access the current flashcard
-            // You can perform operations or access its properties here
-            String title = flashcard.getTitle();
-
-            recyclerView = findViewById(R.id.recyclerView3);
-            fcAdapter = new FlashcardAdapter(flashcardList);
-            mLayoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(new LinearLayoutManager(
-                    this, LinearLayoutManager.HORIZONTAL, false));
-            spacingInPixels = 4;
-            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(fcAdapter);
-        }
-
-
-         */
+        queryFlashCards();
+        recyclerView = findViewById(R.id.recyclerViewDashboard);
+        fcAdapter = new DashboardAdapter(allFlashcards);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(8), true));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(fcAdapter);
 
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
@@ -96,16 +57,33 @@ public class Dashboard extends AppCompatActivity {
                     if (id == R.id.dashboard) {
                         return true;
                     }
-                    else if (id == R.id.home) {
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("Username", username);
+
+                    else if (id == R.id.search) {
+                        Intent intent = new Intent(getApplicationContext(), Search.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
                     }
-                    else if (id == R.id.about){
+
+                    else if (id == R.id.home) {
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    }
+                    else if (id == R.id.leaderboard) {
+                        Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+                    }
+                    else if (id == R.id.about) {
                         Intent intent = new Intent(getApplicationContext(), Profile.class);
-                        intent.putExtra("Username", username);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
@@ -115,58 +93,38 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
+
     }
+    private void queryFlashCards(){
+        DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference()
+                .child("users")
+                .child(username)
+                .child("categories");
 
-
-    private void queryFlashcardsData(String username) {
-        DatabaseReference flashcardsRef;
-        flashcardsRef = FirebaseDatabase.getInstance().getReference()
-                .child("users").child(username).child("flashcards");
-
-        flashcardsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        categoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot flashcardSnapshot : dataSnapshot.getChildren()) {
-                    String flashcardKey = flashcardSnapshot.getKey();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                    if (flashcardSnapshot.hasChild("score") && flashcardSnapshot.hasChild("percentage")) {
-                        int score = flashcardSnapshot.child("score").getValue(Integer.class);
-                        float percentage = flashcardSnapshot.child("percentage").getValue(Float.class);
 
-                        List<String> questions = new ArrayList<>();
-                        List<String> answers = new ArrayList<>();
-
-                        for (DataSnapshot questionSnapshot : flashcardSnapshot.child("questions").getChildren()) {
-                            String question = questionSnapshot.child("question").getValue(String.class);
-                            String answer = questionSnapshot.child("answer").getValue(String.class);
-
-                            questions.add(question);
-                            answers.add(answer);
-                        }
-                        scoreList.add(score);
-                        percentageList.add(percentage);
-
-                        // Instantiate the Flashcard object with the retrieved data
-                        Flashcard flashcard = new Flashcard(flashcardKey, questions, answers, null);
-                        flashcardList.add(flashcard);
-
-                        // Do something with the instantiated flashcard object
-                        for (int s : scoreList){
-                            Log.v("Score:",String.valueOf(s));
+                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot flashcardSnapshot : categorySnapshot.getChildren()) {
+                        Flashcard flashcard = flashcardSnapshot.getValue(Flashcard.class);
+                        if (flashcard != null) {
+                            allFlashcards.add(flashcard);
                         }
                     }
                 }
+                fcAdapter.notifyDataSetChanged();
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("QuoteApp", "Error querying flashcards data", databaseError.toException());
+            public void onCancelled(@NonNull DatabaseError error) {
+                // Handle any errors that occur while fetching the data (optional).
             }
         });
     }
-
-
-
-
-
+    private int dpToPx(int dp) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(dp * density);
+    }
 }

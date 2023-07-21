@@ -10,19 +10,19 @@
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="146dp"
-        android:layout_height="23dp"
+        android:layout_height="65dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:text="TextView"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewDesc"
-        android:layout_width="89dp"
-        android:layout_height="44dp"
+        android:layout_width="83dp"
+        android:layout_height="32dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView" />
