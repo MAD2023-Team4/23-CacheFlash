@@ -158,11 +158,11 @@ public class Search extends AppCompatActivity {
     public void showAlert(String title, Flashcard f) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
-                .setMessage("Learn Mode (5 points)\nTest Mode (10 points)")
+                .setMessage("Learn Yourself (5 points)\nTest Yourself (10 points)")
                 .setPositiveButton("Test", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Do something when the "OK" button is clicked
-                        Intent intent = new Intent(Search.this, LearnYourself.class);
+                        Intent intent = new Intent(Search.this, Testyourself.class);
                         intent.putExtra("Username", username);
                         intent.putExtra("flashcard", f);
                         startActivity(intent);
@@ -170,7 +170,7 @@ public class Search extends AppCompatActivity {
                 })
                 .setNegativeButton("Learn", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent intent = new Intent(Search.this, Testyourself.class);
+                        Intent intent = new Intent(Search.this, LearnYourself.class);
                         intent.putExtra("Username", username);
                         intent.putExtra("flashcard", f);
                         startActivity(intent);
