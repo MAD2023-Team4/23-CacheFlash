@@ -9,4 +9,5 @@
         <!-- Add any additional attributes you want to customize -->
         <item name="android:textSize">20sp</item> <!-- Set a smaller text size -->
     </style>
+
 </resources>

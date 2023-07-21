@@ -67,7 +67,6 @@
         <activity
             android:name=".ShuffleCardActivity"
             android:exported="false" />
-
         <service
             android:name=".StreakUpdateService"
             android:enabled="true"
