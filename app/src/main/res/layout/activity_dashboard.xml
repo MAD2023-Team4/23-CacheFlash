@@ -7,16 +7,6 @@
     android:background="#FFFFFF"
     tools:context=".Dashboard">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Dashboard coming soon!"
-        android:textAlignment="center"
-        android:textColor="@color/darkBlue"
-        android:textSize="50dp"
-        android:textStyle="bold" />
-
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigator"
         android:layout_width="match_parent"
@@ -26,4 +16,9 @@
         app:itemIconTint="@drawable/serlector"
         app:itemTextColor="@drawable/serlector"
         app:menu="@menu/menu" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewDashboard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </RelativeLayout>

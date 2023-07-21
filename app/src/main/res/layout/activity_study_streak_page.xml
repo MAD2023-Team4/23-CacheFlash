@@ -177,7 +177,7 @@
         android:layout_height="119dp"
         android:layout_marginStart="3dp"
         android:layout_marginTop="7dp"
-        android:src="@drawable/applogo"
+        android:src="@drawable/beginner_without_colour"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/achievementText3" />
     <ImageView
@@ -186,7 +186,7 @@
         android:layout_height="119dp"
         android:layout_marginStart="3dp"
         android:layout_marginTop="7dp"
-        android:src="@drawable/first_medal"
+        android:src="@drawable/beginner_with_colour"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/achievementText3" />
@@ -196,7 +196,7 @@
         android:layout_width="132dp"
         android:layout_height="119dp"
         android:layout_marginTop="7dp"
-        android:src="@drawable/applogo"
+        android:src="@drawable/achiever_without_colour"
         app:layout_constraintStart_toEndOf="@+id/medal10DaysColored"
         app:layout_constraintTop_toBottomOf="@+id/achievementText" />
 
@@ -205,7 +205,7 @@
         android:layout_width="132dp"
         android:layout_height="119dp"
         android:layout_marginTop="7dp"
-        android:src="@drawable/second_medal"
+        android:src="@drawable/achiever_with_colour"
         app:layout_constraintStart_toEndOf="@+id/medal10DaysColored"
         app:layout_constraintTop_toBottomOf="@+id/achievementText" />
 
@@ -215,7 +215,7 @@
         android:layout_height="119dp"
         android:layout_marginStart="7dp"
         android:layout_marginTop="7dp"
-        android:src="@drawable/study_icon"
+        android:src="@drawable/expert_without_colour"
         app:layout_constraintStart_toEndOf="@+id/medal20DaysColored"
         app:layout_constraintTop_toBottomOf="@+id/achievementText5" />
 
@@ -225,7 +225,7 @@
         android:layout_height="119dp"
         android:layout_marginStart="7dp"
         android:layout_marginTop="7dp"
-        android:src="@drawable/third_medal"
+        android:src="@drawable/expert_with_colour"
         app:layout_constraintStart_toEndOf="@+id/medal20DaysColored"
         app:layout_constraintTop_toBottomOf="@+id/achievementText5" />
 

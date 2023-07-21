@@ -35,7 +35,7 @@ public class StudyStreakPage extends AppCompatActivity {
     private DatabaseReference streakStatus;
     private Date startDate;
     private DatabaseReference totalDaysRef;
-    private int currentStreak;
+    private long currentStreak;
 
     private ImageView medal10DaysOutline;
     private ImageView medal10DaysColored;
@@ -87,22 +87,20 @@ public class StudyStreakPage extends AppCompatActivity {
             }
         });
 
-        // Retrieve the current date
-        Date currentDate = new Date();
-
 // Check if the user has a previous streak recorded
         streakStatus.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     // Previous streak exists
-                    startDate = dataSnapshot.child("startDate").getValue(Date.class);
-                    currentStreak = dataSnapshot.child("currentStreak").getValue(Integer.class);
+                    long startDateTimestamp = dataSnapshot.child("startDate").getValue(Long.class);
+                    startDate = new Date(startDateTimestamp);
+                    currentStreak = dataSnapshot.child("currentStreak").getValue(Long.class);
                     streakText.setText(String.valueOf(currentStreak));
-                    progressBar.setProgress(currentStreak);
+                    progressBar.setProgress((int) currentStreak);
 
 
-                    unlockMedal(currentStreak);
+                    unlockMedal((int) currentStreak);
                     medalStatusRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -149,14 +147,6 @@ public class StudyStreakPage extends AppCompatActivity {
                     // No previous streak recorded
                     streakText.setText("0");
 
-                    // Check if the "startDate" child node exists
-                    if (!dataSnapshot.hasChild("startDate")) {
-                        // "startDate" child node does not exist, create it based on the current date
-                        streakStatus.child("startDate").setValue(currentDate);
-                    }
-                    if (!dataSnapshot.hasChild("currentStreak")){
-                        streakStatus.child("currentStreak").setValue(0);
-                    }
                 }
 
                 // Retrieve the "Total Days" value from Firebase
@@ -188,7 +178,7 @@ public class StudyStreakPage extends AppCompatActivity {
         progressBar.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                int remainingDays = 10 - currentStreak;
+                int remainingDays = (int) (10 - currentStreak);
                 String message = remainingDays + " days left till next medal";
                 Snackbar.make(v, message, Snackbar.LENGTH_SHORT).show();
                 return true;
