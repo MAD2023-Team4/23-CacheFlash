@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -108,6 +110,7 @@ public class Testyourself extends AppCompatActivity {
 
                     if (answer.equals(correctAnswer)) {
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
+
                     } else {
                         Toast.makeText(getApplicationContext(), "Incorrect. The correct answer is: " + correctAnswer, Toast.LENGTH_SHORT).show();
                         input.setText(correctAnswer); // Display the correct answer
@@ -121,6 +124,8 @@ public class Testyourself extends AppCompatActivity {
                     answeredQuestions.add(currentIndex); // Add the answered question index to the list
                 }
             });
+
+
 
             back.setOnClickListener(new View.OnClickListener() {
                 @Override
