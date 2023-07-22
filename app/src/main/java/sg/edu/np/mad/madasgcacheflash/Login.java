@@ -75,19 +75,9 @@ public class Login extends AppCompatActivity {
                 return false;
             }
         });
-        Button forgetpass = findViewById(R.id.button6);
+        //Button forgetpass = findViewById(R.id.button6);
         
-
-
-
-        forgetpass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showRecoverPasswordDialog();
-            }
-
-        });
-
+        
         Button loginButton = findViewById(R.id.button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
