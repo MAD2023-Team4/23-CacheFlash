@@ -1,11 +1,14 @@
 package sg.edu.np.mad.madasgcacheflash;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -1077,11 +1080,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                /*Intent intent = new Intent(MainActivity.this, MCQuiz.class);
                 intent.putExtra("flashcard", flashcard);
                 intent.putExtra("Username", username);
-                startActivity(intent);
-                //startShuffleCardActivity(flashcard);
+                startActivity(intent);*/
+                AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Type of test");
+                builder.setMessage("What kind of test would you like?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("open-ended", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                        intent.putExtra("flashcard", flashcard);
+                        startActivity(intent);
+                    }
+                });
+                builder.setNegativeButton("MCQ-Quiz", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                        intent.putExtra("flashcard", flashcard);
+                        startActivity(intent);
+                    }
+                });
+                AlertDialog alert= builder.create();
+                alert.show();
             }
         });
     }
@@ -1135,11 +1159,57 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                /*Intent intent = new Intent(MainActivity.this, MCQuiz.class);
                 intent.putExtra("flashcard", flashcard);
-                startActivity(intent);
+                startActivity(intent);*/
+                AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Type of test");
+                builder.setMessage("What kind of test would you like?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("open-ended quiz", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                        intent.putExtra("flashcard", flashcard);
+                        startActivity(intent);
+                    }
+                });
+                builder.setNegativeButton("MCQ quiz", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                        intent.putExtra("flashcard", flashcard);
+                        startActivity(intent);
+                    }
+                });
+                AlertDialog alert= builder.create();
+                alert.show();
             }
         });
+        /*public void querytypeoftest(){
+            AlertDialog.Builder builder=new AlertDialog.Builder(this);
+            builder.setTitle("OTP expire");
+            builder.setMessage("Your OTP has expired! Do you want a new OTP?");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                    intent.putExtra("flashcard", flashcard);
+                    startActivity(intent);
+                }
+            });
+            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                    intent.putExtra("flashcard", flashcard);
+                    startActivity(intent);
+                }
+            });
+            AlertDialog alert= builder.create();
+            alert.show();
+        }*/
     }
 
 }
