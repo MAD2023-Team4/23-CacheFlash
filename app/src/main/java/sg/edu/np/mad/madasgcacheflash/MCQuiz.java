@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.Random;
 
 public class MCQuiz extends AppCompatActivity {
-    final String TITLE = "Testyourself";
+    final String TITLE = "TestyourselfMCQ";
     int currentIndex = 0;
     int score=0;
     String username;

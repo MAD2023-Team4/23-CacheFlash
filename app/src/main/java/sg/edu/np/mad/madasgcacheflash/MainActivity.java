@@ -381,9 +381,11 @@ public class MainActivity extends AppCompatActivity {
         questions.add("What is the capital of France?");
         questions.add("What is the largest city in France?");
         questions.add("What is the national language of France?");
+        questions.add("What is the national dish of France?");
         answers.add("Paris");
         answers.add("Lyon");
         answers.add("French");
+        answers.add("Pot Au Feu");
         france.setQuestions(questions);
         france.setAnswers(answers);
         france.setCategory("Social Studies");
@@ -396,9 +398,11 @@ public class MainActivity extends AppCompatActivity {
         questions.add("What is the product rule of logarithm?");
         questions.add("What is the quotient rule of logarithm?");
         questions.add("What is the notation for differentiation?");
+        questions.add("What is the Pyhagoras Theorem");
         answers.add("logb(xy) = logb x + logb y");
         answers.add("loga(x/y)  = loga x – loga y");
         answers.add("dy/dx or f'(x)");
+        answers.add("a^2+b^2=c^2");
         math.setQuestions(questions);
         math.setAnswers(answers);
         math.setCategory("Math");
