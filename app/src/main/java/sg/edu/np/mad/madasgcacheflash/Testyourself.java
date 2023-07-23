@@ -356,12 +356,11 @@ public class Testyourself extends AppCompatActivity {
                 .setPositiveButton("Back to home", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Do something when the "OK" button is clicked
-                        Intent intent = new Intent(Testyourself.this, MainActivity.class);
-                        intent.putExtra("Flashcard", flashcard);
-                        intent.putExtra("Username",username);
-                        intent.putExtra("Score", percentage);
-                        intent.putExtra("Total", total);
-                        startActivity(intent);
+                        //Intent intent = new Intent(Testyourself.this, MainActivity.class);
+                        //intent.putExtra("Flashcard", flashcard);
+                        //intent.putExtra("Score", percentage);
+                        //intent.putExtra("Total", total);
+                        //startActivity(intent);
                     }
                 })
                 .setNegativeButton("Close", new DialogInterface.OnClickListener() {
@@ -401,7 +400,7 @@ public class Testyourself extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Handle any errors
             }
-     });
+        });
     }
 
 

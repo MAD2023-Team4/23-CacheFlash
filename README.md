@@ -5,14 +5,12 @@ Wanting to study a particular topic, but struggle to do so? Don't worry, we can 
 
 #### App Catergory: Education
 ### Stage 1 - App Features:
-- Login and sign-up page for users (Hui Ting, Samuel)
-- Home page - Displays all the default flashcards, and the learn and test feature, and has a bottom navigation view (Samuel)
-- Learn Yourself - user gets to learn concepts using flashcards, with interactive animations (Bryan)
-- Test Yourself - user gets to access his/her own knowledge of the topic of choice, by recalling answer by typing answer out, the system will check if the answer typed out matches the correct answer. (John, Bryan)
+- Login and sign-up page for users (Hui Ting)
+- Home page - Displays all the default flashcards, and the learn and test feature (Samuel)
+- Learn Yourself - user gets to learn concepts using flashcards. (Bryan)
+- Test Yourself - user gets to access his/her own knowledge of the topic of choice, by recalling answer by typing answer out, the system will check if the answer typed out matches the correct answer. (John)
 - Profile page (Hui Ting)
 - App UI and logo (Victoria)
-
-#### Other Tasks:
 - Uploading to play store (Samuel & Hui Ting)
 - Slides (Group)
 - Google feedback form for account deletion (John)
@@ -31,17 +29,13 @@ Previously, we were experimenting GitHub, and we made mistakes on our previous r
 
 
 ### Stage 2 - Proposed New Features:
- -  Speedrun feature for users who want a challenge, and let them edit the time they have to answer (Hui Ting)
- -  Dashboard feature to track user data by calculating the timing to review the flashcards (Forgetting Curve) [Samuel]
- -  Information Depository for users to key in notes outside of the flashcards (Hui Ting)
- -  Card memory game (Bryan)
- -  Numbers memory game (Bryan)
+ - Speedrun feature for users who want a challenge, and let them edit the time they have to answer (Hui Ting)
+ - Dashboard feature to track user data by calculating the timing to review the flashcards (Forgetting Curve) [Samuel]
+ - Information Depository for users to key in notes outside of the flashcards (Hui Ting)
+ - Image Relaxation (Bryan)
  -  Multiple choice style - there will be multiple choice questions, and the user selects the correct answer. (John)
  -  Creating flashcards - the user creates custom flashcards for own revision (Bryan)
  -  Improvement of app UI (Victoria)
- -  Search bar (Victoria)
- -  Simple RPG game for users to run around as a game character and collect flashcards. When a flashcard is studied, the user collects bananas (Samuel)
- -  Simple leaderboard for all users (Samuel)
  
  #### Explanation of Calculation of Optimal Timing (Samuel)
  [The forgetting curve](https://en.wikipedia.org/wiki/Forgetting_curve) can help remind the users when would they almost forget that information (the exact date and timing). This is done by sending them a notification when the retainability has reached a certain level as time passes. For example, a user has finished a deck of flashcards, and the app estimates that he/she will forget about 70% of information in 6 days. This means that R is reduced, until about R = 1 - 0.7 = 0.3. Hence, it will send a notification 6 days later to the user.

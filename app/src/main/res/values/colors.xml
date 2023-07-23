@@ -11,6 +11,8 @@
     <color name="grey">#808080</color>
     <color name="green">#00FF00</color>
     <color name="very_light_gray">#F5F5F5</color>
+    <color name="stepIndicatorSelectedColor">#FF4081</color>
+    <color name="stepIndicatorUnselectedColor">#BDBDBD</color>
 
 
     <!--Blue color research
