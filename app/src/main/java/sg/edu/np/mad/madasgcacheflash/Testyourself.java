@@ -90,7 +90,8 @@ public class Testyourself extends AppCompatActivity {
         if (intent != null && intent.hasExtra("flashcard")
                 && intent.hasExtra("Username")) {
             flashcard = intent.getParcelableExtra("flashcard");
-            //username = intent.getParcelableExtra("Username");
+            username = intent.getStringExtra("Username");
+            Log.v("Test Yourself",username);
 
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
@@ -184,6 +185,7 @@ public class Testyourself extends AppCompatActivity {
 
                         Log.v("Percentage", String.valueOf(flashcard.getQuestions().size()));
                         //updatePercentage(username, percentage);
+                        Log.v("Quiz Finished", String.valueOf(percentage));
                         showAlert("Quiz Finished", "Your score: " + percentage
                                 + "%", percentage, flashcard.getQuestions().size());
                         updatePercentage(username, percentage, flashcard);
@@ -354,11 +356,12 @@ public class Testyourself extends AppCompatActivity {
                 .setPositiveButton("Back to home", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Do something when the "OK" button is clicked
-                        //Intent intent = new Intent(Testyourself.this, MainActivity.class);
-                        //intent.putExtra("Flashcard", flashcard);
-                        //intent.putExtra("Score", percentage);
-                        //intent.putExtra("Total", total);
-                        //startActivity(intent);
+                        Intent intent = new Intent(Testyourself.this, MainActivity.class);
+                        intent.putExtra("Flashcard", flashcard);
+                        intent.putExtra("Username",username);
+                        intent.putExtra("Score", percentage);
+                        intent.putExtra("Total", total);
+                        startActivity(intent);
                     }
                 })
                 .setNegativeButton("Close", new DialogInterface.OnClickListener() {
@@ -370,6 +373,10 @@ public class Testyourself extends AppCompatActivity {
     }
 
     private void updatePercentage(String username, double percentage, Flashcard f2){
+        if (username == null) {
+            Log.e("UpdatePercentage", "Username is null. Cannot proceed.");
+            return;
+        }
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
                 .child("users")
                 .child(username)
@@ -394,7 +401,7 @@ public class Testyourself extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Handle any errors
             }
-        });
+     });
     }
 
 

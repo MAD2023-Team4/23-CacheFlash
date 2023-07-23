@@ -23,6 +23,12 @@
         android:theme="@style/Theme.MADAsgCacheFlash"
         tools:targetApi="31">
         <activity
+            android:name=".Search"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity
+            android:name=".Leaderboard"
+            android:exported="false" />
+        <activity
             android:name=".StudyStreakPage"
             android:exported="false" />
         <activity
@@ -61,6 +67,9 @@
         <activity
             android:name=".ShuffleCardActivity"
             android:exported="false" />
+        <activity
+            android:name=".MCQuiz"
+            android:exported="false"/>
         <service
             android:name=".StreakUpdateService"
             android:enabled="true"

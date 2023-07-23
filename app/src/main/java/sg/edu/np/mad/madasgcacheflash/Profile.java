@@ -293,17 +293,36 @@ public class Profile extends AppCompatActivity {
 
                     if (id == R.id.dashboard) {
                         Intent intent = new Intent(getApplicationContext(), Dashboard.class);
-                        intent.putExtra("Username", username);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
-                    } else if (id == R.id.home) {
+                    }
+
+                    else if (id == R.id.search) {
+                        Intent intent = new Intent(getApplicationContext(), Search.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+                    }
+
+                    else if (id == R.id.home) {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("Username", username);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
-                    } else if (id == R.id.about) {
+
+                    }
+                    else if (id == R.id.leaderboard) {
+                        Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+                    }
+                    else if (id == R.id.about) {
                         return true;
                     }
                 }

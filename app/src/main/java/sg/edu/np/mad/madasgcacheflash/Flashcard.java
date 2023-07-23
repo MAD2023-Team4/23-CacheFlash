@@ -61,10 +61,10 @@ public class Flashcard implements Parcelable {
     public String getCategory() { return category; }
 
     public  void setCategory(String category)  { this.category = category; }
-
     public double getPercentage() { return percentage; }
 
     public void setPercentage(double percentage)  { this.percentage = percentage; }
+
 
 
     protected Flashcard(Parcel in) {

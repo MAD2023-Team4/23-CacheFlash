@@ -1,5 +1,6 @@
 package sg.edu.np.mad.madasgcacheflash;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.protobuf.NullValue;
 
 public class Signup extends AppCompatActivity {
 
@@ -33,6 +35,7 @@ public class Signup extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         EditText etUsername = findViewById(R.id.editTextText3);
         EditText etPassword = findViewById(R.id.editTextText4);
+
         Button createButton = findViewById(R.id.button3);
         Button cancelButton = findViewById(R.id.button2);
 
@@ -60,6 +63,8 @@ public class Signup extends AppCompatActivity {
                     else if (password.length() < 6) {
                         Toast.makeText(Signup.this, "Length of password must be at least 6", Toast.LENGTH_SHORT).show();
                     }
+
+
                     else {
                         signup(username, password);
                     }
@@ -94,5 +99,10 @@ public class Signup extends AppCompatActivity {
                         }
                     }
                 });
+
+
+
+        }
+
     }
-}
+
