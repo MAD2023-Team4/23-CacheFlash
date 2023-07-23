@@ -35,6 +35,7 @@ public class Signup extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         EditText etUsername = findViewById(R.id.editTextText3);
         EditText etPassword = findViewById(R.id.editTextText4);
+        EditText etPhone=findViewById(R.id.editTextText5);
 
         Button createButton = findViewById(R.id.button3);
         Button cancelButton = findViewById(R.id.button2);
@@ -44,8 +45,9 @@ public class Signup extends AppCompatActivity {
             public void onClick(View view){
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
+                String Phone = etPhone.getText().toString();
 
-                if(username.isEmpty() && password.isEmpty()){
+                if(username.isEmpty() && password.isEmpty() && Phone.isEmpty()){
                     Toast.makeText(Signup.this, "Please enter username and password,do not leave it blank", Toast.LENGTH_SHORT).show();
                 }
                 else if (password.isEmpty()) {
@@ -53,20 +55,25 @@ public class Signup extends AppCompatActivity {
                 }
                 else if(username.isEmpty()){
                     Toast.makeText(Signup.this, "Please enter username,do not leave it blank", Toast.LENGTH_SHORT).show();
-                }
-
-                else {
+                } else if (Phone.isEmpty()) {
+                    Toast.makeText(Signup.this, "Please enter phonenumber,do not leave it blank", Toast.LENGTH_SHORT).show();
+                    
+                    
+                } else {
                     // Check if the username contains only letters and numbers
                     if (!username.matches("^[a-zA-Z0-9]+$")) {
                         Toast.makeText(Signup.this, "Username can only contain letters and numbers", Toast.LENGTH_SHORT).show();
                     }
                     else if (password.length() < 6) {
                         Toast.makeText(Signup.this, "Length of password must be at least 6", Toast.LENGTH_SHORT).show();
-                    }
+                    } else if (!Phone.matches("^[0-9]{1,45}$")) {
+                        Toast.makeText(Signup.this, "Phone number must only consist of numbers", Toast.LENGTH_SHORT).show();
 
-
-                    else {
+                        
+                    } else {
                         signup(username, password);
+                        mAuth.updateCurrentUser(mAuth.getCurrentUser());
+
                     }
                 }
 
@@ -99,6 +106,7 @@ public class Signup extends AppCompatActivity {
                         }
                     }
                 });
+
 
 
 

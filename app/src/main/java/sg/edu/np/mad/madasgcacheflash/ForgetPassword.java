@@ -3,6 +3,7 @@ package sg.edu.np.mad.madasgcacheflash;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -108,6 +109,8 @@ public class ForgetPassword extends AppCompatActivity {
                             // if the code is not correct then we are
                             // displaying an error message to the user.
                             Toast.makeText(ForgetPassword.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+
                         }
                     }
                 });
