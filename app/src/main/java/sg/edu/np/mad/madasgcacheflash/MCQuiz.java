@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.constraintlayout.motion.widget.MotionLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,7 +39,8 @@ public class MCQuiz extends AppCompatActivity {
     List<String> answers = new ArrayList<>();
     List<String> answerscheck = new ArrayList<>();
     List<String> optionsList = new ArrayList<>();
-    List<Integer> answeredQuestions = new ArrayList<>(); // New list to track answered questions
+    private MotionLayout motionLayout;
+
     boolean isAnswered = false;
 
     @Override
@@ -53,10 +55,32 @@ public class MCQuiz extends AppCompatActivity {
             Flashcard flashcard = intent.getParcelableExtra("flashcard");
             username = intent.getStringExtra("Username");
 
+
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
             answers = flashcard.getAnswers();
+
+            List<String> combinedList = new ArrayList<>();
+            for (int i = 0; i < questions.size(); i++) {
+                combinedList.add(questions.get(i) + "|" + answers.get(i));
+            }
+            Collections.shuffle(combinedList);
+
+            // Clear the original questions and answers lists
+            questions.clear();
+            answers.clear();
+
+            // Separate the shuffled combined list into questions and answers lists
+            for (String item : combinedList) {
+                String[] parts = item.split("\\|");
+                questions.add(parts[0]);
+                answers.add(parts[1]);
+            }
             answerscheck.addAll(answers);
+            motionLayout = findViewById(R.id.motionLayout);
+
+            motionLayout.transitionToEnd();
+
 
             Log.v(TITLE, "hi" + answerscheck.size());
             TextView QuestionView = findViewById(R.id.QuestionViews);

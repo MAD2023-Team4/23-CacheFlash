@@ -1093,7 +1093,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(MainActivity.this, Testyourself.class);
                         intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username", username);
                         startActivity(intent);
+
                     }
                 });
                 builder.setNegativeButton("MCQ-Quiz", new DialogInterface.OnClickListener() {
@@ -1101,7 +1103,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(MainActivity.this, MCQuiz.class);
                         intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username", username);
                         startActivity(intent);
+
                     }
                 });
                 AlertDialog alert= builder.create();
