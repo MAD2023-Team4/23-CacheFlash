@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.FlashcardViewHolder> {
-    private List<Flashcard> flashcardList;
+    private List<Flashcard> fList;
 
-    public DashboardAdapter(List<Flashcard> flashcardList) {
-        this.flashcardList = flashcardList;
+    public DashboardAdapter(List<Flashcard> fList) {
+        this.fList = fList;
     }
 
     @NonNull
@@ -31,8 +31,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Flas
         int firstFlashcardPosition = position * 2;
 
         // Check if the first flashcard position is within the list size
-        if (firstFlashcardPosition < flashcardList.size()) {
-            Flashcard firstFlashcard = flashcardList.get(firstFlashcardPosition);
+        if (firstFlashcardPosition < fList.size()) {
+            Flashcard firstFlashcard = fList.get(firstFlashcardPosition);
             holder.bindFlashcard1(firstFlashcard);
         } else {
             holder.clearFlashcard1();
@@ -42,8 +42,8 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Flas
         int secondFlashcardPosition = firstFlashcardPosition + 1;
 
         // Check if the second flashcard position is within the list size
-        if (secondFlashcardPosition < flashcardList.size()) {
-            Flashcard secondFlashcard = flashcardList.get(secondFlashcardPosition);
+        if (secondFlashcardPosition < fList.size()) {
+            Flashcard secondFlashcard = fList.get(secondFlashcardPosition);
             holder.bindFlashcard2(secondFlashcard);
         } else {
             holder.clearFlashcard2();
@@ -53,39 +53,47 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Flas
     @Override
     public int getItemCount() {
         // Calculate the number of rows based on the number of flashcards
-        return (int) Math.ceil(flashcardList.size() / 2.0);
+        return (int) Math.ceil(fList.size() / 2.0);
     }
 
     static class FlashcardViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView1;
         TextView descTextView1;
+        TextView descTextView3;
         TextView titleTextView2;
         TextView descTextView2;
+        TextView descTextView4;
 
         public FlashcardViewHolder(@NonNull View itemView) {
             super(itemView);
             // Initialize the views in the item_flashcard_dashboard.xml layout for both flashcards
             titleTextView1 = itemView.findViewById(R.id.titleTextView1);
             descTextView1 = itemView.findViewById(R.id.textViewDesc1);
+            descTextView3 = itemView.findViewById(R.id.textViewDesc3);
             titleTextView2 = itemView.findViewById(R.id.titleTextView2);
             descTextView2 = itemView.findViewById(R.id.textViewDesc2);
+            descTextView4 = itemView.findViewById(R.id.textViewDesc4);
         }
 
         // Bind the flashcard data to the layout views for flashcard 1
         public void bindFlashcard1(Flashcard flashcard) {
             titleTextView1.setText(flashcard.getTitle());
-            descTextView1.setText(flashcard.getQuestions().size() + " questions");
+            descTextView1.setText(flashcard.getPercentage() + "%");
+            descTextView3.setText("Recall time: NA");
         }
+
 
         // Bind the flashcard data to the layout views for flashcard 2
         public void bindFlashcard2(Flashcard flashcard) {
             titleTextView2.setText(flashcard.getTitle());
-            descTextView2.setText(flashcard.getQuestions().size() + " questions");
+            descTextView2.setText(flashcard.getPercentage() + "%");
+            descTextView4.setText("Recall time: NA");
         }
 
         // Clear the views for flashcard 1
         public void clearFlashcard1() {
             titleTextView1.setText("");
+            descTextView3.setText("");
             descTextView1.setText("");
         }
 
@@ -93,10 +101,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<DashboardAdapter.Flas
         public void clearFlashcard2() {
             titleTextView2.setText("");
             descTextView2.setText("");
-        }
+            descTextView4.setText("");
+    }
     }
 }
-
-
-
-
