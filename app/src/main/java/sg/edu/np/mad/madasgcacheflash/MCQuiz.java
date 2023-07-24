@@ -5,14 +5,22 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.motion.widget.MotionLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +50,13 @@ public class MCQuiz extends AppCompatActivity {
     private MotionLayout motionLayout;
 
     boolean isAnswered = false;
+    private int animationDuration = 100;
+    private int pauseDuration = 500; // Adjust the pause duration here
+    private int roundCount = 0;
+    private ImageView imageView1;
+    private ImageView imageView2;
+    private ImageView imageView3;
+    private List<ImageView> imageViews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +64,21 @@ public class MCQuiz extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_mcquiz);
+        ConstraintLayout mainLayout=findViewById(R.id.activity_mcq_quiz);
+        View shufflingCardLayout = getLayoutInflater().inflate(R.layout.activity_shuffle_card, mainLayout, false);
+        mainLayout.addView(shufflingCardLayout);
+
+        // Initialize the ImageView variables using the IDs from the shuffling card layout
+        imageView1 = shufflingCardLayout.findViewById(R.id.one);
+        imageView2 = shufflingCardLayout.findViewById(R.id.two);
+        imageView3 = shufflingCardLayout.findViewById(R.id.three);
+
+        imageViews = new ArrayList<>();
+        imageViews.add(imageView1);
+        imageViews.add(imageView2);
+        imageViews.add(imageView3);
+
+        startShufflingAnimation(shufflingCardLayout,mainLayout);
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("flashcard")) {
@@ -75,11 +105,11 @@ public class MCQuiz extends AppCompatActivity {
                 String[] parts = item.split("\\|");
                 questions.add(parts[0]);
                 answers.add(parts[1]);
+
             }
             answerscheck.addAll(answers);
-            motionLayout = findViewById(R.id.motionLayout);
 
-            motionLayout.transitionToEnd();
+
 
 
             Log.v(TITLE, "hi" + answerscheck.size());
@@ -301,6 +331,7 @@ public class MCQuiz extends AppCompatActivity {
                 .show();
     }
 
+
     private void postPerformance(Flashcard flashcard, int score) {
         DatabaseReference flashcardsRef = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(username).child("flashcards");
@@ -330,6 +361,79 @@ public class MCQuiz extends AppCompatActivity {
 
     private float calculatePercentage(int score, int totalQuestions) {
         return ((float) score / totalQuestions) * 100;
+    }
+    private void startShufflingAnimation(View shufflingCardLayout, ConstraintLayout mainLayout) {
+        final int totalImages = imageViews.size();
+
+        List<Animator> animatorList = new ArrayList<>();
+
+        // Create the animation for each image
+        for (int i = 0; i < totalImages; i++) {
+            ImageView currentImage = imageViews.get(i);
+            ImageView nextImage = imageViews.get((i + 1) % totalImages);
+
+            // Calculate the translation distance based on the image width
+            int translationDistance = nextImage.getLeft() - currentImage.getLeft();
+
+            // Create ObjectAnimator for translationX property
+            ObjectAnimator animX = ObjectAnimator.ofFloat(currentImage, "translationX", 0, translationDistance);
+            animX.setDuration(animationDuration);
+
+            // Add the animator to the list
+            animatorList.add(animX);
+        }
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(animatorList);
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Swap positions of imageViews in the list
+                ImageView firstImage = imageViews.get(0);
+                imageViews.remove(0);
+                imageViews.add(firstImage);
+
+                // Update the layout params to reflect the new positions
+                for (int i = 0; i < totalImages; i++) {
+                    ImageView imageView = imageViews.get(i);
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+
+                    if (i == 0) {
+                        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    } else if (i == 1) {
+                        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                    } else if (i == 2) {
+                        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    }
+
+                    imageView.setTranslationX(0);
+                }
+
+                roundCount++;
+
+                // Start displaying the questions after one round
+                if (roundCount == totalImages) {
+                    currentIndex = 0; // Reset the currentIndex
+                    mainLayout.removeView(shufflingCardLayout);
+
+
+                } else {
+                    // Start the next shuffling animation after a delay
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startShufflingAnimation(shufflingCardLayout,mainLayout);
+                        }
+                    }, pauseDuration);
+                }
+            }
+        });
+
+        animatorSet.start();
     }
 
 

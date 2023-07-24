@@ -1,5 +1,6 @@
 package sg.edu.np.mad.madasgcacheflash;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -9,6 +10,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -44,6 +47,7 @@ public class Testyourself extends AppCompatActivity {
     private int pauseDuration = 500; // Adjust the pause duration here
     private int roundCount = 0;
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +91,7 @@ public class Testyourself extends AppCompatActivity {
                 String[] parts = item.split("\\|");
                 questions.add(parts[0]);
                 answers.add(parts[1]);
+                answers.replaceAll(String::toLowerCase);;
             }
 
             TextView Title = findViewById(R.id.ftitle);
@@ -97,6 +102,7 @@ public class Testyourself extends AppCompatActivity {
             Button next = findViewById(R.id.button2);
             Button submit = findViewById(R.id.button4);
 
+
             Title.setText(flashcard.getTitle());
             qcard.setText(questions.get(currentIndex));
 
@@ -105,15 +111,20 @@ public class Testyourself extends AppCompatActivity {
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String answer = input.getText().toString();
+                    String answer = input.getText().toString().toLowerCase();
+                    String correctedspaceans=answer.replaceAll("\\s+","");
                     String correctAnswer = answers.get(currentIndex);
+                    String CORRECTANS=correctAnswer.replaceAll("\\s+","");
 
-                    if (answer.equals(correctAnswer)) {
-                        Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
+                    if (correctedspaceans.equals(CORRECTANS)) {
+                        Toast.makeText(getApplicationContext(), correctedspaceans+ " is correct.", Toast.LENGTH_SHORT).show();
+                        input.setText(correctAnswer);
+
 
                     } else {
                         Toast.makeText(getApplicationContext(), "Incorrect. The correct answer is: " + correctAnswer, Toast.LENGTH_SHORT).show();
                         input.setText(correctAnswer); // Display the correct answer
+
                     }
 
                     input.setEnabled(false); // Disable the input field

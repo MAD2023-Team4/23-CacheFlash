@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
 
+
         Log.d("MainActivity", "Received Username: " + username);
         FirebaseApp.initializeApp(MainActivity.this);
         FirebaseUser user = mAuth.getCurrentUser();
@@ -111,6 +112,7 @@ public class MainActivity extends AppCompatActivity {
         createFlashcards();
         createCategories();
         uploadNewFlashcards(categories, username);
+
 
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
         userRef.child("favoriteCategory").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -1029,6 +1031,8 @@ public class MainActivity extends AppCompatActivity {
         List<Flashcard> flashcardsToShow = new ArrayList<>();
         RecyclerView recyclerView;
         FlashcardAdapter fcAdapter;
+        RecyclerView recyclerView2;
+        FlashcardAdapter fcAdapter2 = new FlashcardAdapter(flashcardList);
         LinearLayoutManager mLayoutManager;
         int spacingInPixels;
 
@@ -1066,17 +1070,17 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up the RecyclerView with the filtered flashcardList
         //Test Yourself
-        recyclerView = findViewById(R.id.recyclerView2);
-        fcAdapter = new FlashcardAdapter(flashcardsToShow);
+        recyclerView2 = findViewById(R.id.recyclerView2);
+        fcAdapter2 = new FlashcardAdapter(flashcardsToShow);
         mLayoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(new LinearLayoutManager(
+        recyclerView2.setLayoutManager(new LinearLayoutManager(
                 this, LinearLayoutManager.HORIZONTAL, false));
         spacingInPixels = 4;
-        recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(fcAdapter);
+        recyclerView2.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+        recyclerView2.setItemAnimator(new DefaultItemAnimator());
+        recyclerView2.setAdapter(fcAdapter2);
 
-        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+        fcAdapter2.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
@@ -1116,6 +1120,8 @@ public class MainActivity extends AppCompatActivity {
     private void displayAllFlashcards(){
         RecyclerView recyclerView;
         FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
+        RecyclerView recyclerView2;
+        FlashcardAdapter fcAdapter2 = new FlashcardAdapter(flashcardList);
         LinearLayoutManager mLayoutManager;
         int spacingInPixels;
 
@@ -1149,17 +1155,17 @@ public class MainActivity extends AppCompatActivity {
             // You can perform operations or access its properties here
             String title = flashcard.getTitle();
 
-            recyclerView = findViewById(R.id.recyclerView2);
-            fcAdapter = new FlashcardAdapter(flashcardList);
+             recyclerView2 = findViewById(R.id.recyclerView2);
+             fcAdapter2 = new FlashcardAdapter(flashcardList);
             mLayoutManager = new LinearLayoutManager(this);
-            recyclerView.setLayoutManager(new LinearLayoutManager(
+            recyclerView2.setLayoutManager(new LinearLayoutManager(
                     this, LinearLayoutManager.HORIZONTAL, false));
             spacingInPixels = 4;
-            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(fcAdapter);
+            recyclerView2.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+            recyclerView2.setItemAnimator(new DefaultItemAnimator());
+            recyclerView2.setAdapter(fcAdapter2);
         }
-        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+        fcAdapter2.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
@@ -1175,6 +1181,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(MainActivity.this, Testyourself.class);
                         intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username",username);
                         startActivity(intent);
                     }
                 });
@@ -1183,6 +1190,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Intent intent = new Intent(MainActivity.this, MCQuiz.class);
                         intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username",username);
                         startActivity(intent);
                     }
                 });
