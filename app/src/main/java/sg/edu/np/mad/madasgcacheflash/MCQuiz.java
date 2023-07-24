@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,10 +50,10 @@ public class MCQuiz extends AppCompatActivity {
         setContentView(R.layout.activity_mcquiz);
 
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("flashcard")) {
+        if (intent != null && intent.hasExtra("flashcard") && intent.hasExtra("Username")) {
             Flashcard flashcard = intent.getParcelableExtra("flashcard");
             username = intent.getStringExtra("Username");
-
+            Log.v("Test Yourself",username);
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
             answers = flashcard.getAnswers();
@@ -179,11 +180,16 @@ public class MCQuiz extends AppCompatActivity {
 
 
         for (int i = 0; i < 3; i++) {
-            int options = random.nextInt(AList.size());
-            String option = AList.get(options);
-            OList.add(option);
-            AList.remove(option);
+            //Do a checker if AList is empty, it will have a negative bound error
+            if (AList.size() > 0) {
+                int options = random.nextInt(AList.size());
+                String option = AList.get(options);
+                OList.add(option);
+                AList.remove(option);
+            }
+            else{
 
+            }
 
         }
 
@@ -216,7 +222,7 @@ public class MCQuiz extends AppCompatActivity {
 
 
 
-    public boolean CheckAnswer(String correctAnswer, String guessedAnswer) {
+    public boolean checkAnswer(String correctAnswer, String guessedAnswer) {
         if (correctAnswer.equals(guessedAnswer)) {
             return true;
         }
@@ -225,7 +231,7 @@ public class MCQuiz extends AppCompatActivity {
     public void getanswer(Button b,Button b2,Button b3,Button b4, List<String> AL,int i,Button next)
     {
 
-        if(CheckAnswer(AL.get(i),b.getText().toString()))
+        if(checkAnswer(AL.get(i),b.getText().toString()))
         {
             Log.v(TITLE,"here");
             b.setBackgroundColor(Color.GREEN);
@@ -235,15 +241,15 @@ public class MCQuiz extends AppCompatActivity {
         else{
             Log.v(TITLE,"her");
             b.setBackgroundColor(Color.RED);
-            if(CheckAnswer(AL.get(i),b2.getText().toString()))
+            if(checkAnswer(AL.get(i),b2.getText().toString()))
             {
                 b2.setBackgroundColor(Color.GREEN);
             }
-            else if(CheckAnswer(AL.get(i),b3.getText().toString()))
+            else if(checkAnswer(AL.get(i),b3.getText().toString()))
             {
                 b3.setBackgroundColor(Color.GREEN);
             }
-            else if(CheckAnswer(AL.get(i),b4.getText().toString()))
+            else if(checkAnswer(AL.get(i),b4.getText().toString()))
             {
                 b4.setBackgroundColor(Color.GREEN);
             }
@@ -264,6 +270,7 @@ public class MCQuiz extends AppCompatActivity {
                         // Do something when the "OK" button is clicked
                         Intent intent = new Intent(MCQuiz.this, Dashboard.class);
                         intent.putExtra("flashcards", flashcard);
+                        intent.putExtra("Username",username);
                         intent.putExtra("Score", score);
                         intent.putExtra("Total", total);
                         startActivity(intent);

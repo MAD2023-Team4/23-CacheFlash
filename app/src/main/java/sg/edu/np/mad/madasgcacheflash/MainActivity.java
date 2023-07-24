@@ -109,7 +109,9 @@ public class MainActivity extends AppCompatActivity {
 
 // Create an intent to start the StreakUpdateService
         Intent serviceIntent = new Intent(this, StreakUpdateService.class);
+        //hardcoding the username to paul
         serviceIntent.putExtra("Username",username);
+        Log.v("MustSee",username);
 // Start the service
         startService(serviceIntent);
 
@@ -393,6 +395,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             // Flashcard with the same title already exists, update its data instead
+                            /*
                             for (DataSnapshot flashcardSnapshot : dataSnapshot.getChildren()) {
                                 String flashcardKey = flashcardSnapshot.getKey();
                                 DatabaseReference flashcardRef = categoryRef.child(flashcardKey);
@@ -400,6 +403,9 @@ public class MainActivity extends AppCompatActivity {
                                 flashcardRef.setValue(flashcard);
                                 Log.d("QuoteApp", "Flashcard updated with key: " + flashcardKey);
                             }
+
+                             */
+
                         } else {
                             // Flashcard with the same title doesn't exist, create a new one
                             DatabaseReference flashcardRef = categoryRef.child(flashcardTitle); // Use the title as the key
@@ -1079,14 +1085,16 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(fcAdapter);
 
+
         fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
+                alertDialogQuiz(flashcard);
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, Testyourself.class);
-                intent.putExtra("flashcard", flashcard);
-                intent.putExtra("Username", username);
-                startActivity(intent);
+                //Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                //intent.putExtra("flashcard", flashcard);
+                //intent.putExtra("Username", username);
+                //startActivity(intent);
                 //startShuffleCardActivity(flashcard);
             }
         });
@@ -1109,6 +1117,7 @@ public class MainActivity extends AppCompatActivity {
             recyclerView.setAdapter(fcAdapter);
         }
 
+        /*
         fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
@@ -1121,6 +1130,8 @@ public class MainActivity extends AppCompatActivity {
                 startShuffleCardActivity(flashcard);
             }
         });
+
+         */
 
         for (Flashcard flashcard : flashcardList) {
             // Access the current flashcard
@@ -1140,14 +1151,44 @@ public class MainActivity extends AppCompatActivity {
         fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
+                alertDialogQuiz(flashcard);
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, Testyourself.class);
-                intent.putExtra("flashcard", flashcard);
-                startActivity(intent);
+                //Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                //intent.putExtra("flashcard", flashcard);
+                //startActivity(intent);
             }
         });
     }
 
-}
+    private void alertDialogQuiz(Flashcard flashcard) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Test Yourself");
+        builder.setMessage("What kind of test would you like?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Open-ended", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                intent.putExtra("flashcard", flashcard);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+            }
+        });
+        builder.setNegativeButton("MCQ Quiz", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                intent.putExtra("flashcard", flashcard);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+            }
+        });
+
+// Call .show() to display the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+    }
+    }
 
 

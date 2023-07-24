@@ -41,7 +41,9 @@ public class Dashboard extends AppCompatActivity {
 
         Intent intent = getIntent();
         username = intent.getStringExtra("Username"); //get username
+        Log.v("Dashboard class",username);
 
+        /*
         Integer percentage = null; // Default value is null
         Integer total = null; // Default value is null
 
@@ -61,6 +63,8 @@ public class Dashboard extends AppCompatActivity {
             // Handle the case where "Percentage" and "Total" extras were not found
             // Use the default values or perform appropriate actions
         }
+
+         */
 
 
         queryFlashCards();

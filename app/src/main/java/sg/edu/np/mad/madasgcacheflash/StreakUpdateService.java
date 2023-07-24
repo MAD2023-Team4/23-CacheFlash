@@ -125,7 +125,8 @@ public class StreakUpdateService extends Service {
                 Log.e("Streak", "Error getting streak data: " + databaseError.getMessage());
             }
         });
-        return START_STICKY;
+        // Samuel: changed from start sticky to start not sticky
+        return START_NOT_STICKY;
     }
 
     @Nullable
