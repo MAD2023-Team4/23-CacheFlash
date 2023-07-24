@@ -1,21 +1,31 @@
 package sg.edu.np.mad.madasgcacheflash;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,7 +33,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,12 +44,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -58,6 +73,13 @@ public class MainActivity extends AppCompatActivity {
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private Date lastUpdatedDate; // Store the last updated date
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Uri selectedImageUri;
+    private String flashcardTitle;
+    private String flashcardCategory;
+    private TextInputEditText etFlashcardTitle;
+    private TextInputEditText etFlashcardCategory;
+    private Boolean hasImage = false;
 
 
 
@@ -68,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
-
 
         Log.d("MainActivity", "Received Username: " + username);
         FirebaseApp.initializeApp(MainActivity.this);
@@ -104,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Fetch a new quote from the API and update in Firebase Firestore
-                fetchNewQuoteFromAPI();
+                fetchQuoteFromDatabase();
             }
         });
 
@@ -112,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
         createFlashcards();
         createCategories();
         uploadNewFlashcards(categories, username);
-
 
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("users").child(username);
         userRef.child("favoriteCategory").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -133,6 +153,15 @@ public class MainActivity extends AppCompatActivity {
                 // Handle any errors that occur while fetching the data (optional).
             }
         });
+
+        FloatingActionButton addFlashcard = findViewById(R.id.floatingActionButton);
+        addFlashcard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showStep1Layout();
+            }
+        });
+
 
 
         // Bottom Navigation View
@@ -281,6 +310,65 @@ public class MainActivity extends AppCompatActivity {
             }
         }.execute();
     }
+    private void fetchQuoteFromDatabase() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    URL url = new URL("https://api.api-ninjas.com/v1/quotes?category=success");
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                    connection.setRequestProperty("accept", "application/json");
+                    connection.setRequestProperty("X-Api-Key", "7N/Wm8b2g7xvfFYTnyr05g==HQKXwuwskx8e2Cor");
+
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStream responseStream = connection.getInputStream();
+                        ObjectMapper mapper = new ObjectMapper();
+                        JsonNode root = mapper.readTree(responseStream);
+
+                        // Log the API response for debugging
+                        Log.d("QuoteApp", "API Response: " + root.toString());
+
+                        // Check if the response contains a quote and author
+                        if (root.isArray() && root.size() > 0) {
+                            JsonNode quoteNode = root.get(0).path("quote");
+                            JsonNode authorNode = root.get(0).path("author");
+
+                            if (quoteNode.isTextual() && authorNode.isTextual()) {
+                                String quote = quoteNode.asText();
+                                String author = authorNode.asText();
+
+                                // Store the new quote and author in Firebase Realtime Database
+                                DatabaseReference quoteRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("quote");
+                                Map<String, Object> quoteMap = new HashMap<>();
+                                quoteMap.put("quote", quote);
+                                quoteMap.put("author", author);
+                                quoteRef.setValue(quoteMap)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                // Display the new quote
+                                                String formattedQuote = String.format(Locale.getDefault(), "%s\n- %s", quote, author);
+                                                quoteTextView.setText(formattedQuote);
+                                                Log.d("QuoteApp", "Received Quote: " + quote);
+                                                Log.d("QuoteApp", "Author: " + author);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.e("QuoteApp", "Failed to update quote", e);
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    Log.e("QuoteApp", "Error fetching quote from API", e);
+                }
+                return null;
+            }
+        }.execute();
+    }
 
 
 
@@ -295,25 +383,43 @@ public class MainActivity extends AppCompatActivity {
 
             for (Flashcard flashcard : category.getFlashcards()) {
                 Log.d("QuoteApp", "Flashcard title: " + flashcard.getTitle());
-                String flashcardName = flashcard.getTitle();
-                DatabaseReference flashcardRef = categoryRef.child(flashcardName); // Use the flashcard name as the key
+                String flashcardTitle = flashcard.getTitle();
 
-                flashcardRef.setValue(flashcard)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d("QuoteApp", "Flashcard uploaded with name: " + flashcardName);
+                // Check if the flashcard already exists in the database
+                Query query = categoryRef.orderByChild("title").equalTo(flashcardTitle);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            // Flashcard with the same title already exists, update its data instead
+                            for (DataSnapshot flashcardSnapshot : dataSnapshot.getChildren()) {
+                                String flashcardKey = flashcardSnapshot.getKey();
+                                DatabaseReference flashcardRef = categoryRef.child(flashcardKey);
+                                // Update the flashcard data within the reference
+                                flashcardRef.setValue(flashcard);
+                                Log.d("QuoteApp", "Flashcard updated with key: " + flashcardKey);
                             }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.e("QuoteApp", "Failed to upload flashcard", e);
-                            }
-                        });
+                        } else {
+                            // Flashcard with the same title doesn't exist, create a new one
+                            DatabaseReference flashcardRef = categoryRef.child(flashcardTitle); // Use the title as the key
+                            flashcardRef.setValue(flashcard);
+                            Log.d("QuoteApp", "Flashcard uploaded with key: " + flashcardTitle);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Log.e("QuoteApp", "Database error: " + databaseError.getMessage());
+                    }
+                });
             }
         }
     }
+
+
+
+
+
 
 
 
@@ -372,7 +478,518 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+    private void showStep1Layout() {
+        // Inflate the layout
+        View step1Layout = getLayoutInflater().inflate(R.layout.create_flashcard_step_1, null);
 
+        // Find the views inside the layout
+        TextInputLayout tilFlashcardTitle = step1Layout.findViewById(R.id.tilFlashcardTitle);
+        TextInputLayout tilFlashcardCategory = step1Layout.findViewById(R.id.tilFlashcardCategory);
+         etFlashcardTitle = step1Layout.findViewById(R.id.etFlashcardTitle);
+         etFlashcardCategory = step1Layout.findViewById(R.id.etFlashcardCategory);
+        Button btnNext = step1Layout.findViewById(R.id.btnNext);
+
+        // Create an AlertDialog to show the layout
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(step1Layout);
+        builder.setCancelable(true); // Prevent dismissing the dialog when clicking outside
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        // Handle the "Next" button click
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the input values from EditText views
+                 flashcardTitle = etFlashcardTitle.getText().toString().trim();
+                 flashcardCategory = etFlashcardCategory.getText().toString().trim();
+
+                // Perform input validation (e.g., check if fields are not empty)
+                if (flashcardTitle.isEmpty()) {
+                    tilFlashcardTitle.setError("Please enter a title");
+                    return;
+                }
+
+                if (flashcardCategory.isEmpty()) {
+                    tilFlashcardCategory.setError("Please enter a category");
+                    return;
+                }
+
+                // Proceed to Step 2 or save the data, etc.
+                alertDialog.dismiss(); // Dismiss the current dialog
+                showStep2Layout();
+            }
+        });
+    }
+    private void showStep2Layout() {
+        // Inflate the Step 2 layout
+        View step2Layout = getLayoutInflater().inflate(R.layout.create_flashcard_step_2, null);
+
+        // Find the views inside the layout
+        CheckBox chkAddImage = step2Layout.findViewById(R.id.chkAddImage);
+        ImageView imgFlashcardImage = step2Layout.findViewById(R.id.imgFlashcardImage);
+        Button btnChooseImage = step2Layout.findViewById(R.id.btnChooseImage);
+        Button btnBack = step2Layout.findViewById(R.id.btnBack);
+        Button btnNext = step2Layout.findViewById(R.id.btnNext);
+
+        // Create an AlertDialog to show the Step 2 layout
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(step2Layout);
+        builder.setCancelable(true);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                showStep1Layout();
+                // Set the stored values back to the EditText fields
+                etFlashcardTitle.setText(flashcardTitle);
+                etFlashcardCategory.setText(flashcardCategory);
+            }
+        });
+
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Proceed to Step 3
+                alertDialog.dismiss();
+                showStep3Layout();
+            }
+        });
+
+        // Handle the checkbox to show or hide the image view and button
+        chkAddImage.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    imgFlashcardImage.setVisibility(View.VISIBLE);
+                    btnChooseImage.setVisibility(View.VISIBLE);
+                    hasImage = true;
+                } else {
+                    imgFlashcardImage.setVisibility(View.GONE);
+                    btnChooseImage.setVisibility(View.GONE);
+                    hasImage = false;
+                }
+            }
+        });
+
+        // Handle the "Choose Image" button click
+        btnChooseImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Open the gallery to select an image
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+            }
+        });
+    }
+
+    private void showStep3Layout() {
+        List<String> questionsList = new ArrayList<>();
+        List<String> answersList = new ArrayList<>();
+        // Inflate the Step 3 layout
+        View step3Layout = getLayoutInflater().inflate(R.layout.create_flashcard_step_3, null);
+
+        // Find the views inside the layout
+        Button btnAddQuestion = step3Layout.findViewById(R.id.btnAddQuestion);
+        Button btnNext = step3Layout.findViewById(R.id.btnNext);
+        Button btnBack = step3Layout.findViewById(R.id.btnBack);
+        LinearLayout containerQuestionsAndAnswers = step3Layout.findViewById(R.id.containerQuestionsAndAnswers);
+        // Find the EditText views for question and answer inside the layout
+        TextInputEditText etQuestion = step3Layout.findViewById(R.id.etQuestion);
+        TextInputEditText etAnswer = step3Layout.findViewById(R.id.etAnswer);
+        // Create an AlertDialog to show the Step 3 layout
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(step3Layout);
+        builder.setCancelable(true);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        // Handle the "Add More Question and Answer" button click
+        btnAddQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get the user input from the EditText fields
+                String question = etQuestion.getText().toString().trim();
+                String answer = etAnswer.getText().toString().trim();
+
+                // Check if both question and answer are not empty
+                if (!question.isEmpty() && !answer.isEmpty()) {
+                    // Add the question and answer to the respective lists
+                    questionsList.add(question);
+                    answersList.add(answer);
+
+                    // Clear the EditText fields to get ready for the next input
+                    etQuestion.getText().clear();
+                    etAnswer.getText().clear();
+
+                    // Optionally, you can show a toast or other feedback here to indicate that the input was added successfully
+                } else {
+                    // Optionally, show a toast or other feedback here to indicate that the fields cannot be empty
+                    Toast.makeText(MainActivity.this, "Both question and answer must be filled", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        // Handle the "Next" button click
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Check if at least one question and answer set is added
+                if (questionsList.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "Flashcard must have at least one question and answer", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Process the lists of questions and answers here
+                StringBuilder flashcardContent = new StringBuilder();
+                for (int i = 0; i < questionsList.size(); i++) {
+                    String question = questionsList.get(i);
+                    String answer = answersList.get(i);
+                    flashcardContent.append("Question ").append(i + 1).append(": ").append(question).append("\n");
+                    flashcardContent.append("Answer ").append(i + 1).append(": ").append(answer).append("\n\n");
+                }
+                Toast.makeText(MainActivity.this, flashcardContent.toString(), Toast.LENGTH_LONG).show();
+
+                alertDialog.dismiss();
+                showStep4Layout(questionsList,answersList);
+            }
+        });
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                showStep2Layout();
+            }
+        });
+
+    }
+    private void showStep4Layout(List<String> questions, List<String> answers) {
+        // Inflate the Step 4 layout
+        View step4Layout = getLayoutInflater().inflate(R.layout.create_flashcard_step_4, null);
+
+        // Find the views inside the layout
+        TextView tvFlashcardTitleSummary = step4Layout.findViewById(R.id.tvFlashcardTitleSummary);
+        TextView tvFlashcardCategorySummary = step4Layout.findViewById(R.id.tvFlashcardCategorySummary);
+        TextView tvImageSummary = step4Layout.findViewById(R.id.tvImageSummary);
+        ImageView imgSummaryImage = step4Layout.findViewById(R.id.imgSummaryImage);
+        LinearLayout containerQuestionsSummary = step4Layout.findViewById(R.id.containerQuestionsSummary);
+        LinearLayout containerAnswersSummary = step4Layout.findViewById(R.id.containerAnswersSummary);
+        ImageView imgEditTitle = step4Layout.findViewById(R.id.imgEditTitle);
+        ImageView imgEditCategory = step4Layout.findViewById(R.id.imgEditCategory);
+        ImageView imgEditImage = step4Layout.findViewById(R.id.imgEditImage);
+        ImageView imgEditQuestions = step4Layout.findViewById(R.id.imgEditQuestions);
+        ImageView imgEditAnswers = step4Layout.findViewById(R.id.imgEditAnswers);
+        Button btnConfirm = step4Layout.findViewById(R.id.btnConfirm);
+
+        // Set the summary text for Flashcard Title and Flashcard Category
+        tvFlashcardTitleSummary.setText(flashcardTitle);
+        tvFlashcardCategorySummary.setText(flashcardCategory);
+
+        // Set the summary text for Image
+        if (hasImage) {
+            tvImageSummary.setText("Yes");
+            imgSummaryImage.setVisibility(View.VISIBLE);
+            imgSummaryImage.setImageURI(selectedImageUri);
+        } else {
+            tvImageSummary.setText("No");
+            imgSummaryImage.setVisibility(View.GONE);
+        }
+
+        // Set the summary for Questions
+        for (int i = 0; i < questions.size(); i++) {
+            String question = questions.get(i);
+            TextView tvQuestion = new TextView(this);
+            tvQuestion.setText((i + 1) + ". " + question);
+            containerQuestionsSummary.addView(tvQuestion);
+        }
+
+// Display the initial summary for Answers
+        for (int i = 0; i < answers.size(); i++) {
+            String answer = answers.get(i);
+            TextView tvAnswer = new TextView(this);
+            tvAnswer.setText((i + 1) + ". " + answer);
+            containerAnswersSummary.addView(tvAnswer);
+        }
+
+        // Create an AlertDialog to show the Step 4 layout
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(step4Layout);
+        builder.setCancelable(false); // Prevent dismissing the dialog when clicking outside
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        // Handle the "Edit Flashcard Title" click
+        imgEditTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an AlertDialog with an EditText for the user to edit the title
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Edit Flashcard Title");
+
+                final EditText input = new EditText(MainActivity.this);
+                input.setText(flashcardTitle); // Set the initial text to the current title
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Update the flashcardTitle with the edited value
+                        flashcardTitle = input.getText().toString().trim();
+                        // Update the summary text in tvFlashcardTitleSummary
+                        tvFlashcardTitleSummary.setText(flashcardTitle);
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+
+        // Handle the "Edit Flashcard Category" click
+        imgEditCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an AlertDialog with an EditText for the user to edit the category
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Edit Flashcard Category");
+
+                final EditText input = new EditText(MainActivity.this);
+                input.setText(flashcardCategory); // Set the initial text to the current category
+                builder.setView(input);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Update the flashcardCategory with the edited value
+                        flashcardCategory = input.getText().toString().trim();
+                        // Update the summary text in tvFlashcardCategorySummary
+                        tvFlashcardCategorySummary.setText(flashcardCategory);
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+        // Handle the "Edit Image" click
+        imgEditImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an AlertDialog with a CheckBox to allow the user to change the image (Yes/No)
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Edit Image");
+
+                final CheckBox checkBox = new CheckBox(MainActivity.this);
+                checkBox.setText("Has Image");
+                checkBox.setChecked(hasImage); // Set the initial value based on the current selection
+                builder.setView(checkBox);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Update the hasImage variable with the edited value
+                        hasImage = checkBox.isChecked();
+                        // Update the summary text in tvImageSummary and visibility of imgSummaryImage
+                        if (hasImage) {
+                            tvImageSummary.setText("Yes");
+                            imgSummaryImage.setVisibility(View.VISIBLE);
+                        } else {
+                            tvImageSummary.setText("No");
+                            imgSummaryImage.setVisibility(View.GONE);
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        // Handle the "Edit Questions" click
+        imgEditQuestions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an AlertDialog with EditText fields for the user to edit questions
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Edit Questions");
+
+                final LinearLayout container = new LinearLayout(MainActivity.this);
+                container.setOrientation(LinearLayout.VERTICAL);
+
+                // Create EditText fields for each question in the questionsList
+                final List<EditText> questionEditTexts = new ArrayList<>();
+                for (String question : questions) {
+                    EditText editText = new EditText(MainActivity.this);
+                    editText.setText(question);
+                    container.addView(editText);
+                    questionEditTexts.add(editText);
+                }
+
+                builder.setView(container);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Update the questionsList with the edited values
+                        questions.clear();
+                        for (EditText editText : questionEditTexts) {
+                            String editedQuestion = editText.getText().toString().trim();
+                            if (!editedQuestion.isEmpty()) {
+                                questions.add(editedQuestion);
+                            }
+                        }
+
+                        // Update the summary in containerQuestionsSummary
+                        containerQuestionsSummary.removeAllViews();
+                        for (String question : questions) {
+                            TextView tvQuestion = new TextView(MainActivity.this);
+                            tvQuestion.setText(question);
+                            containerQuestionsSummary.addView(tvQuestion);
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        // Handle the "Edit Answers" click
+        imgEditAnswers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Create an AlertDialog with EditText fields for the user to edit answers
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Edit Answers");
+
+                final LinearLayout container = new LinearLayout(MainActivity.this);
+                container.setOrientation(LinearLayout.VERTICAL);
+
+                // Create EditText fields for each answer in the answersList
+                final List<EditText> answerEditTexts = new ArrayList<>();
+                for (String answer : answers) {
+                    EditText editText = new EditText(MainActivity.this);
+                    editText.setText(answer);
+                    container.addView(editText);
+                    answerEditTexts.add(editText);
+                }
+
+                builder.setView(container);
+
+                // Set up the buttons
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Update the answersList with the edited values
+                        answers.clear();
+                        for (EditText editText : answerEditTexts) {
+                            String editedAnswer = editText.getText().toString().trim();
+                            if (!editedAnswer.isEmpty()) {
+                                answers.add(editedAnswer);
+                            }
+                        }
+
+                        // Update the summary in containerAnswersSummary
+                        containerAnswersSummary.removeAllViews();
+                        for (String answer : answers) {
+                            TextView tvAnswer = new TextView(MainActivity.this);
+                            tvAnswer.setText(answer);
+                            containerAnswersSummary.addView(tvAnswer);
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
+        // Handle the "Confirm" button click in Step 4
+        btnConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Update the flashcardTitle and flashcardCategory with the edited values (if any)
+                String editedTitle = tvFlashcardTitleSummary.getText().toString().trim();
+                String editedCategory = tvFlashcardCategorySummary.getText().toString().trim();
+                flashcardTitle = !editedTitle.isEmpty() ? editedTitle : flashcardTitle;
+                flashcardCategory = !editedCategory.isEmpty() ? editedCategory : flashcardCategory;
+
+                // Create a new Flashcard object
+                Flashcard flashcard = new Flashcard();
+                flashcard.setTitle(flashcardTitle);
+                flashcard.setCategory(flashcardCategory);
+                //flashcard.setHasImage(hasImage);
+
+                // Add questions and answers to the flashcard
+                flashcard.setQuestions(questions);
+                flashcard.setAnswers(answers);
+
+                // Add the flashcard to the flashcardList
+                flashcardList.add(flashcard);
+
+                Toast.makeText(MainActivity.this, "Flashcard created successfully", Toast.LENGTH_SHORT).show();
+                createCategories();
+                uploadNewFlashcards(categories,username);
+                // Close the Step 4 dialog
+                alertDialog.dismiss();
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            // Get the selected image URI
+            selectedImageUri = data.getData();
+
+            // Set the selected image to the ImageView
+            ImageView imgFlashcardImage = findViewById(R.id.imgFlashcardImage);
+            imgFlashcardImage.setImageURI(selectedImageUri);
+        }
+    }
 
 
 
@@ -386,11 +1003,9 @@ public class MainActivity extends AppCompatActivity {
         questions.add("What is the capital of France?");
         questions.add("What is the largest city in France?");
         questions.add("What is the national language of France?");
-        questions.add("What is the national dish of France?");
         answers.add("Paris");
         answers.add("Lyon");
         answers.add("French");
-        answers.add("Pot Au Feu");
         france.setQuestions(questions);
         france.setAnswers(answers);
         france.setCategory("Social Studies");
@@ -403,11 +1018,9 @@ public class MainActivity extends AppCompatActivity {
         questions.add("What is the product rule of logarithm?");
         questions.add("What is the quotient rule of logarithm?");
         questions.add("What is the notation for differentiation?");
-        questions.add("What is the Pyhagoras Theorem");
         answers.add("logb(xy) = logb x + logb y");
         answers.add("loga(x/y)  = loga x – loga y");
         answers.add("dy/dx or f'(x)");
-        answers.add("a^2+b^2=c^2");
         math.setQuestions(questions);
         math.setAnswers(answers);
         math.setCategory("Math");
@@ -1031,8 +1644,6 @@ public class MainActivity extends AppCompatActivity {
         List<Flashcard> flashcardsToShow = new ArrayList<>();
         RecyclerView recyclerView;
         FlashcardAdapter fcAdapter;
-        RecyclerView recyclerView2;
-        FlashcardAdapter fcAdapter2 = new FlashcardAdapter(flashcardList);
         LinearLayoutManager mLayoutManager;
         int spacingInPixels;
 
@@ -1070,58 +1681,31 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up the RecyclerView with the filtered flashcardList
         //Test Yourself
-        recyclerView2 = findViewById(R.id.recyclerView2);
-        fcAdapter2 = new FlashcardAdapter(flashcardsToShow);
+        recyclerView = findViewById(R.id.recyclerView2);
+        fcAdapter = new FlashcardAdapter(flashcardsToShow);
         mLayoutManager = new LinearLayoutManager(this);
-        recyclerView2.setLayoutManager(new LinearLayoutManager(
+        recyclerView.setLayoutManager(new LinearLayoutManager(
                 this, LinearLayoutManager.HORIZONTAL, false));
         spacingInPixels = 4;
-        recyclerView2.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-        recyclerView2.setItemAnimator(new DefaultItemAnimator());
-        recyclerView2.setAdapter(fcAdapter2);
+        recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(fcAdapter);
 
-        fcAdapter2.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                /*Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                Intent intent = new Intent(MainActivity.this, Testyourself.class);
                 intent.putExtra("flashcard", flashcard);
                 intent.putExtra("Username", username);
-                startActivity(intent);*/
-                AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Type of test");
-                builder.setMessage("What kind of test would you like?");
-                builder.setCancelable(false);
-                builder.setPositiveButton("open-ended", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MainActivity.this, Testyourself.class);
-                        intent.putExtra("flashcard", flashcard);
-                        intent.putExtra("Username", username);
-                        startActivity(intent);
-
-                    }
-                });
-                builder.setNegativeButton("MCQ-Quiz", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MainActivity.this, MCQuiz.class);
-                        intent.putExtra("flashcard", flashcard);
-                        intent.putExtra("Username", username);
-                        startActivity(intent);
-
-                    }
-                });
-                AlertDialog alert= builder.create();
-                alert.show();
+                startActivity(intent);
+                //startShuffleCardActivity(flashcard);
             }
         });
     }
     private void displayAllFlashcards(){
         RecyclerView recyclerView;
         FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
-        RecyclerView recyclerView2;
-        FlashcardAdapter fcAdapter2 = new FlashcardAdapter(flashcardList);
         LinearLayoutManager mLayoutManager;
         int spacingInPixels;
 
@@ -1155,73 +1739,25 @@ public class MainActivity extends AppCompatActivity {
             // You can perform operations or access its properties here
             String title = flashcard.getTitle();
 
-             recyclerView2 = findViewById(R.id.recyclerView2);
-             fcAdapter2 = new FlashcardAdapter(flashcardList);
+            recyclerView = findViewById(R.id.recyclerView2);
+            fcAdapter = new FlashcardAdapter(flashcardList);
             mLayoutManager = new LinearLayoutManager(this);
-            recyclerView2.setLayoutManager(new LinearLayoutManager(
+            recyclerView.setLayoutManager(new LinearLayoutManager(
                     this, LinearLayoutManager.HORIZONTAL, false));
             spacingInPixels = 4;
-            recyclerView2.addItemDecoration(new SpaceItemDeco(spacingInPixels));
-            recyclerView2.setItemAnimator(new DefaultItemAnimator());
-            recyclerView2.setAdapter(fcAdapter2);
+            recyclerView.addItemDecoration(new SpaceItemDeco(spacingInPixels));
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setAdapter(fcAdapter);
         }
-        fcAdapter2.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
+        fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                /*Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                Intent intent = new Intent(MainActivity.this, Testyourself.class);
                 intent.putExtra("flashcard", flashcard);
-                startActivity(intent);*/
-                AlertDialog.Builder builder=new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("Type of test");
-                builder.setMessage("What kind of test would you like?");
-                builder.setCancelable(false);
-                builder.setPositiveButton("open-ended quiz", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MainActivity.this, Testyourself.class);
-                        intent.putExtra("flashcard", flashcard);
-                        intent.putExtra("Username",username);
-                        startActivity(intent);
-                    }
-                });
-                builder.setNegativeButton("MCQ quiz", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MainActivity.this, MCQuiz.class);
-                        intent.putExtra("flashcard", flashcard);
-                        intent.putExtra("Username",username);
-                        startActivity(intent);
-                    }
-                });
-                AlertDialog alert= builder.create();
-                alert.show();
+                startActivity(intent);
             }
         });
-        /*public void querytypeoftest(){
-            AlertDialog.Builder builder=new AlertDialog.Builder(this);
-            builder.setTitle("OTP expire");
-            builder.setMessage("Your OTP has expired! Do you want a new OTP?");
-            builder.setCancelable(false);
-            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(MainActivity.this, Testyourself.class);
-                    intent.putExtra("flashcard", flashcard);
-                    startActivity(intent);
-                }
-            });
-            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(MainActivity.this, MCQuiz.class);
-                    intent.putExtra("flashcard", flashcard);
-                    startActivity(intent);
-                }
-            });
-            AlertDialog alert= builder.create();
-            alert.show();
-        }*/
     }
 
 }

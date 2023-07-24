@@ -35,11 +35,6 @@ public class StreakUpdateService extends Service {
         String username = intent.getStringExtra("Username");
         Log.d("StreakUpdateService", username);
 
-        if (username == null) {
-            Log.e("StreakUpdateService", "Username is null. Cannot proceed.");
-            return START_NOT_STICKY; // Service will do nothing
-        }
-
         // Get a reference to the streak status and total days in Firebase
         streakStatus = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("Streak Status");
         totalDaysRef = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("Total Days");

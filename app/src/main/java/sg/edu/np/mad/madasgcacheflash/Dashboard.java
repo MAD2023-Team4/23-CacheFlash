@@ -30,13 +30,39 @@ public class Dashboard extends AppCompatActivity {
     BottomNavigationView bottomNavigationView;
     private RecyclerView recyclerView;
     private DashboardAdapter fcAdapter;
+    double percentage;
+    int total;
+    Flashcard flashcard;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_dashboard);
+
         Intent intent = getIntent();
         username = intent.getStringExtra("Username"); //get username
+
+        Integer percentage = null; // Default value is null
+        Integer total = null; // Default value is null
+
+        if (intent.hasExtra("Percentage") && intent.hasExtra("Total")) {
+            // The intent contains the "Percentage" and "Total" extras
+            flashcard = intent.getParcelableExtra("Flashcard");
+            percentage = intent.getIntExtra("Percentage", 0); // Retrieve the value of "Percentage" extra, use 0 as default value if not found
+            total = intent.getIntExtra("Total", 0); // Retrieve the value of "Total" extra, use 0 as default value if not found
+        }
+
+        // Check if percentage and total are null or have values
+        if (percentage != null && total != null) {
+            // Handle the case where "Percentage" and "Total" extras were found
+            // Do something with the values
+            flashcard.setPercentage(percentage);
+        } else {
+            // Handle the case where "Percentage" and "Total" extras were not found
+            // Use the default values or perform appropriate actions
+        }
+
+
         queryFlashCards();
         recyclerView = findViewById(R.id.recyclerViewDashboard);
         fcAdapter = new DashboardAdapter(allFlashcards);
@@ -57,33 +83,16 @@ public class Dashboard extends AppCompatActivity {
                     if (id == R.id.dashboard) {
                         return true;
                     }
-
-                    else if (id == R.id.search) {
-                        Intent intent = new Intent(getApplicationContext(), Search.class);
-                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
-                        startActivity(intent);
-                        overridePendingTransition(0, 0);
-                        return true;
-                    }
-
                     else if (id == R.id.home) {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
-                        startActivity(intent);
-                        overridePendingTransition(0, 0);
-                        return true;
-
-                    }
-                    else if (id == R.id.leaderboard) {
-                        Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
-                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        intent.putExtra("Username", username);
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
                     }
-                    else if (id == R.id.about) {
+                    else if (id == R.id.about){
                         Intent intent = new Intent(getApplicationContext(), Profile.class);
-                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        intent.putExtra("Username", username);
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;

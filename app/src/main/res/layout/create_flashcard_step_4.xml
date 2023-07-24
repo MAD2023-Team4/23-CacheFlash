@@ -1,0 +1,184 @@
+<!-- create_flashcard_step_4.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- ... (Previous Views) ... -->
+
+    <!-- Flashcard Title Summary -->
+    <LinearLayout
+        android:id="@+id/layoutFlashcardTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvFlashcardTitleLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Flashcard Title: "
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvFlashcardTitleSummary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Math"
+            android:textStyle="italic" />
+
+        <ImageView
+            android:id="@+id/imgEditTitle"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/pencil"
+            android:layout_marginLeft="8dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+    <!-- Flashcard Category Summary -->
+    <LinearLayout
+        android:id="@+id/layoutFlashcardCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvFlashcardCategoryLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Flashcard Category: "
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvFlashcardCategorySummary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Physics"
+            android:textStyle="italic" />
+
+        <ImageView
+            android:id="@+id/imgEditCategory"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/pencil"
+            android:layout_marginLeft="8dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+    <!-- Image Summary -->
+    <LinearLayout
+        android:id="@+id/layoutImageSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvImageLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Image: "
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvImageSummary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Yes"
+            android:textStyle="italic" />
+
+        <ImageView
+            android:id="@+id/imgSummaryImage"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_flashcardlogo"
+            android:visibility="gone"
+            android:layout_marginLeft="8dp" />
+
+        <!-- Pencil Icon for Image -->
+        <ImageView
+            android:id="@+id/imgEditImage"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/pencil"
+            android:layout_marginLeft="8dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
+    <!-- Questions Summary -->
+    <TextView
+        android:id="@+id/tvQuestionsSummary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Questions:"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <!-- Questions List -->
+    <LinearLayout
+        android:id="@+id/containerQuestionsSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="16dp" />
+
+    <!-- Pencil Icon for Questions -->
+    <ImageView
+        android:id="@+id/imgEditQuestions"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/pencil"
+        android:layout_marginLeft="8dp"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <!-- Answers Summary -->
+    <TextView
+        android:id="@+id/tvAnswersSummary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Answers:"
+        android:textStyle="bold"
+        android:layout_marginTop="16dp" />
+
+    <!-- Answers List -->
+    <LinearLayout
+        android:id="@+id/containerAnswersSummary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="16dp" />
+
+    <!-- Pencil Icon for Answers -->
+    <ImageView
+        android:id="@+id/imgEditAnswers"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/pencil"
+        android:layout_marginLeft="8dp"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <!-- Confirm Button -->
+    <Button
+        android:id="@+id/btnConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:layout_gravity="end"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>

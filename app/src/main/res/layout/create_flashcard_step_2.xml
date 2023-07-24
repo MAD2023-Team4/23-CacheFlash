@@ -1,0 +1,118 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Create Your Own Flashcard Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:text="Create Your Own Flashcard"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <!-- Step Indicator -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <!-- Step 1 -->
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/step_indicator_selected" />
+
+        <!-- Step 2 -->
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/step_indicator_selected" />
+
+        <!-- Step 3 -->
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/step_indicator_unselected" />
+
+        <!-- Step 4 -->
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/step_indicator_unselected" />
+
+    </LinearLayout>
+
+    <!-- Step 2: Add a Picture or Icon (Optional) -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"
+        android:text="Step 2: Add a Picture or Icon (Optional)"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <!-- Checkbox to indicate whether to add an image -->
+    <CheckBox
+        android:id="@+id/chkAddImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add a Picture or Icon"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- Image view to display the selected image -->
+    <ImageView
+        android:id="@+id/imgFlashcardImage"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_flashcardlogo"
+        android:visibility="gone" />
+
+    <!-- Button to choose an image from the gallery -->
+    <Button
+        android:id="@+id/btnChooseImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="Choose Image"
+        android:visibility="gone" />
+
+    <!-- Skip and Next Buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="Back" />
+
+        <Button
+            android:id="@+id/btnNext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="16dp"
+            android:text="Next" />
+
+    </LinearLayout>
+
+</LinearLayout>
