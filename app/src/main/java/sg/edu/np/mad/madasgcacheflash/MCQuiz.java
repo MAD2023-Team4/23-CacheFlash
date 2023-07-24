@@ -31,10 +31,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public class MCQuiz extends AppCompatActivity {
@@ -188,8 +186,15 @@ public class MCQuiz extends AppCompatActivity {
                     currentIndex++;
                     if(currentIndex == flashcard.getQuestions().size()){
                         //make a toast message of the score
-                        showAlert("Quiz Finished", "Your score: " + score, score, flashcard.getQuestions().size());
-                        double percentage = score/flashcard.getQuestions().size();
+
+                        double percentage = (double) score / flashcard.getQuestions().size() * 100.0;
+
+                        Log.v("Percentage", String.valueOf(flashcard.getQuestions().size()));
+                        //updatePercentage(username, percentage);
+                        Log.v("Quiz Finished", String.valueOf(percentage));
+                        showAlert("Quiz Finished", "Your score: " + percentage
+                                + "%", percentage, flashcard.getQuestions().size());
+                        updatePercentage(username, percentage, flashcard);
 
                         //Update the flashcard's score locally
                         flashcard.setPercentage(percentage);
@@ -309,7 +314,7 @@ public class MCQuiz extends AppCompatActivity {
         next.setEnabled(true);
 
     }
-    private void showAlert(String title, String text, int score, int total) {
+    private void showAlert(String title, String text, double score, int total) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setMessage(text)
@@ -434,6 +439,37 @@ public class MCQuiz extends AppCompatActivity {
         });
 
         animatorSet.start();
+    }
+    private void updatePercentage(String username, double percentage, Flashcard f2){
+        if (username == null) {
+            Log.e("UpdatePercentage", "Username is null. Cannot proceed.");
+            return;
+        }
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
+                .child("users")
+                .child(username)
+                .child("categories");
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot flashcardSnapshot : categorySnapshot.getChildren()) {
+                        Flashcard f = flashcardSnapshot.getValue(Flashcard.class);
+                        if (f.getTitle().equals(f2.getTitle())) {
+                            DatabaseReference flashcardRef = flashcardSnapshot.child("percentage").getRef();
+                            flashcardRef.setValue(percentage);
+                            break; // Found the flashcard, exit the loop
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+            }
+        });
     }
 
 
