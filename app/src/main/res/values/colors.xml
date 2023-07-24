@@ -9,14 +9,15 @@
     <color name="progressCenterColor">#FFA500</color>
     <color name="progressEndColor">#FFD700</color>
     <color name="grey">#808080</color>
-    <color name="green">#00FF00</color>
+    <color name="green">#e3fa9d</color>
     <color name="very_light_gray">#F5F5F5</color>
     <color name="stepIndicatorSelectedColor">#FF4081</color>
     <color name="stepIndicatorUnselectedColor">#BDBDBD</color>
+    <color name="lightRed">#f29b9b</color>
 
 
     <!--Blue color research
     // Source from:
     https://colors.dopely.top/inside-colors/blue-color-palette-inspirations-with-names-and-hex-codes/-->
-    <color name="blue">#5BAEB7</color>
+    <color name="blue">#34bde3</color>
 </resources>

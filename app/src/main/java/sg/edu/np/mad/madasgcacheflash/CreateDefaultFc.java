@@ -353,21 +353,6 @@ public class CreateDefaultFc {
         questions.add("What is supply?");
         answers.add("Supply refers to the quantity of a product or service that producers are willing and able to provide at various price levels in the market.");
 
-        questions.add("What is demand?");
-        answers.add("Demand refers to the quantity of a product or service that consumers are willing and able to buy at different price points in the market.");
-
-        questions.add("How does price affect demand?");
-        answers.add("As the price of a product decreases, the quantity demanded usually increases, and vice versa, assuming all other factors remain constant.");
-
-        questions.add("How does price affect supply?");
-        answers.add("As the price of a product increases, the quantity supplied generally increases, and vice versa, assuming all other factors remain constant.");
-
-        questions.add("Explain the law of supply and demand.");
-        answers.add("The law of supply states that as the price of a good or service increases, the quantity supplied also increases. The law of demand states that as the price of a good or service increases, the quantity demanded decreases, and vice versa.");
-
-        questions.add("What is the equilibrium price?");
-        answers.add("The equilibrium price is the market price at which the quantity demanded equals the quantity supplied, resulting in a stable market.");
-
         questions.add("What happens when there is a surplus in the market?");
         answers.add("A surplus occurs when the quantity supplied exceeds the quantity demanded at the prevailing price. This typically leads to a decrease in price until the surplus is eliminated.");
 
@@ -382,33 +367,6 @@ public class CreateDefaultFc {
 
         questions.add("What are the factors that influence supply?");
         answers.add("Factors influencing supply include input prices, technology, government policies, and natural disasters.");
-
-        questions.add("Explain the concept of substitute goods.");
-        answers.add("Substitute goods are products that can be used in place of one another. When the price of one substitute increases, the demand for the other substitute may increase as consumers switch to the cheaper option.");
-
-        questions.add("Define complementary goods.");
-        answers.add("Complementary goods are products that are used together. When the price of one complementary good increases, the demand for the other complementary good may decrease.");
-
-        questions.add("How do changes in income affect demand?");
-        answers.add("For most goods, as income increases, the demand for normal goods increases. However, for inferior goods, as income increases, the demand may decrease.");
-
-        questions.add("What are examples of essential factors affecting supply in the market?");
-        answers.add("Essential factors affecting supply include changes in input prices (e.g., raw materials, labor), advancements in technology, and government regulations.");
-
-        questions.add("Explain the concept of market equilibrium.");
-        answers.add("Market equilibrium occurs when the quantity demanded equals the quantity supplied, resulting in a stable market price.");
-
-        questions.add("What happens when there is a price ceiling?");
-        answers.add("A price ceiling is a legal maximum price set by the government, typically to protect consumers from high prices. It may lead to shortages and a black market.");
-
-        questions.add("What happens when there is a price floor?");
-        answers.add("A price floor is a legal minimum price set by the government, usually to support producers. It may lead to surpluses and inefficiencies in the market.");
-
-        questions.add("Explain the concept of elasticity of supply.");
-        answers.add("Elasticity of supply measures how responsive the quantity supplied is to changes in price. If supply is elastic, a small change in price leads to a proportionately larger change in quantity supplied.");
-
-        questions.add("What is a competitive market?");
-        answers.add("A competitive market is a market with many buyers and sellers, where no single buyer or seller can influence the market price.");
 
         questions.add("How do changes in consumer tastes and preferences affect demand?");
         answers.add("When consumer tastes and preferences for a product increase, the demand for that product may increase.");
@@ -560,24 +518,6 @@ public class CreateDefaultFc {
         questions.add("Factor the quadratic expression: x^2 + 5x + 6");
         answers.add("(x + 2)(x + 3)");
 
-        questions.add("Simplify the expression: 3(x + 2) + 2(2x - 1)");
-        answers.add("7x + 4");
-
-        questions.add("Solve for x: 2(3x - 1) + 5 = 17");
-        answers.add("x = 3");
-
-        questions.add("Expand and simplify the expression: (3a - 4b)^2");
-        answers.add("9a^2 - 24ab + 16b^2");
-
-        questions.add("Solve the equation: 4x + 7 = 3x - 2");
-        answers.add("x = -9");
-
-        questions.add("Factor the trinomial: x^2 + 7x + 10");
-        answers.add("(x + 5)(x + 2)");
-
-        questions.add("Simplify the expression: 2(4x - 3) + 3(x + 2)");
-        answers.add("11x + 1");
-
         questions.add("Solve for x: 3(x - 2) = 9 - 2x");
         answers.add("x = 3");
 
@@ -595,21 +535,6 @@ public class CreateDefaultFc {
 
         questions.add("Simplify the expression: 4(2x - 3) - 2(x + 5)");
         answers.add("6x - 22");
-
-        questions.add("Solve for x: 3(2x + 1) = 15");
-        answers.add("x = 2");
-
-        questions.add("Factor the quadratic expression: 3x^2 + 12x + 9");
-        answers.add("3(x + 3)^2");
-
-        questions.add("Simplify the expression: 2(3x - 4) - 3(x - 1)");
-        answers.add("x - 5");
-
-        questions.add("Solve the equation: 5x - 7 = 8 - 2x");
-        answers.add("x = 1");
-
-        questions.add("Factor the trinomial: x^2 + 10x + 21");
-        answers.add("(x + 7)(x + 3)");
 
         questions.add("Simplify the expression: 3(4x + 5) - 2(2x - 1)");
         answers.add("10x + 13");
