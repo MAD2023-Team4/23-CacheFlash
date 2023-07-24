@@ -1,0 +1,108 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Create Your Own Flashcard Title -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Your Own Flashcard"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"/>
+
+    <!-- Step Indicator -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+
+        <!-- Step 1 -->
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/step_indicator_selected" />
+
+        <!-- Step 2 -->
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/step_indicator_unselected" />
+
+        <!-- Step 3 -->
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/step_indicator_unselected" />
+
+        <!-- Step 4 -->
+        <View
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/step_indicator_unselected" />
+
+
+    </LinearLayout>
+
+    <!-- Step Description -->
+    <TextView
+        android:id="@+id/tvStepDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Step 1: Enter Flashcard Title and Category"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <!-- Flashcard Title -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilFlashcardTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Flashcard Title">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etFlashcardTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Flashcard Category -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tilFlashcardCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Flashcard Category">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/etFlashcardCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!-- Next Button -->
+    <Button
+        android:id="@+id/btnNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Next"
+        android:layout_gravity="end"
+        android:layout_marginTop="16dp" />
+
+</LinearLayout>
