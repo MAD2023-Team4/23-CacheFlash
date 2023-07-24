@@ -1,18 +1,27 @@
 package sg.edu.np.mad.madasgcacheflash;
 
+import static android.content.ContentValues.TAG;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.protobuf.NullValue;
 
 public class Signup extends AppCompatActivity {
@@ -35,7 +44,7 @@ public class Signup extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         EditText etUsername = findViewById(R.id.editTextText3);
         EditText etPassword = findViewById(R.id.editTextText4);
-        EditText etPhone=findViewById(R.id.editTextText5);
+        EditText etemail=findViewById(R.id.editTextText5);
 
         Button createButton = findViewById(R.id.button3);
         Button cancelButton = findViewById(R.id.button2);
@@ -45,9 +54,9 @@ public class Signup extends AppCompatActivity {
             public void onClick(View view){
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
-                String Phone = etPhone.getText().toString();
+                String email = etemail.getText().toString().trim();
 
-                if(username.isEmpty() && password.isEmpty() && Phone.isEmpty()){
+                if(username.isEmpty() && password.isEmpty() && email.isEmpty()){
                     Toast.makeText(Signup.this, "Please enter username and password,do not leave it blank", Toast.LENGTH_SHORT).show();
                 }
                 else if (password.isEmpty()) {
@@ -55,8 +64,8 @@ public class Signup extends AppCompatActivity {
                 }
                 else if(username.isEmpty()){
                     Toast.makeText(Signup.this, "Please enter username,do not leave it blank", Toast.LENGTH_SHORT).show();
-                } else if (Phone.isEmpty()) {
-                    Toast.makeText(Signup.this, "Please enter phonenumber,do not leave it blank", Toast.LENGTH_SHORT).show();
+                } else if (email.isEmpty()) {
+                    Toast.makeText(Signup.this, "Please enter email,do not leave it blank", Toast.LENGTH_SHORT).show();
                     
                     
                 } else {
@@ -66,13 +75,11 @@ public class Signup extends AppCompatActivity {
                     }
                     else if (password.length() < 6) {
                         Toast.makeText(Signup.this, "Length of password must be at least 6", Toast.LENGTH_SHORT).show();
-                    } else if (!Phone.matches("^[0-9]{1,45}$")) {
-                        Toast.makeText(Signup.this, "Phone number must only consist of numbers", Toast.LENGTH_SHORT).show();
-
+                    }
                         
-                    } else {
-                        signup(username, password);
-                        mAuth.updateCurrentUser(mAuth.getCurrentUser());
+                    else {
+                        signup(email, password);
+                        updateUserprofile(username);
 
                     }
                 }
@@ -90,8 +97,8 @@ public class Signup extends AppCompatActivity {
         });
 
     }
-    private void signup(String username, String password) {
-        mAuth.createUserWithEmailAndPassword(username + "@gmail.com", password)
+    private void signup(String email, String password) {
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(Signup.this, "User registered!", Toast.LENGTH_SHORT).show();
@@ -111,6 +118,26 @@ public class Signup extends AppCompatActivity {
 
 
         }
+        private void updateUserprofile(String username){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(username)
+                    .build();
+
+            assert user != null;
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "User profile updated.");
+                            }
+                        }
+                    });
+        }
+
+
 
     }
 

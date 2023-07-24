@@ -24,9 +24,11 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 
 public class Login extends AppCompatActivity {
@@ -78,14 +80,14 @@ public class Login extends AppCompatActivity {
             }
         });
         //Button forgetpass = findViewById(R.id.button6);
-        Forgetpassword.setOnTouchListener(new View.OnTouchListener() {
+        Forgetpassword.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                Intent intent = new Intent(Login.this, ForgetPassword.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                return false;
+            public void onClick(View v) {
+                showRecoverPasswordDialog();
             }
+
+
         });
         
         Button loginButton = findViewById(R.id.button);
@@ -94,6 +96,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View view) {
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
+
                 if (username.isEmpty() && password.isEmpty()) {
                     Toast.makeText(Login.this, "Please enter username and password,do not leave it blank", Toast.LENGTH_SHORT).show();
                 } else if (password.isEmpty()) {
@@ -112,11 +115,14 @@ public class Login extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Login successful
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        String usernamed=user.getDisplayName();
                         String standardizedUsername = username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase();
-                        Log.d("Login", "Username: " + username);
-                        Toast.makeText(Login.this, "Login successful! Welcome " + standardizedUsername, Toast.LENGTH_SHORT).show();
+                        Log.d("Login", "Username: " + usernamed);
+                        Toast.makeText(Login.this, "Login successful! Welcome " + usernamed, Toast.LENGTH_SHORT).show();
                         // Start the MainActivity
                         Intent intent = new Intent(Login.this, MainActivity.class);
+                        intent.putExtra("Username", standardizedUsername);
                         intent.putExtra("Username", standardizedUsername);
                         startActivity(intent);
                     } else {
@@ -197,6 +203,22 @@ public class Login extends AppCompatActivity {
                 Toast.makeText(Login.this, "Error Failed", Toast.LENGTH_LONG).show();
             }
         });
+//        private void resetPasswordWithPhoneNumber(String phoneNumber) {
+//            FirebaseAuth.getInstance().signInWithPhoneNumber(phoneNumber, true)
+//                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                            if (task.isSuccessful()) {
+//                                Toast.makeText(Login.this, "Password reset code sent. Check your phone.", Toast.LENGTH_SHORT).show();
+//                                Intent intent = new Intent(Login.this, VerifyPasswordResetCodeActivity.class);
+//                                intent.putExtra("verificationId", task.getResult().getSignInResult().getVerificationId());
+//                                startActivity(intent);
+//                            } else {
+//                                Toast.makeText(Login.this, "Failed to send password reset code. Make sure the phone number is correct.", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
+//        }
 
 
     }
