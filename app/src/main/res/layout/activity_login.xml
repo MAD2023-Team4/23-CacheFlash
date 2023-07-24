@@ -26,8 +26,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
-            android:textSize="16sp"
-            android:singleLine="true">
+            android:singleLine="true"
+            android:textSize="16sp">
 
         </com.google.android.material.textfield.TextInputEditText>
 
@@ -61,25 +61,27 @@
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="190dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="500dp"
-        android:layout_marginStart="110dp"
-        android:layout_marginEnd="110dp"
+        android:layout_below="@+id/button"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="22dp"
+        android:layout_marginRight="70dp"
         android:text="@string/newUserText"
+        android:textAlignment="center"
         android:textColor="#000000"
-        android:textSize="17sp"
-        android:textAlignment="center"/>
+        android:textSize="17sp" />
 
 
     <Button
         android:id="@+id/button"
-        android:layout_width="146dp"
-        android:layout_height="61dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textTextInput2"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="130dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="130dp"
-        android:layout_marginTop="430dp"
         android:backgroundTint="#1400A9"
         android:text="@string/loginButtonText"
         android:textColor="#FFFFFF"
@@ -89,28 +91,21 @@
         android:id="@+id/imageView"
         android:layout_width="155dp"
         android:layout_height="155dp"
-        android:layout_marginTop="138dp"
+        android:layout_below="@+id/textView5"
         android:layout_marginStart="125dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="125dp"
         android:scaleType="centerCrop"
         android:src="@drawable/applogo" />
 
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="78.5dp"
-        android:layout_marginTop="52dp"
-        android:layout_marginEnd="78.5dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/cacheflash" />
-
     <TextView
         android:id="@+id/privacy_policy_text"
-        android:layout_width="115dp"
-        android:layout_height="25dp"
-        android:layout_marginStart="150dp"
-        android:layout_marginTop="550dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView4"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="27dp"
+        android:layout_marginRight="100dp"
         android:onClick="openPrivacyPolicy"
         android:text="Privacy Policy"
         android:textAlignment="center"
@@ -120,13 +115,27 @@
 
     <TextView
         android:id="@+id/textView13"
-        android:layout_width="297dp"
-        android:layout_height="64dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/privacy_policy_text"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="57dp"
-        android:layout_marginTop="580dp"
-        android:layout_marginEnd="57dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginRight="30dp"
         android:text="By logging in or creating an account, you are agreeing with the privacy policy and that you are above 13 years old"
         android:textAlignment="center" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="16dp"
+        android:gravity="center"
+        android:text="CacheFlash"
+        android:textSize="48sp"
+        android:textStyle="bold" />
 
 </RelativeLayout>
