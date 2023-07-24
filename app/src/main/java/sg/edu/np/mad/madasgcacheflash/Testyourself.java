@@ -130,7 +130,9 @@ public class Testyourself extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String answer = input.getText().toString();
+                    String answernoexception=answer.toLowerCase().replaceAll("\\s+","");
                     String correctAnswer = answers.get(currentIndex);
+                    String correctedAnswer=correctAnswer.toLowerCase().replaceAll("\\s+","");
 
                     if (answer.equals(correctAnswer)) {
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();

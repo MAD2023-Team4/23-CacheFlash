@@ -1703,7 +1703,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.setNegativeButton("MCQ Quiz", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                        Intent intent = new Intent(MainActivity.this, MCQuiz.class);
                         intent.putExtra("flashcard", flashcard);
                         intent.putExtra("Username", username);
                         startActivity(intent);
@@ -1711,6 +1711,8 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+                AlertDialog alert=builder.create();
+                alert.show();
             }
         });
     }
@@ -1781,7 +1783,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.setNegativeButton("MCQ Quiz", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                        Intent intent = new Intent(MainActivity.this, MCQuiz.class);
                         intent.putExtra("flashcard", flashcard);
                         intent.putExtra("Username", username);
                         startActivity(intent);
@@ -1789,6 +1791,8 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+                AlertDialog alert=builder.create();
+                alert.show();
             }
         });
     }
