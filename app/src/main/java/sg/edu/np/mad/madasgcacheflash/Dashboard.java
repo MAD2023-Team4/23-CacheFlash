@@ -75,6 +75,9 @@ public class Dashboard extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(fcAdapter);
 
+        //Bottom Nav View
+        //It is a constraint layout, to allow transitions from one page to another, using if else statements.
+        //_________________________________________________________________________________________
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
 

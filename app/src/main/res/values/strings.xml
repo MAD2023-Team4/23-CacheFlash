@@ -49,7 +49,7 @@
 
     <string name="Email">Email:</string>
     <string name="Disclaimer">You have to put the front part of your email before the @ symbol in order for this to work</string>
-  
+
     <string name="title_activity_search">Search</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>

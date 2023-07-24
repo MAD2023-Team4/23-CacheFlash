@@ -23,6 +23,9 @@
         android:theme="@style/Theme.MADAsgCacheFlash"
         tools:targetApi="31">
         <activity
+            android:name=".CalendarViewClass"
+            android:exported="false" />
+        <activity
             android:name=".Search"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
@@ -69,7 +72,8 @@
             android:exported="false" />
         <activity
             android:name=".MCQuiz"
-            android:exported="false"/>
+            android:exported="false" />
+
         <service
             android:name=".StreakUpdateService"
             android:enabled="true"
