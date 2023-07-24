@@ -134,7 +134,7 @@ public class Testyourself extends AppCompatActivity {
                     String correctAnswer = answers.get(currentIndex);
                     String correctedAnswer=correctAnswer.toLowerCase().replaceAll("\\s+","");
 
-                    if (answer.equals(correctAnswer)) {
+                    if (answernoexception.equals(correctedAnswer)) {
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
                         score++;
                         Log.v("Score", String.valueOf(score));
