@@ -4,14 +4,23 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.constraintlayout.motion.widget.MotionLayout;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -22,14 +31,12 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public class MCQuiz extends AppCompatActivity {
-    final String TITLE = "Testyourself";
+    final String TITLE = "TestyourselfMCQ";
     int currentIndex = 0;
     int score=0;
     String username;
@@ -38,8 +45,16 @@ public class MCQuiz extends AppCompatActivity {
     List<String> answers = new ArrayList<>();
     List<String> answerscheck = new ArrayList<>();
     List<String> optionsList = new ArrayList<>();
-    List<Integer> answeredQuestions = new ArrayList<>(); // New list to track answered questions
+    private MotionLayout motionLayout;
+
     boolean isAnswered = false;
+    private int animationDuration = 100;
+    private int pauseDuration = 500; // Adjust the pause duration here
+    private int roundCount = 0;
+    private ImageView imageView1;
+    private ImageView imageView2;
+    private ImageView imageView3;
+    private List<ImageView> imageViews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,16 +62,53 @@ public class MCQuiz extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_mcquiz);
+        ConstraintLayout mainLayout=findViewById(R.id.activity_mcq_quiz);
+        View shufflingCardLayout = getLayoutInflater().inflate(R.layout.activity_shuffle_card, mainLayout, false);
+        mainLayout.addView(shufflingCardLayout);
+
+        // Initialize the ImageView variables using the IDs from the shuffling card layout
+        imageView1 = shufflingCardLayout.findViewById(R.id.one);
+        imageView2 = shufflingCardLayout.findViewById(R.id.two);
+        imageView3 = shufflingCardLayout.findViewById(R.id.three);
+
+        imageViews = new ArrayList<>();
+        imageViews.add(imageView1);
+        imageViews.add(imageView2);
+        imageViews.add(imageView3);
+
+        startShufflingAnimation(shufflingCardLayout,mainLayout);
 
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("flashcard")) {
             Flashcard flashcard = intent.getParcelableExtra("flashcard");
             username = intent.getStringExtra("Username");
 
+
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
             answers = flashcard.getAnswers();
+
+            List<String> combinedList = new ArrayList<>();
+            for (int i = 0; i < questions.size(); i++) {
+                combinedList.add(questions.get(i) + "|" + answers.get(i));
+            }
+            Collections.shuffle(combinedList);
+
+            // Clear the original questions and answers lists
+            questions.clear();
+            answers.clear();
+
+            // Separate the shuffled combined list into questions and answers lists
+            for (String item : combinedList) {
+                String[] parts = item.split("\\|");
+                questions.add(parts[0]);
+                answers.add(parts[1]);
+
+            }
             answerscheck.addAll(answers);
+
+
+
 
             Log.v(TITLE, "hi" + answerscheck.size());
             TextView QuestionView = findViewById(R.id.QuestionViews);
@@ -134,8 +186,15 @@ public class MCQuiz extends AppCompatActivity {
                     currentIndex++;
                     if(currentIndex == flashcard.getQuestions().size()){
                         //make a toast message of the score
-                        showAlert("Quiz Finished", "Your score: " + score, score, flashcard.getQuestions().size());
-                        double percentage = score/flashcard.getQuestions().size();
+
+                        double percentage = (double) score / flashcard.getQuestions().size() * 100.0;
+
+                        Log.v("Percentage", String.valueOf(flashcard.getQuestions().size()));
+                        //updatePercentage(username, percentage);
+                        Log.v("Quiz Finished", String.valueOf(percentage));
+                        showAlert("Quiz Finished", "Your score: " + percentage
+                                + "%", percentage, flashcard.getQuestions().size());
+                        updatePercentage(username, percentage, flashcard);
 
                         //Update the flashcard's score locally
                        // flashcard.setPercentage(percentage);
@@ -255,7 +314,7 @@ public class MCQuiz extends AppCompatActivity {
         next.setEnabled(true);
 
     }
-    private void showAlert(String title, String text, int score, int total) {
+    private void showAlert(String title, String text, double score, int total) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setMessage(text)
@@ -276,6 +335,7 @@ public class MCQuiz extends AppCompatActivity {
                 })
                 .show();
     }
+
 
     private void postPerformance(Flashcard flashcard, int score) {
         DatabaseReference flashcardsRef = FirebaseDatabase.getInstance().getReference()
@@ -306,6 +366,110 @@ public class MCQuiz extends AppCompatActivity {
 
     private float calculatePercentage(int score, int totalQuestions) {
         return ((float) score / totalQuestions) * 100;
+    }
+    private void startShufflingAnimation(View shufflingCardLayout, ConstraintLayout mainLayout) {
+        final int totalImages = imageViews.size();
+
+        List<Animator> animatorList = new ArrayList<>();
+
+        // Create the animation for each image
+        for (int i = 0; i < totalImages; i++) {
+            ImageView currentImage = imageViews.get(i);
+            ImageView nextImage = imageViews.get((i + 1) % totalImages);
+
+            // Calculate the translation distance based on the image width
+            int translationDistance = nextImage.getLeft() - currentImage.getLeft();
+
+            // Create ObjectAnimator for translationX property
+            ObjectAnimator animX = ObjectAnimator.ofFloat(currentImage, "translationX", 0, translationDistance);
+            animX.setDuration(animationDuration);
+
+            // Add the animator to the list
+            animatorList.add(animX);
+        }
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(animatorList);
+        animatorSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                // Swap positions of imageViews in the list
+                ImageView firstImage = imageViews.get(0);
+                imageViews.remove(0);
+                imageViews.add(firstImage);
+
+                // Update the layout params to reflect the new positions
+                for (int i = 0; i < totalImages; i++) {
+                    ImageView imageView = imageViews.get(i);
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+
+                    if (i == 0) {
+                        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+                    } else if (i == 1) {
+                        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                    } else if (i == 2) {
+                        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+                    }
+
+                    imageView.setTranslationX(0);
+                }
+
+                roundCount++;
+
+                // Start displaying the questions after one round
+                if (roundCount == totalImages) {
+                    currentIndex = 0; // Reset the currentIndex
+                    mainLayout.removeView(shufflingCardLayout);
+
+
+                } else {
+                    // Start the next shuffling animation after a delay
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            startShufflingAnimation(shufflingCardLayout,mainLayout);
+                        }
+                    }, pauseDuration);
+                }
+            }
+        });
+
+        animatorSet.start();
+    }
+    private void updatePercentage(String username, double percentage, Flashcard f2){
+        if (username == null) {
+            Log.e("UpdatePercentage", "Username is null. Cannot proceed.");
+            return;
+        }
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
+                .child("users")
+                .child(username)
+                .child("categories");
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
+                    for (DataSnapshot flashcardSnapshot : categorySnapshot.getChildren()) {
+                        Flashcard f = flashcardSnapshot.getValue(Flashcard.class);
+                        if (f.getTitle().equals(f2.getTitle())) {
+                            DatabaseReference flashcardRef = flashcardSnapshot.child("percentage").getRef();
+                            flashcardRef.setValue(percentage);
+                            break; // Found the flashcard, exit the loop
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle any errors
+            }
+        });
     }
 
 

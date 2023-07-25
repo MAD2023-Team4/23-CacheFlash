@@ -42,7 +42,7 @@ public class ShuffleCardActivity extends AppCompatActivity {
         startShufflingAnimation();
     }
 
-    private void startShufflingAnimation() {
+    private  void startShufflingAnimation() {
         final int totalImages = imageViews.size();
 
         List<Animator> animatorList = new ArrayList<>();

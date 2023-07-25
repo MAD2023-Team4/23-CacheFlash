@@ -91,13 +91,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
 
+
+
         Log.d("MainActivity", "Received Username: " + username);
         FirebaseApp.initializeApp(MainActivity.this);
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
+            if(user.getDisplayName()!=null)
+            {username=user.getDisplayName();}
             TextView welcomeTxt = findViewById(R.id.welcomeText);
             String welcomeMessage = getString(R.string.welcome_message);
             String formattedMessage = String.format(welcomeMessage, username);
+            Log.i(title, "The username is nullllll, so it is a problem"+user.getDisplayName());
 
             welcomeTxt.setText(formattedMessage);
         } else {
@@ -455,9 +460,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
     private boolean isSameDay(Date date1, Date date2) {
         Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date1);
@@ -468,13 +470,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void startShuffleCardActivity(Flashcard flashcard) {
         Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
         shuffleCardIntent.putExtra("flashcard", flashcard);
-        shuffleCardIntent.putExtra("Username",username);
+        shuffleCardIntent.putExtra("Username", username);
         startActivity(shuffleCardIntent);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -511,6 +513,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     private void showStep1Layout() {
         // Inflate the layout
         View step1Layout = getLayoutInflater().inflate(R.layout.create_flashcard_step_1, null);
@@ -518,8 +521,8 @@ public class MainActivity extends AppCompatActivity {
         // Find the views inside the layout
         TextInputLayout tilFlashcardTitle = step1Layout.findViewById(R.id.tilFlashcardTitle);
         TextInputLayout tilFlashcardCategory = step1Layout.findViewById(R.id.tilFlashcardCategory);
-         etFlashcardTitle = step1Layout.findViewById(R.id.etFlashcardTitle);
-         etFlashcardCategory = step1Layout.findViewById(R.id.etFlashcardCategory);
+        etFlashcardTitle = step1Layout.findViewById(R.id.etFlashcardTitle);
+        etFlashcardCategory = step1Layout.findViewById(R.id.etFlashcardCategory);
         Button btnNext = step1Layout.findViewById(R.id.btnNext);
 
         // Create an AlertDialog to show the layout
@@ -535,8 +538,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Get the input values from EditText views
-                 flashcardTitle = etFlashcardTitle.getText().toString().trim();
-                 flashcardCategory = etFlashcardCategory.getText().toString().trim();
+                flashcardTitle = etFlashcardTitle.getText().toString().trim();
+                flashcardCategory = etFlashcardCategory.getText().toString().trim();
 
                 // Perform input validation (e.g., check if fields are not empty)
                 if (flashcardTitle.isEmpty()) {
@@ -555,6 +558,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void showStep2Layout() {
         // Inflate the Step 2 layout
         View step2Layout = getLayoutInflater().inflate(R.layout.create_flashcard_step_2, null);
@@ -690,7 +694,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, flashcardContent.toString(), Toast.LENGTH_LONG).show();
 
                 alertDialog.dismiss();
-                showStep4Layout(questionsList,answersList);
+                showStep4Layout(questionsList, answersList);
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -702,6 +706,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
     private void showStep4Layout(List<String> questions, List<String> answers) {
         // Inflate the Step 4 layout
         View step4Layout = getLayoutInflater().inflate(R.layout.create_flashcard_step_4, null);
@@ -1004,13 +1009,12 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(MainActivity.this, "Flashcard created successfully", Toast.LENGTH_SHORT).show();
                 createCategories();
-                uploadNewFlashcards(categories,username);
+                uploadNewFlashcards(categories, username);
                 // Close the Step 4 dialog
                 alertDialog.dismiss();
             }
         });
     }
-
 
 
 
@@ -1630,6 +1634,7 @@ public class MainActivity extends AppCompatActivity {
         flashcardList.add(algebra);
 
     }
+
     private void createCategories() {
         // Iterate through the flashcardList and organize flashcards into categories
         for (Flashcard flashcard : flashcardList) {
@@ -1718,13 +1723,44 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, DifficultyLevelActivity.class);
+
+                /*Intent intent = new Intent(MainActivity.this, Testyourself.class);
                 intent.putExtra("flashcard", flashcard);
                 intent.putExtra("Username", username);
-                startActivityForResult(intent, 1);
+                startActivity(intent);
+                //startShuffleCardActivity(flashcard);*/
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Test Yourself");
+                builder.setMessage("What kind of test would you like?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("View", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        Intent intent = new Intent(MainActivity.this, DifficultyLevelActivity.class);
+                        intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username", username);
+                        startActivityForResult(intent, 1);
+                    }
+                });
+                builder.setNegativeButton("MCQ Quiz", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                        intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username", username);
+                        startActivity(intent);
+
+
+                    }
+                });
+                AlertDialog alert=builder.create();
+                alert.show();
             }
         });
     }
+
+
+
     private void displayAllFlashcards() {
         RecyclerView recyclerView;
         FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
@@ -1774,6 +1810,36 @@ public class MainActivity extends AppCompatActivity {
         fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Test Yourself");
+                builder.setMessage("What kind of test would you like?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("View", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        Intent intent = new Intent(MainActivity.this, DifficultyLevelActivity.class);
+                        intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username", username);
+                        startActivityForResult(intent, 1);
+                    }
+                });
+                builder.setNegativeButton("MCQ Quiz", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                        intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username", username);
+                        startActivity(intent);
+
+
+                    }
+                });
+                AlertDialog alert=builder.create();
+                alert.show();
+            }
+        });
+    }
                 // Start DifficultyLevelActivity to choose the difficulty level
                 Log.d("FlashcardDebug", "Sending flashcard to Testyourself: " + flashcard.getTitle());
                 Intent intent = new Intent(MainActivity.this, DifficultyLevelActivity.class);
@@ -1783,6 +1849,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -1815,6 +1882,9 @@ public class MainActivity extends AppCompatActivity {
             imgFlashcardImage.setImageURI(selectedImageUri);
         }
     }
+
 }
+
+
 
 

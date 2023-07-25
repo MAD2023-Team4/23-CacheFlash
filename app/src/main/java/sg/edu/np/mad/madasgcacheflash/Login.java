@@ -1,5 +1,7 @@
 package sg.edu.np.mad.madasgcacheflash;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,9 +26,12 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.gson.Gson;
 
 public class Login extends AppCompatActivity {
@@ -35,7 +40,7 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     public ProgressDialog loginprogress;
-
+    String usernameprofile;
     /*
     private String GLOBAL_PREF = "MyPrefs";
     private String MY_USERNAME = "MyUserName";
@@ -48,6 +53,16 @@ public class Login extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_login);
         TextView privacyPolicyTextView = findViewById(R.id.privacy_policy_text);
+        Intent intent=getIntent();
+        if (intent != null && intent.hasExtra("username"))
+        {
+            usernameprofile=intent.getStringExtra("username");
+        }
+        else
+        {
+            usernameprofile=null;
+        }
+
         privacyPolicyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,6 +81,7 @@ public class Login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         EditText etUsername = findViewById(R.id.editTextText);
         EditText etPassword = findViewById(R.id.editTextText2);
+        TextView Forgetpassword=findViewById(R.id.textView7);
         newUser.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -76,14 +92,23 @@ public class Login extends AppCompatActivity {
             }
         });
         //Button forgetpass = findViewById(R.id.button6);
-        
+        Forgetpassword.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                showRecoverPasswordDialog();
+            }
+
+
+        });
         
         Button loginButton = findViewById(R.id.button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username = etUsername.getText().toString();
+                String username = etUsername.getText().toString().trim();
                 String password = etPassword.getText().toString();
+
                 if (username.isEmpty() && password.isEmpty()) {
                     Toast.makeText(Login.this, "Please enter username and password,do not leave it blank", Toast.LENGTH_SHORT).show();
                 } else if (password.isEmpty()) {
@@ -92,22 +117,35 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Please enter username,do not leave it blank", Toast.LENGTH_SHORT).show();
                 } else {
                     signIn(username, password);
+                    if(usernameprofile!=null)
+                    {
+                        updateUserprofile(usernameprofile);
+                    } else if (mAuth.getCurrentUser().getDisplayName()==null) {
+                        String standardizedUsername = username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase();
+                        updateUserprofile(standardizedUsername);
+
+
+                    }
+
                 }
             }
         });
     }
 
-    private void signIn(String username, String password) {
-        mAuth.signInWithEmailAndPassword(username + "@gmail.com", password)
+    private void signIn(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Login successful
-                        String standardizedUsername = username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase();
-                        Log.d("Login", "Username: " + username);
+                        String[] email1=email.split("@");
+                        String Frontend=email1[0];
+                        String standardizedUsername = Frontend.substring(0, 1).toUpperCase() + Frontend.substring(1).toLowerCase();
+                        Log.d("Login", "Username: " + standardizedUsername);
                         Toast.makeText(Login.this, "Login successful! Welcome " + standardizedUsername, Toast.LENGTH_SHORT).show();
                         // Start the MainActivity
                         Intent intent = new Intent(Login.this, MainActivity.class);
                         intent.putExtra("Username", standardizedUsername);
+
                         startActivity(intent);
                     } else {
                         // Login failed
@@ -132,7 +170,7 @@ public class Login extends AppCompatActivity {
         final EditText emailet = new EditText(this);
 
         // write the email using which you registered
-        emailet.setText("Email");
+        emailet.setHint("Email");
         emailet.setMinEms(16);
         emailet.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
         linearLayout.addView(emailet);
@@ -188,9 +226,47 @@ public class Login extends AppCompatActivity {
             }
         });
 
+    }
+    private void updateUserprofile(String username){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(username)
+                .build();
+
+        assert user != null;
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                           @Override
+                                           public void onComplete(@NonNull Task<Void> task) {
+                                               if (task.isSuccessful()) {
+                                                   Log.d(TAG, "User profile updated.");
+                                                   Toast.makeText(Login.this, user.getEmail()+"profile updated", Toast.LENGTH_SHORT).show();
+                                                   mAuth.signOut();
+                                               }
+                                           }
+        });
+    }
+//        private void resetPasswordWithPhoneNumber(String phoneNumber) {
+//            FirebaseAuth.getInstance().signInWithPhoneNumber(phoneNumber, true)
+//                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+//                        @Override
+//                        public void onComplete(@NonNull Task<AuthResult> task) {
+//                            if (task.isSuccessful()) {
+//                                Toast.makeText(Login.this, "Password reset code sent. Check your phone.", Toast.LENGTH_SHORT).show();
+//                                Intent intent = new Intent(Login.this, VerifyPasswordResetCodeActivity.class);
+//                                intent.putExtra("verificationId", task.getResult().getSignInResult().getVerificationId());
+//                                startActivity(intent);
+//                            } else {
+//                                Toast.makeText(Login.this, "Failed to send password reset code. Make sure the phone number is correct.", Toast.LENGTH_SHORT).show();
+//                            }
+//                        }
+//                    });
+//        }
+
 
     }
-}
+
 /*
 import androidx.annotation.NonNull;
         import androidx.appcompat.app.AppCompatActivity;
