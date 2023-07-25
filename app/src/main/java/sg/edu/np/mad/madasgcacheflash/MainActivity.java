@@ -1,6 +1,7 @@
 package sg.edu.np.mad.madasgcacheflash;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -82,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
     private Boolean hasImage = false;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,13 +91,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
 
+
+
         Log.d("MainActivity", "Received Username: " + username);
         FirebaseApp.initializeApp(MainActivity.this);
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
+            if(user.getDisplayName()!=null)
+            {username=user.getDisplayName();}
             TextView welcomeTxt = findViewById(R.id.welcomeText);
             String welcomeMessage = getString(R.string.welcome_message);
             String formattedMessage = String.format(welcomeMessage, username);
+            Log.i(title, "The username is nullllll, so it is a problem"+user.getDisplayName());
 
             welcomeTxt.setText(formattedMessage);
         } else {
@@ -109,9 +114,11 @@ public class MainActivity extends AppCompatActivity {
 
 // Create an intent to start the StreakUpdateService
         Intent serviceIntent = new Intent(this, StreakUpdateService.class);
+
         //hardcoding the username to paul
         serviceIntent.putExtra("Username",username);
         Log.v("MustSee",username);
+
 // Start the service
         startService(serviceIntent);
 
@@ -166,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         // Bottom Navigation View
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.home);
@@ -183,28 +189,22 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
-                    }
-
-                    else if (id == R.id.search) {
+                    } else if (id == R.id.search) {
                         Intent intent = new Intent(getApplicationContext(), Search.class);
                         intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
-                    }
-
-                    else if (id == R.id.home) {
+                    } else if (id == R.id.home) {
                         return true;
 
-                    }
-                    else if (id == R.id.leaderboard) {
+                    } else if (id == R.id.leaderboard) {
                         Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
                         intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
-                    }
-                    else if (id == R.id.about) {
+                    } else if (id == R.id.about) {
                         Intent intent = new Intent(getApplicationContext(), Profile.class);
                         intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
@@ -313,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }.execute();
     }
+
     private void fetchQuoteFromDatabase() {
         new AsyncTask<Void, Void, String>() {
             @Override
@@ -374,7 +375,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void uploadNewFlashcards(List<Category> categories, String username) {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference("users");
 
@@ -398,7 +398,35 @@ public class MainActivity extends AppCompatActivity {
                             /*
                             for (DataSnapshot flashcardSnapshot : dataSnapshot.getChildren()) {
                                 String flashcardKey = flashcardSnapshot.getKey();
+                                Flashcard existingFlashcard = flashcardSnapshot.getValue(Flashcard.class);
+
+                                // Preserve the existing percentage and attempts data if available
+                                Map<String, Double> existingPercentage = existingFlashcard.getPercentage();
+                                Map<String, Integer> existingAttempts = existingFlashcard.getAttempts();
+                                if (existingPercentage != null) {
+                                    flashcard.setPercentage(existingPercentage);
+                                } else {
+                                    // If no percentage data exists, initialize with default values
+                                    Map<String, Double> defaultPercentage = new HashMap<>();
+                                    defaultPercentage.put("easy", 0.0);
+                                    defaultPercentage.put("medium", 0.0);
+                                    defaultPercentage.put("hard", 0.0);
+                                    flashcard.setPercentage(defaultPercentage);
+                                }
+
+                                if (existingAttempts != null) {
+                                    flashcard.setAttempts(existingAttempts);
+                                } else {
+                                    // If no attempts data exists, initialize with default values
+                                    Map<String, Integer> defaultAttempts = new HashMap<>();
+                                    defaultAttempts.put("easy", 0);
+                                    defaultAttempts.put("medium", 0);
+                                    defaultAttempts.put("hard", 0);
+                                    flashcard.setAttempts(defaultAttempts);
+                                }
+
                                 DatabaseReference flashcardRef = categoryRef.child(flashcardKey);
+
                                 // Update the flashcard data within the reference
                                 flashcardRef.setValue(flashcard);
                                 Log.d("QuoteApp", "Flashcard updated with key: " + flashcardKey);
@@ -408,9 +436,25 @@ public class MainActivity extends AppCompatActivity {
 
                         } else {
                             // Flashcard with the same title doesn't exist, create a new one
-                            DatabaseReference flashcardRef = categoryRef.child(flashcardTitle); // Use the title as the key
+                            DatabaseReference flashcardRef = categoryRef.push(); // Use the unique key generated by push()
+
+                            // Set the percentage for each difficulty level (initialize with default values)
+                            Map<String, Double> defaultPercentage = new HashMap<>();
+                            defaultPercentage.put("easy", 0.0);
+                            defaultPercentage.put("medium", 0.0);
+                            defaultPercentage.put("hard", 0.0);
+                            flashcard.setPercentage(defaultPercentage);
+
+                            // Set the attempts for each difficulty level (initialize with default values)
+                            Map<String, Integer> defaultAttempts = new HashMap<>();
+                            defaultAttempts.put("easy", 0);
+                            defaultAttempts.put("medium", 0);
+                            defaultAttempts.put("hard", 0);
+                            flashcard.setAttempts(defaultAttempts);
+
+                            // Update the flashcard data within the reference
                             flashcardRef.setValue(flashcard);
-                            Log.d("QuoteApp", "Flashcard uploaded with key: " + flashcardTitle);
+                            Log.d("QuoteApp", "Flashcard uploaded with key: " + flashcardRef.getKey());
                         }
                     }
 
@@ -425,13 +469,6 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
     private boolean isSameDay(Date date1, Date date2) {
         Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date1);
@@ -442,13 +479,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     private void startShuffleCardActivity(Flashcard flashcard) {
         Intent shuffleCardIntent = new Intent(this, ShuffleCardActivity.class);
         shuffleCardIntent.putExtra("flashcard", flashcard);
-        shuffleCardIntent.putExtra("Username",username);
+        shuffleCardIntent.putExtra("Username", username);
         startActivity(shuffleCardIntent);
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -485,6 +522,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
     private void showStep1Layout() {
         // Inflate the layout
         View step1Layout = getLayoutInflater().inflate(R.layout.create_flashcard_step_1, null);
@@ -492,8 +530,8 @@ public class MainActivity extends AppCompatActivity {
         // Find the views inside the layout
         TextInputLayout tilFlashcardTitle = step1Layout.findViewById(R.id.tilFlashcardTitle);
         TextInputLayout tilFlashcardCategory = step1Layout.findViewById(R.id.tilFlashcardCategory);
-         etFlashcardTitle = step1Layout.findViewById(R.id.etFlashcardTitle);
-         etFlashcardCategory = step1Layout.findViewById(R.id.etFlashcardCategory);
+        etFlashcardTitle = step1Layout.findViewById(R.id.etFlashcardTitle);
+        etFlashcardCategory = step1Layout.findViewById(R.id.etFlashcardCategory);
         Button btnNext = step1Layout.findViewById(R.id.btnNext);
 
         // Create an AlertDialog to show the layout
@@ -509,8 +547,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // Get the input values from EditText views
-                 flashcardTitle = etFlashcardTitle.getText().toString().trim();
-                 flashcardCategory = etFlashcardCategory.getText().toString().trim();
+                flashcardTitle = etFlashcardTitle.getText().toString().trim();
+                flashcardCategory = etFlashcardCategory.getText().toString().trim();
 
                 // Perform input validation (e.g., check if fields are not empty)
                 if (flashcardTitle.isEmpty()) {
@@ -529,6 +567,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private void showStep2Layout() {
         // Inflate the Step 2 layout
         View step2Layout = getLayoutInflater().inflate(R.layout.create_flashcard_step_2, null);
@@ -664,7 +703,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, flashcardContent.toString(), Toast.LENGTH_LONG).show();
 
                 alertDialog.dismiss();
-                showStep4Layout(questionsList,answersList);
+                showStep4Layout(questionsList, answersList);
             }
         });
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -676,6 +715,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
     private void showStep4Layout(List<String> questions, List<String> answers) {
         // Inflate the Step 4 layout
         View step4Layout = getLayoutInflater().inflate(R.layout.create_flashcard_step_4, null);
@@ -978,27 +1018,12 @@ public class MainActivity extends AppCompatActivity {
 
                 Toast.makeText(MainActivity.this, "Flashcard created successfully", Toast.LENGTH_SHORT).show();
                 createCategories();
-                uploadNewFlashcards(categories,username);
+                uploadNewFlashcards(categories, username);
                 // Close the Step 4 dialog
                 alertDialog.dismiss();
             }
         });
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
-            // Get the selected image URI
-            selectedImageUri = data.getData();
-
-            // Set the selected image to the ImageView
-            ImageView imgFlashcardImage = findViewById(R.id.imgFlashcardImage);
-            imgFlashcardImage.setImageURI(selectedImageUri);
-        }
-    }
-
-
 
 
     private void createCategories() {
@@ -1089,17 +1114,45 @@ public class MainActivity extends AppCompatActivity {
         fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
-                alertDialogQuiz(flashcard);
+                //alertDialogQuiz(flashcard);
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                //Intent intent = new Intent(MainActivity.this, Testyourself.class);
-                //intent.putExtra("flashcard", flashcard);
-                //intent.putExtra("Username", username);
-                //startActivity(intent);
-                //startShuffleCardActivity(flashcard);
+
+                /*Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                intent.putExtra("flashcard", flashcard);
+                intent.putExtra("Username", username);
+                startActivity(intent);
+                //startShuffleCardActivity(flashcard);*/
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Test Yourself");
+                builder.setMessage("What kind of test would you like?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("View", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        Intent intent = new Intent(MainActivity.this, DifficultyLevelActivity.class);
+                        intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username", username);
+                        startActivityForResult(intent, 1);
+                    }
+                });
+                builder.setNegativeButton("MCQ Quiz", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                        intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username", username);
+                        startActivity(intent);
+                    }
+                });
+                AlertDialog alert=builder.create();
+                alert.show();
             }
         });
     }
-    private void displayAllFlashcards(){
+
+
+
+    private void displayAllFlashcards() {
         RecyclerView recyclerView;
         FlashcardAdapter fcAdapter = new FlashcardAdapter(flashcardList);
         LinearLayoutManager mLayoutManager;
@@ -1124,7 +1177,7 @@ public class MainActivity extends AppCompatActivity {
                 // Start FlashCardQuestionPage activity with the selected flashcard
                 Intent intent = new Intent(MainActivity.this, LearnYourself.class);
                 intent.putExtra("flashcard", flashcard);
-                Log.v("Username out:",username);
+                Log.v("Username out:", username);
                 intent.putExtra("Username", username);
                 startActivity(intent);
                 startShuffleCardActivity(flashcard);
@@ -1151,44 +1204,81 @@ public class MainActivity extends AppCompatActivity {
         fcAdapter.setOnItemClickListener(new FlashcardAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Flashcard flashcard) {
-                alertDialogQuiz(flashcard);
-                // Start FlashCardQuestionPage activity with the selected flashcard
-                //Intent intent = new Intent(MainActivity.this, Testyourself.class);
-                //intent.putExtra("flashcard", flashcard);
-                //startActivity(intent);
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("Test Yourself");
+                builder.setMessage("What kind of test would you like?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("View", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+                        Intent intent = new Intent(MainActivity.this, DifficultyLevelActivity.class);
+                        intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username", username);
+                        startActivityForResult(intent, 1);
+                    }
+                });
+                builder.setNegativeButton("MCQ Quiz", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(MainActivity.this, MCQuiz.class);
+                        intent.putExtra("flashcard", flashcard);
+                        intent.putExtra("Username", username);
+                        startActivity(intent);
+
+
+                    }
+                });
+                AlertDialog alert=builder.create();
+                alert.show();
             }
         });
     }
-
-    private void alertDialogQuiz(Flashcard flashcard) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Test Yourself");
-        builder.setMessage("What kind of test would you like?");
-        builder.setCancelable(false);
-        builder.setPositiveButton("Open-ended", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int i) {
-                Intent intent = new Intent(MainActivity.this, Testyourself.class);
+                // Start DifficultyLevelActivity to choose the difficulty level
+                Log.d("FlashcardDebug", "Sending flashcard to Testyourself: " + flashcard.getTitle());
+                Intent intent = new Intent(MainActivity.this, DifficultyLevelActivity.class);
                 intent.putExtra("flashcard", flashcard);
-                intent.putExtra("Username", username);
-                startActivity(intent);
-            }
-        });
-        builder.setNegativeButton("MCQ Quiz", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(MainActivity.this, MCQuiz.class);
-                intent.putExtra("flashcard", flashcard);
-                intent.putExtra("Username", username);
-                startActivity(intent);
+                intent.putExtra("username",username);
+                startActivityForResult(intent, 1);
             }
         });
 
-// Call .show() to display the AlertDialog
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        // Check if the result is from the DifficultyLevelActivity
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            // Handle the result for the DifficultyLevelActivity here
+            int difficultyLevel = data.getIntExtra("difficultyLevel", 0);
+            int timerDuration = data.getIntExtra("timerDuration", -1);
+            Flashcard flashcard = data.getParcelableExtra("flashcard");
+            if (flashcard != null) {
+                Log.d("MainActivity", "Receiveds Flashcard: " + flashcard.getTitle());
+            // Now start the Testyourself activity with the selected difficulty level and timer duration
+            Intent intent = new Intent(MainActivity.this, Testyourself.class);
+            intent.putExtra("flashcard", flashcard);
+            intent.putExtra("difficultyLevel", difficultyLevel);
+            intent.putExtra("timerDuration", timerDuration);
+            intent.putExtra("username",username);
+            startActivity(intent);
+        } else {
+                Log.e("MainActivity", "Flashcard is null.");
+            }
+        }
+        // Add more conditions for other requestCodes if needed
+        else if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            selectedImageUri = data.getData();
+
+            // Set the selected image to the ImageView
+            ImageView imgFlashcardImage = findViewById(R.id.imgFlashcardImage);
+            imgFlashcardImage.setImageURI(selectedImageUri);
+        }
     }
-    }
+
+}
+
+
+
 
 

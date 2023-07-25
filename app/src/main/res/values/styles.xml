@@ -9,5 +9,10 @@
         <!-- Add any additional attributes you want to customize -->
         <item name="android:textSize">20sp</item> <!-- Set a smaller text size -->
     </style>
+    <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
 
 </resources>

@@ -3,19 +3,23 @@ package sg.edu.np.mad.madasgcacheflash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.security.PublicKey;
+import java.util.HashMap;
 import java.util.List;
-//__________________________________________________________________________________________________
-// Source from: Bard AI - https://bard.google.com/?hl=en_GB
+import java.util.Map;
+
 public class Flashcard implements Parcelable {
     private String title;
     private List<String> questions;
     private List<String> answers;
     private String username;
-    private double percentage;
     private String category;
-
+    private Map<String, Double> percentage; // Store percentage as HashMap for different difficulty levels
+    private Map<String, Integer> attempts;
+    private double totalPercentage;
     public Flashcard() {
+        percentage = new HashMap<>();
+        attempts = new HashMap<>();
+
     }
 
     public Flashcard(String title, List<String> questions, List<String> answers, String username, String category) {
@@ -24,6 +28,7 @@ public class Flashcard implements Parcelable {
         this.answers = answers;
         this.username = username;
         this.category = category;
+        percentage = new HashMap<>();
     }
 
     public String getTitle() {
@@ -58,14 +63,52 @@ public class Flashcard implements Parcelable {
         this.username = username;
     }
 
-    public String getCategory() { return category; }
+    public String getCategory() {
+        return category;
+    }
 
-    public  void setCategory(String category)  { this.category = category; }
-    public double getPercentage() { return percentage; }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-    public void setPercentage(double percentage)  { this.percentage = percentage; }
+    public Map<String, Double> getPercentage() {
+        return percentage;
+    }
 
+    public void setPercentage(Map<String, Double> percentage) {
+        this.percentage = percentage;
+    }
+    public Map<String, Integer> getAttempts() {
+        return attempts;
+    }
 
+    public void setAttempts(Map<String, Integer> attempts) {
+        this.attempts = attempts;
+    }
+    public void updateStats(double percentage, String difficultyLevel) {
+        // Update the total percentage and increment the attempts for the respective difficulty level
+        totalPercentage += percentage;
+
+        int currentAttempts = 0;
+        if (attempts.containsKey(difficultyLevel)) {
+            currentAttempts = attempts.get(difficultyLevel);
+        }
+        attempts.put(difficultyLevel, currentAttempts + 1);
+    }
+
+    // Method to calculate and return the average percentage for this flashcard
+    public double getAveragePercentage() {
+        int totalAttempts = 0;
+        for (int attemptsCount : attempts.values()) {
+            totalAttempts += attemptsCount;
+        }
+
+        if (totalAttempts > 0) {
+            return totalPercentage / totalAttempts;
+        } else {
+            return 0.0;
+        }
+    }
 
     protected Flashcard(Parcel in) {
         title = in.readString();

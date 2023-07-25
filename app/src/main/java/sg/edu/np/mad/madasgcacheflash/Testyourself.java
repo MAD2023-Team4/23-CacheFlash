@@ -1,5 +1,6 @@
 package sg.edu.np.mad.madasgcacheflash;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -17,6 +18,7 @@ import android.animation.ObjectAnimator;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -34,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -51,6 +54,14 @@ public class Testyourself extends AppCompatActivity {
     List<Integer> answeredQuestions = new ArrayList<>(); // New list to track answered questions
     boolean isAnswered = false;
 
+    private CountDownTimer timer;
+    private long timeLeftInMillis; // Time left for the current question
+    private long totalDurationInMillis; // Total duration for all questions
+    private TextView timerTextView;
+    private int timerDuration;
+    private int difficultyLevel;
+
+
     String username;
     Flashcard flashcard;
 
@@ -62,7 +73,8 @@ public class Testyourself extends AppCompatActivity {
     private int animationDuration = 100;
     private int pauseDuration = 500; // Adjust the pause duration here
     private int roundCount = 0;
-
+    private ConstraintLayout mainLayout;
+    private View shufflingCardLayout;
 
 
     @Override
@@ -70,8 +82,8 @@ public class Testyourself extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_testyourself);
-        ConstraintLayout mainLayout = findViewById(R.id.activity_testyourself);
-        View shufflingCardLayout = getLayoutInflater().inflate(R.layout.activity_shuffle_card, mainLayout, false);
+        mainLayout = findViewById(R.id.activity_testyourself);
+        shufflingCardLayout = getLayoutInflater().inflate(R.layout.activity_shuffle_card, mainLayout, false);
         mainLayout.addView(shufflingCardLayout);
 
         // Initialize the ImageView variables using the IDs from the shuffling card layout
@@ -84,14 +96,20 @@ public class Testyourself extends AppCompatActivity {
         imageViews.add(imageView2);
         imageViews.add(imageView3);
 
-        startShufflingAnimation(shufflingCardLayout,mainLayout);
-
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("flashcard")
-                && intent.hasExtra("Username")) {
+                && intent.hasExtra("difficultyLevel")
+                && intent.hasExtra("timerDuration")) {
             flashcard = intent.getParcelableExtra("flashcard");
-            username = intent.getStringExtra("Username");
-            Log.v("Test Yourself",username);
+            username = intent.getStringExtra("username"); // Make sure you pass the username in the intent as well
+            difficultyLevel = intent.getIntExtra("difficultyLevel", 0);
+             timerDuration = intent.getIntExtra("timerDuration", -1);
+            // Calculate the total duration for all questions based on the number of questions and the timer duration
+            totalDurationInMillis = flashcard.getQuestions().size() * timerDuration * 1000;
+            timeLeftInMillis = totalDurationInMillis;
+            startShufflingAnimation(shufflingCardLayout, mainLayout);
+            startTimer();
+
 
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
@@ -115,6 +133,7 @@ public class Testyourself extends AppCompatActivity {
 
             TextView Title = findViewById(R.id.ftitle);
             TextView qcard = findViewById(R.id.QCard);
+            timerTextView = findViewById(R.id.timerTextView);
             EditText input = findViewById(R.id.Userinput);
             Button back = findViewById(R.id.button3);
             Button prev = findViewById(R.id.button);
@@ -130,9 +149,11 @@ public class Testyourself extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String answer = input.getText().toString();
+                    String answernoexception=answer.toLowerCase().replaceAll("\\s+","");
                     String correctAnswer = answers.get(currentIndex);
+                    String correctedAnswer=correctAnswer.toLowerCase().replaceAll("\\s+","");
 
-                    if (answer.equals(correctAnswer)) {
+                    if (answernoexception.equals(correctedAnswer)) {
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
                         score++;
                         Log.v("Score", String.valueOf(score));
@@ -181,6 +202,9 @@ public class Testyourself extends AppCompatActivity {
                     currentIndex++;
                     if(currentIndex == flashcard.getQuestions().size()){
                         //make a toast message of the score
+                        if(timer!=null){
+                            timer.cancel();
+                        }
                         double percentage = (double) score / flashcard.getQuestions().size() * 100.0;
 
                         Log.v("Percentage", String.valueOf(flashcard.getQuestions().size()));
@@ -188,7 +212,7 @@ public class Testyourself extends AppCompatActivity {
                         Log.v("Quiz Finished", String.valueOf(percentage));
                         showAlert("Quiz Finished", "Your score: " + percentage
                                 + "%", percentage, flashcard.getQuestions().size());
-                        updatePercentage(username, percentage, flashcard);
+                        updatePercentage(username, percentage, flashcard,difficultyLevel);
                     }
                     // Update the percentage of the flashcard in the Firebase Realtime Database
 
@@ -316,6 +340,54 @@ public class Testyourself extends AppCompatActivity {
     }
 
 
+
+    private void startTimer() {
+        Log.v("time", String.valueOf(totalDurationInMillis));
+        if (timerDuration != -1) {
+            // For other difficulty levels, start the CountDownTimer with the specified duration
+            timeLeftInMillis = totalDurationInMillis; // Set the timeLeftInMillis to the total duration
+
+            timer = new CountDownTimer(timeLeftInMillis, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    timeLeftInMillis = millisUntilFinished;
+                    updateTimerText();
+                }
+
+                @Override
+                public void onFinish() {
+                    // Timer finished, calculate the percentage based on the number of correct answers
+                    double percentage = (double) score / flashcard.getQuestions().size() * 100.0;
+                    showAlert("Time's Up!", "Your time is up!", percentage, flashcard.getQuestions().size());
+                    updatePercentage(username, percentage, flashcard,difficultyLevel);
+                }
+            }.start();
+        }
+        else {
+            // For easy mode with unlimited time, set the timeLeftInMillis to a large value to avoid onFinish() being called immediately
+            timeLeftInMillis = Long.MAX_VALUE;
+            updateTimerText(); // Update the timer text to display "Unlimited" time
+        }
+    }
+
+    private void updateTimerText() {
+        TextView timerTextView = findViewById(R.id.timerTextView);
+
+        if (timerDuration == -1) {
+            // If it's "Easy" mode with unlimited time, display "Unlimited" text
+            timerTextView.setText("Unlimited Time");
+        } else {
+            // Otherwise, display the time left in the standard format
+            int minutes = (int) (timeLeftInMillis / 1000) / 60;
+            int seconds = (int) (timeLeftInMillis / 1000) % 60;
+            String timeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
+            timerTextView.setText(timeLeftFormatted);
+        }
+    }
+
+
+
+
     @Override
     protected void onStart () {
         super.onStart();
@@ -360,6 +432,9 @@ public class Testyourself extends AppCompatActivity {
                         intent.putExtra("Flashcard", flashcard);
                         intent.putExtra("Score", percentage);
                         intent.putExtra("Total", total);
+
+                        intent.putExtra("Username",username);
+
                         startActivity(intent);
                     }
                 })
@@ -371,11 +446,12 @@ public class Testyourself extends AppCompatActivity {
                 .show();
     }
 
-    private void updatePercentage(String username, double percentage, Flashcard f2){
+    private void updatePercentage(String username, double percentage, Flashcard f2, int difficultyLevel) {
         if (username == null) {
             Log.e("UpdatePercentage", "Username is null. Cannot proceed.");
             return;
         }
+
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
                 .child("users")
                 .child(username)
@@ -386,10 +462,40 @@ public class Testyourself extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
                     for (DataSnapshot flashcardSnapshot : categorySnapshot.getChildren()) {
-                        Flashcard f = flashcardSnapshot.getValue(Flashcard.class);
-                        if (f.getTitle().equals(f2.getTitle())) {
-                            DatabaseReference flashcardRef = flashcardSnapshot.child("percentage").getRef();
-                            flashcardRef.setValue(percentage);
+                        Flashcard firebaseFlashcard = flashcardSnapshot.getValue(Flashcard.class);
+                        if (firebaseFlashcard != null && firebaseFlashcard.getTitle().equals(f2.getTitle())) {
+                            DatabaseReference percentageRef = flashcardSnapshot.child("percentage").getRef();
+                            DatabaseReference attemptsRef = flashcardSnapshot.child("attempts").getRef();
+
+                            switch (difficultyLevel) {
+                                case 0: // Easy
+                                    double averagePercentageEasy = firebaseFlashcard.getPercentage().get("easy");
+                                    int attemptsEasy = firebaseFlashcard.getAttempts().get("easy");
+                                    averagePercentageEasy = (averagePercentageEasy * attemptsEasy + percentage) / (attemptsEasy + 1);
+                                    attemptsEasy++;
+                                    percentageRef.child("easy").setValue(averagePercentageEasy);
+                                    attemptsRef.child("easy").setValue(attemptsEasy);
+                                    break;
+
+                                case 1: // Medium
+                                    double averagePercentageMedium = firebaseFlashcard.getPercentage().get("medium");
+                                    int attemptsMedium = firebaseFlashcard.getAttempts().get("medium");
+                                    averagePercentageMedium = (averagePercentageMedium * attemptsMedium + percentage) / (attemptsMedium + 1);
+                                    attemptsMedium++;
+                                    percentageRef.child("medium").setValue(averagePercentageMedium);
+                                    attemptsRef.child("medium").setValue(attemptsMedium);
+                                    break;
+
+                                case 2: // Hard
+                                    double averagePercentageHard = firebaseFlashcard.getPercentage().get("hard");
+                                    int attemptsHard = firebaseFlashcard.getAttempts().get("hard");
+                                    averagePercentageHard = (averagePercentageHard * attemptsHard + percentage) / (attemptsHard + 1);
+                                    attemptsHard++;
+                                    percentageRef.child("hard").setValue(averagePercentageHard);
+                                    attemptsRef.child("hard").setValue(attemptsHard);
+                                    break;
+                            }
+
                             break; // Found the flashcard, exit the loop
                         }
                     }
@@ -402,6 +508,9 @@ public class Testyourself extends AppCompatActivity {
             }
         });
     }
+
+
+
 
 
 }
