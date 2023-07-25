@@ -197,7 +197,7 @@ public class MCQuiz extends AppCompatActivity {
                         updatePercentage(username, percentage, flashcard);
 
                         //Update the flashcard's score locally
-                        flashcard.setPercentage(percentage);
+                       // flashcard.setPercentage(percentage);
                         // Posting performance of the user into firebase
                         postPerformance(flashcard, score);
                     }
