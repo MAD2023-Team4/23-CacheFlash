@@ -429,7 +429,12 @@ public class Testyourself extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         // Do something when the "OK" button is clicked
                         Intent intent = new Intent(Testyourself.this, MainActivity.class);
+                        intent.putExtra("Flashcard", flashcard);
+                        intent.putExtra("Score", percentage);
+                        intent.putExtra("Total", total);
+
                         intent.putExtra("Username",username);
+
                         startActivity(intent);
                     }
                 })

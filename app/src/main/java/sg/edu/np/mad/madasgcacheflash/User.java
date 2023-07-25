@@ -6,13 +6,21 @@ import java.util.List;
 public class User {
     private String username;
     private String password;
+    private int points;
     private List<Flashcard> flashcards;
     public User(){}
 
     // Constructors, getters, and setters
+
+    //Setting points = 0, as a default parameter if it is not specified
+    //_______________________________________________________
     public User(String username, String password) {
+        this(username, password, 0); // Call the three-parameter constructor with points=0
+    }
+    public User(String username, String password, int points) {
         this.username = username;
         this.password = password;
+        this.points = points;
     }
 
     public String getUsername() {
@@ -30,6 +38,8 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
+    public int getPoints() {return points;}
+    public void setPoints(int points) { this.points = points; }
 
     public List<Flashcard> getFlashcards() {
         return flashcards;
@@ -38,4 +48,6 @@ public class User {
     public void setFlashcards(List<Flashcard> flashcards) {
         this.flashcards = flashcards;
     }
+
+
 }

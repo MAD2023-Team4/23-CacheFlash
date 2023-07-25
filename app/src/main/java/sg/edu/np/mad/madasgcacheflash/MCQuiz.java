@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+
+import androidx.core.content.ContextCompat;
+
 import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -13,7 +16,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -79,10 +81,9 @@ public class MCQuiz extends AppCompatActivity {
         startShufflingAnimation(shufflingCardLayout,mainLayout);
 
         Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("flashcard")) {
+        if (intent != null && intent.hasExtra("flashcard") && intent.hasExtra("Username")) {
             Flashcard flashcard = intent.getParcelableExtra("flashcard");
             username = intent.getStringExtra("Username");
-
 
             // Retrieve the questions from the flashcard object
             questions = flashcard.getQuestions();
@@ -199,7 +200,7 @@ public class MCQuiz extends AppCompatActivity {
                         //Update the flashcard's score locally
                        // flashcard.setPercentage(percentage);
                         // Posting performance of the user into firebase
-                        postPerformance(flashcard, score);
+                        postPerformance(flashcard, percentage);
                     }
                     if (currentIndex >= questions.size()) {
                         currentIndex = questions.size() - 1;
@@ -218,15 +219,16 @@ public class MCQuiz extends AppCompatActivity {
     }
     public void changequestion(TextView Qcard,Button next,Button option1,Button option2,Button option3,Button option4,List<String>AList,List<String>QList,List<String>SList,List<String>OList)
     {
+        int blueColor = ContextCompat.getColor(this, R.color.stepIndicatorUnselectedColor);
         Qcard.setText(QList.get(currentIndex));
         option1.setEnabled(true);
         option2.setEnabled(true);
         option3.setEnabled(true);
         option4.setEnabled(true);
-        option1.setBackgroundColor(Color.BLUE);
-        option2.setBackgroundColor(Color.BLUE);
-        option3.setBackgroundColor(Color.BLUE);
-        option4.setBackgroundColor(Color.BLUE);
+        option1.setBackgroundColor(blueColor);
+        option2.setBackgroundColor(blueColor);
+        option3.setBackgroundColor(blueColor);
+        option4.setBackgroundColor(blueColor);
         Qcard.setText(QList.get(currentIndex));
         next.setEnabled(false);
         Random random = new Random();
@@ -238,11 +240,16 @@ public class MCQuiz extends AppCompatActivity {
 
 
         for (int i = 0; i < 3; i++) {
-            int options = random.nextInt(AList.size());
-            String option = AList.get(options);
-            OList.add(option);
-            AList.remove(option);
+            //Do a checker if AList is empty, it will have a negative bound error
+            if (AList.size() > 0) {
+                int options = random.nextInt(AList.size());
+                String option = AList.get(options);
+                OList.add(option);
+                AList.remove(option);
+            }
+            else{
 
+            }
 
         }
 
@@ -270,12 +277,7 @@ public class MCQuiz extends AppCompatActivity {
 
 
 
-
-
-
-
-
-    public boolean CheckAnswer(String correctAnswer, String guessedAnswer) {
+    public boolean checkAnswer(String correctAnswer, String guessedAnswer) {
         if (correctAnswer.equals(guessedAnswer)) {
             return true;
         }
@@ -283,30 +285,33 @@ public class MCQuiz extends AppCompatActivity {
     }
     public void getanswer(Button b,Button b2,Button b3,Button b4, List<String> AL,int i,Button next)
     {
-
-        if(CheckAnswer(AL.get(i),b.getText().toString()))
+        //Getting the integers of colors from the colors.xml file, into variables, then accessing them
+        int greenColor = ContextCompat.getColor(this, R.color.green);
+        int redColor = ContextCompat.getColor(this, R.color.lightRed);
+        if(checkAnswer(AL.get(i),b.getText().toString()))
         {
             Log.v(TITLE,"here");
-            b.setBackgroundColor(Color.GREEN);
+            b.setBackgroundColor(greenColor);
             score+=1;
 
         }
         else{
             Log.v(TITLE,"her");
-            b.setBackgroundColor(Color.RED);
-            if(CheckAnswer(AL.get(i),b2.getText().toString()))
+            b.setBackgroundColor(redColor);
+            if(checkAnswer(AL.get(i),b2.getText().toString()))
             {
-                b2.setBackgroundColor(Color.GREEN);
+                b2.setBackgroundColor(greenColor);
             }
-            else if(CheckAnswer(AL.get(i),b3.getText().toString()))
+            else if(checkAnswer(AL.get(i),b3.getText().toString()))
             {
-                b3.setBackgroundColor(Color.GREEN);
+                b3.setBackgroundColor(greenColor);
             }
-            else if(CheckAnswer(AL.get(i),b4.getText().toString()))
+            else if(checkAnswer(AL.get(i),b4.getText().toString()))
             {
-                b4.setBackgroundColor(Color.GREEN);
+                b4.setBackgroundColor(greenColor);
             }
         }
+
         b.setEnabled(false);
         b2.setEnabled(false);
         b3.setEnabled(false);
@@ -314,7 +319,9 @@ public class MCQuiz extends AppCompatActivity {
         next.setEnabled(true);
 
     }
-    private void showAlert(String title, String text, double score, int total) {
+
+    private void showAlert(String title, String text, double percentage, int total) {
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setMessage(text)
@@ -323,7 +330,8 @@ public class MCQuiz extends AppCompatActivity {
                         // Do something when the "OK" button is clicked
                         Intent intent = new Intent(MCQuiz.this, Dashboard.class);
                         intent.putExtra("flashcards", flashcard);
-                        intent.putExtra("Score", score);
+                        intent.putExtra("Username",username);
+                        intent.putExtra("Score", percentage);
                         intent.putExtra("Total", total);
                         startActivity(intent);
                     }
@@ -337,7 +345,8 @@ public class MCQuiz extends AppCompatActivity {
     }
 
 
-    private void postPerformance(Flashcard flashcard, int score) {
+    private void postPerformance(Flashcard flashcard, double percentage) {
+
         DatabaseReference flashcardsRef = FirebaseDatabase.getInstance().getReference()
                 .child("users").child(username).child("flashcards");
 
@@ -350,8 +359,7 @@ public class MCQuiz extends AppCompatActivity {
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                         String flashcardKey = snapshot.getKey();
                         DatabaseReference flashcardRef = flashcardsRef.child(flashcardKey);
-
-                        flashcardRef.child("score").setValue(score);
+                        //then, update the percentage accordingly
                         flashcardRef.child("percentage").setValue(calculatePercentage(score, flashcard.getQuestions().size()));
                     }
                 }

@@ -94,36 +94,38 @@
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="111dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
+        android:layout_below="@+id/textTextInput2"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="235dp"
-        android:layout_marginTop="460dp"
+        android:layout_marginStart="240dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="65dp"
-        android:layout_marginBottom="72dp"
+
         android:backgroundTint="#1400A9"
         android:text="@string/confirmCreationText"
         android:textSize="18sp" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="111dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+
+        android:layout_below="@+id/textTextInput2"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="70dp"
-        android:layout_marginTop="460dp"
-        android:layout_marginBottom="73dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="240dp"
+
         android:backgroundTint="#1400A9"
         android:text="@string/cancelCreationText"
         android:textSize="18sp" />
 
     <ImageView
         android:id="@+id/imageView2"
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="53dp"
         android:layout_marginTop="110dp"
         android:src="@drawable/cacheflash" />
 
@@ -131,8 +133,9 @@
         android:id="@+id/textView9"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView2"
         android:layout_marginStart="53dp"
-        android:layout_marginTop="230dp"
+        android:layout_marginTop="6dp"
         android:fontFamily="sans-serif-black"
         android:text="@string/createAcctTitle"
         android:textAlignment="center"
