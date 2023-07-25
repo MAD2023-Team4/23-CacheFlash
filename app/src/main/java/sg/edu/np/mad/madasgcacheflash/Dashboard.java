@@ -254,14 +254,14 @@ public class Dashboard extends AppCompatActivity {
                                                         Log.d("Dashboard", "Filtered Flashcards Size: " + filteredFlashcards.size());
                                                         // Set the text for the TextView elements
                                                         if (bestPerformingFlashcard != null) {
-                                                             bestPercentage = bestPerformingFlashcard.getPercentage().get(selectedDifficulty.toLowerCase()).intValue();
+                                                            bestPercentage = bestPerformingFlashcard.getPercentage().get(selectedDifficulty.toLowerCase()).intValue();
                                                             bestPerformingTextView.setText("Wow, you're doing well for " + bestPerformingFlashcard.getTitle() + "! Keep it up!");
                                                         } else {
                                                             bestPerformingTextView.setText("");
                                                         }
 
                                                         if (lowestPerformingFlashcard != null) {
-                                                             lowestPercentage = lowestPerformingFlashcard.getPercentage().get(selectedDifficulty.toLowerCase()).intValue();
+                                                            lowestPercentage = lowestPerformingFlashcard.getPercentage().get(selectedDifficulty.toLowerCase()).intValue();
                                                             lowestPerformingTextView.setText("Looks like you need to work on " + lowestPerformingFlashcard.getTitle() + ".");
                                                         } else {
                                                             lowestPerformingTextView.setText("");

@@ -1234,14 +1234,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-                // Start DifficultyLevelActivity to choose the difficulty level
-                Log.d("FlashcardDebug", "Sending flashcard to Testyourself: " + flashcard.getTitle());
-                Intent intent = new Intent(MainActivity.this, DifficultyLevelActivity.class);
-                intent.putExtra("flashcard", flashcard);
-                intent.putExtra("username",username);
-                startActivityForResult(intent, 1);
-            }
-        });
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
