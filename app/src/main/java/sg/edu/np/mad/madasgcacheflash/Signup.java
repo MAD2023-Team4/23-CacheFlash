@@ -78,8 +78,8 @@ public class Signup extends AppCompatActivity {
                     }
                         
                     else {
-                        signup(email, password);
-                        updateUserprofile(username);
+                        signup(email, password,username);
+
 
                     }
                 }
@@ -97,12 +97,13 @@ public class Signup extends AppCompatActivity {
         });
 
     }
-    private void signup(String email, String password) {
+    private void signup(String email, String password,String username) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(Signup.this, "User registered!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Signup.this,Login.class);
+                        intent.putExtra("username",username);
                         startActivity(intent);
                     } else {
                         if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -118,6 +119,7 @@ public class Signup extends AppCompatActivity {
 
 
         }
+
         private void updateUserprofile(String username){
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -132,6 +134,8 @@ public class Signup extends AppCompatActivity {
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()) {
                                 Log.d(TAG, "User profile updated.");
+                                Toast.makeText(Signup.this, user.getEmail()+"profile updated", Toast.LENGTH_SHORT).show();
+                                mAuth.signOut();
                             }
                         }
                     });

@@ -14,12 +14,13 @@
         android:layout_marginStart="65dp"
         android:layout_marginTop="295dp"
         android:layout_marginEnd="65dp"
-        android:hint="@string/usernameText"
+        android:hint="@string/Email"
         android:textColorHint="@color/black"
         app:hintTextColor="@color/darkBlue"
         app:boxStrokeColor="@color/darkBlue"
         app:boxStrokeWidth="2dp"
-        app:helperTextTextColor="@color/darkBlue">
+        app:helperTextTextColor="@color/darkBlue"
+        android:inputType="textEmailAddress">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextText"
@@ -144,5 +145,8 @@
         android:layout_marginEnd="57dp"
         android:text="By logging in or creating an account, you are agreeing with the privacy policy and that you are above 13 years old"
         android:textAlignment="center" />
+
+
+
 
 </RelativeLayout>

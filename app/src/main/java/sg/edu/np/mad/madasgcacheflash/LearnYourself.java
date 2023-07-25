@@ -51,6 +51,7 @@ public class LearnYourself extends AppCompatActivity {
         questions = new ArrayList<>();
         answers = new ArrayList<>();
         TextView titleTextView = findViewById(R.id.titleTextView);
+
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("flashcard")) {
             Flashcard flashcard = intent.getParcelableExtra("flashcard");
