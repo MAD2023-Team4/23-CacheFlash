@@ -6,6 +6,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -33,11 +36,15 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RemoteViews;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -96,6 +103,8 @@ public class Profile extends AppCompatActivity {
         TextView textViewPasswordReset;
         TextView textViewPreference;
         TextView textViewStreak;
+        TextView textViewchangeusername;
+
 
         Intent intent = getIntent();
         username = intent.getStringExtra("Username"); //get username
@@ -110,6 +119,8 @@ public class Profile extends AppCompatActivity {
         textViewPasswordReset = findViewById(R.id.password_reset);
         textViewPreference = findViewById(R.id.study_preference);
         textViewStreak = findViewById(R.id.study_streak);
+        textViewchangeusername=findViewById(R.id.changeusername);
+
         // Add the code snippet here
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(new OnCompleteListener<String>() {
@@ -273,6 +284,13 @@ public class Profile extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        textViewchangeusername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showchangeUsernameDialog();
 
             }
         });
@@ -559,5 +577,54 @@ public class Profile extends AppCompatActivity {
         super.onResume();
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
+    }
+    private void updateUserprofile(String username){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                .setDisplayName(username)
+                .build();
+
+        assert user != null;
+        user.updateProfile(profileUpdates)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Log.d(TAG, "User profile updated.");
+                            Toast.makeText(Profile.this, user.getEmail()+"profile updated", Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+    }
+    private void showchangeUsernameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("ChangeUsername");
+        LinearLayout linearLayout = new LinearLayout(this);
+        final EditText emailet = new EditText(this);
+
+        // write the email using which you registered
+        emailet.setHint("new username");
+        linearLayout.addView(emailet);
+        linearLayout.setPadding(10, 10, 10, 10);
+        builder.setView(linearLayout);
+
+        // Click on Recover and a email will be sent to your registered email id
+        builder.setPositiveButton("Change username", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String email = emailet.getText().toString();
+                updateUserprofile(email);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
     }
 }
