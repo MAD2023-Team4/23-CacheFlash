@@ -92,6 +92,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.8.20"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20"
+    implementation 'com.github.Gruzer:simple-gauge-android:0.3.1'
 
 
 }

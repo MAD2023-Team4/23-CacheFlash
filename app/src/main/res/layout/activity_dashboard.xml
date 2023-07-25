@@ -7,6 +7,69 @@
     android:background="#FFFFFF"
     tools:context=".Dashboard">
 
+    <!-- Spinner -->
+    <Spinner
+        android:id="@+id/difficultySpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="16dp"
+        android:entries="@array/difficulty_levels" />
+
+    <!-- TextView for Best Performing Flashcard -->
+    <TextView
+        android:id="@+id/bestPerformingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/difficultySpinner"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Wow, you're doing well in {Category}! Keep it up."
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- Gauge Chart for Best Performing Flashcard -->
+    <com.ekn.gruzer.gaugelibrary.FullGauge
+        android:id="@+id/bestperformingGaugeChart"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@id/bestPerformingTextView"
+        android:layout_marginTop="16dp"/>
+
+
+
+    <!-- TextView for Lowest Performing Flashcard -->
+    <TextView
+        android:id="@+id/lowestPerformingTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bestperformingGaugeChart"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:text="Looks like you need to work on {Category}."
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <!-- Gauge Chart for Lowest Performing Flashcard -->
+    <com.ekn.gruzer.gaugelibrary.FullGauge
+        android:id="@+id/lowestPerformingGaugeChart"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_below="@id/lowestPerformingTextView"
+        android:layout_marginTop="16dp" />
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewDashboard"
+        android:layout_width="match_parent"
+        android:layout_height="582dp"
+        android:layout_below="@id/lowestPerformingGaugeChart" />
+
+    <!-- Bottom Navigation View (if needed) -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigator"
         android:layout_width="match_parent"
@@ -17,8 +80,4 @@
         app:itemTextColor="@drawable/serlector"
         app:menu="@menu/menu" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewDashboard"
-        android:layout_width="match_parent"
-        android:layout_height="582dp" />
 </RelativeLayout>
