@@ -1718,7 +1718,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(Flashcard flashcard) {
                 // Start FlashCardQuestionPage activity with the selected flashcard
-                Intent intent = new Intent(MainActivity.this, DifficultyLevelActivity.class);
+                Intent intent = new Intent(MainActivity.this, Testyourself.class);
                 intent.putExtra("flashcard", flashcard);
                 intent.putExtra("Username", username);
                 startActivityForResult(intent, 1);
@@ -1776,7 +1776,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(Flashcard flashcard) {
                 // Start DifficultyLevelActivity to choose the difficulty level
                 Log.d("FlashcardDebug", "Sending flashcard to Testyourself: " + flashcard.getTitle());
-                Intent intent = new Intent(MainActivity.this, DifficultyLevelActivity.class);
+                Intent intent = new Intent(MainActivity.this, Testyourself.class);
                 intent.putExtra("flashcard", flashcard);
                 intent.putExtra("username",username);
                 startActivityForResult(intent, 1);
