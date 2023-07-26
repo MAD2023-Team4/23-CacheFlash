@@ -20,7 +20,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Leaderboard extends AppCompatActivity {
     private String username;
@@ -43,15 +46,16 @@ public class Leaderboard extends AppCompatActivity {
             public void onDataReceived(ArrayList<User> updatedUList) {
                 // Callback triggered when data retrieval is complete
                 // Update the RecyclerView with the updated list
+                updatedUList = sortUsersDesc(updatedUList);
                 LeaderboardAdapter leaderboardAdapter = new LeaderboardAdapter(updatedUList);
                 recyclerView.setAdapter(leaderboardAdapter);
             }
         });
 
-        recyclerView = findViewById(R.id.ldboardRecycler);
+        //Sorting points in reverse order
 
-        LeaderboardAdapter leaderboardAdapter = new LeaderboardAdapter(updatedUList);
-        recyclerView.setAdapter(leaderboardAdapter);
+
+        recyclerView = findViewById(R.id.ldboardRecycler);
 
         // Set the layout manager for the RecyclerView
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -143,6 +147,18 @@ public class Leaderboard extends AppCompatActivity {
         });
 
         return uList;
+    }
+
+    // Method to sort users in descending order based on points
+    private ArrayList<User> sortUsersDesc(ArrayList<User> userList) {
+        Collections.sort(userList, new Comparator<User>() {
+            @Override
+            public int compare(User user1, User user2) {
+                // Compare the points in descending order
+                return Integer.compare(user2.getPoints(), user1.getPoints());
+            }
+        });
+        return userList;
     }
 
 
