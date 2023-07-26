@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/backgroundcolor"
     tools:context=".Testyourself">
-
     <ViewFlipper
         android:id="@+id/view_flipper"
         android:layout_width="match_parent"
@@ -16,6 +15,8 @@
 
 
     </ViewFlipper>
+
+
 
 
 
@@ -138,4 +139,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="16dp"/>
+
+    <ImageView
+        android:id="@+id/imageView10"
+        android:layout_width="77dp"
+        android:layout_height="88dp"
+        android:layout_marginStart="320dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/skunk" />
 </androidx.constraintlayout.widget.ConstraintLayout>

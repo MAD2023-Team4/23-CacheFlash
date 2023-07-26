@@ -49,7 +49,7 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardViewHolder> 
             holder.imageView.setImageResource(flashcard.getImageResourceId());
         } else {
             // If imageResourceId is null or 0, set a default picture here
-            holder.imageView.setImageResource(R.drawable.france); // Replace "default_image" with the resource ID of your default image
+            holder.imageView.setImageResource(R.drawable.defaultlearningimage); // Replace "default_image" with the resource ID of your default image
         }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
