@@ -131,14 +131,18 @@ public class Leaderboard extends AppCompatActivity {
                     Integer points = userSnapshot.child("points").getValue(Integer.class);
                     String username = userSnapshot.getKey(); // Assuming the key is the username
                     Log.v("User Points", "User: " + username + ", Points: " + points);
-                    //we temporarily set the password to null. anyway, it is not needed and
-                    //confidential.
+
+                    // Skip if username or points is null
+                    if (username == null || points == null) {
+                        continue; // Skip this iteration and proceed to the next user
+                    }
+
+                    // We temporarily set the password to null. Anyway, it is not needed and confidential.
                     User eachUser = new User(username, null, points);
                     uList.add(eachUser);
                 }
                 callback.onDataReceived(uList);
             }
-
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -148,6 +152,7 @@ public class Leaderboard extends AppCompatActivity {
 
         return uList;
     }
+
 
     // Method to sort users in descending order based on points
     private ArrayList<User> sortUsersDesc(ArrayList<User> userList) {

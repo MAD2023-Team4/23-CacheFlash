@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             TextView welcomeTxt = findViewById(R.id.welcomeText);
             String welcomeMessage = getString(R.string.welcome_message);
             String formattedMessage = String.format(welcomeMessage, username);
-            Log.i(title, "The username is nullllll, so it is a problem"+user.getDisplayName());
+            Log.i(title, "The username is null, so it is a problem"+user.getDisplayName());
 
             welcomeTxt.setText(formattedMessage);
         } else {
