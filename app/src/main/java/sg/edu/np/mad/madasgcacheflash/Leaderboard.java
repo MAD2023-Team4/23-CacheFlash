@@ -24,7 +24,11 @@ import java.util.ArrayList;
 
 public class Leaderboard extends AppCompatActivity {
     private String username;
-    private ArrayList<User> userList;
+    private RecyclerView recyclerView;
+
+    public interface DataCallback {
+        void onDataReceived(ArrayList<User> updatedUList);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,16 +37,33 @@ public class Leaderboard extends AppCompatActivity {
 
         username = intent.getStringExtra("Username"); //get username
 
-        /*
-        RecyclerView recyclerView = findViewById(R.id.searchRecyclerView);
-        cuAdapter = new SearchAdapter(flashcardList);
+        ArrayList<User> userList = new ArrayList<>();
+        ArrayList<User> updatedUList = queryAllUsersAndPoints(userList,new DataCallback(){
+            @Override
+            public void onDataReceived(ArrayList<User> updatedUList) {
+                // Callback triggered when data retrieval is complete
+                // Update the RecyclerView with the updated list
+                LeaderboardAdapter leaderboardAdapter = new LeaderboardAdapter(updatedUList);
+                recyclerView.setAdapter(leaderboardAdapter);
+            }
+        });
+
+        recyclerView = findViewById(R.id.ldboardRecycler);
+
+        LeaderboardAdapter leaderboardAdapter = new LeaderboardAdapter(updatedUList);
+        recyclerView.setAdapter(leaderboardAdapter);
+
+        // Set the layout manager for the RecyclerView
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
+
+        // Set an item animator for the RecyclerView
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(cuAdapter);
 
 
-         */
+
+        //Bottom nav view
+        //_________________________________________________________________________
         BottomNavigationView bottomNavigationView;
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.leaderboard);
@@ -91,32 +112,38 @@ public class Leaderboard extends AppCompatActivity {
                 return false;
             }
         });
+
     }
 
     //Method to query all the user data objects, plus the points
     //___________________________________________________________
-    public void queryAllUsersAndPoints() {
+    public ArrayList<User> queryAllUsersAndPoints(ArrayList<User> uList, DataCallback callback) {
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
         usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    // Retrieve the user object and its points attribute
-                    User user = userSnapshot.getValue(User.class);
-                    int points = user.getPoints();
-                    Log.v("User Points", "User: " + user.getUsername() + ", Points: " + points);
-                    userList.add(user);
-                    for (User u: userList){
-                        Log.v("user:",user.getUsername());
-                    }
+                    // Retrieve the points attribute
+                    Integer points = userSnapshot.child("points").getValue(Integer.class);
+                    String username = userSnapshot.getKey(); // Assuming the key is the username
+                    Log.v("User Points", "User: " + username + ", Points: " + points);
+                    //we temporarily set the password to null. anyway, it is not needed and
+                    //confidential.
+                    User eachUser = new User(username, null, points);
+                    uList.add(eachUser);
                 }
+                callback.onDataReceived(uList);
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 // Handle any errors that occur
             }
         });
+
+        return uList;
     }
+
 
 }

@@ -213,6 +213,9 @@ public class Testyourself extends AppCompatActivity {
                         showAlert("Quiz Finished", "Your score: " + percentage
                                 + "%", percentage, flashcard.getQuestions().size());
                         updatePercentage(username, percentage, flashcard,difficultyLevel);
+                        int points = (int) percentage/20;
+                        updatePoints(username,points);
+
                     }
                     // Update the percentage of the flashcard in the Firebase Realtime Database
 
@@ -360,6 +363,7 @@ public class Testyourself extends AppCompatActivity {
                     double percentage = (double) score / flashcard.getQuestions().size() * 100.0;
                     showAlert("Time's Up!", "Your time is up!", percentage, flashcard.getQuestions().size());
                     updatePercentage(username, percentage, flashcard,difficultyLevel);
+
                 }
             }.start();
         }
@@ -508,6 +512,64 @@ public class Testyourself extends AppCompatActivity {
             }
         });
     }
+
+    //___________________________________________________________________________________
+    private void updatePoints(String username, int pointsToAdd) {
+        if (username == null) {
+            Log.e("UpdatePoints", "Username is null. Cannot proceed.");
+            return;
+        }
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
+                .child("users")
+                .child(username);
+
+        Log.d("UpdatePoints", "Updating points for user: " + username);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Check if the user exists in the database
+                if (snapshot.exists()) {
+                    User user = snapshot.getValue(User.class);
+                    if (user != null) {
+                        // Get the current points of the user
+                        int currentPoints = user.getPoints();
+
+                        // Calculate the new points
+                        int newPoints = currentPoints + pointsToAdd;
+
+                        // Update the points in the user object
+                        user.setPoints(newPoints);
+
+                        // Save the updated user object back to the database
+                        userRef.setValue(user);
+
+                        Log.d("UpdatePoints", "Points updated for user: " + username + ". New points: " + newPoints);
+                    }
+                } else {
+                    Log.e("UpdatePoints", "User does not exist in the database: " + username);
+
+                    // Create a new User object with the given points
+                    User newUser = new User();
+                    newUser.setPoints(pointsToAdd);
+
+                    // Save the new user object to the database
+                    userRef.setValue(newUser);
+
+                    Log.d("UpdatePoints", "User created with points: " + pointsToAdd);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("UpdatePoints", "Database error: " + databaseError.getMessage());
+            }
+        });
+    }
+
+
+
 
 
 
