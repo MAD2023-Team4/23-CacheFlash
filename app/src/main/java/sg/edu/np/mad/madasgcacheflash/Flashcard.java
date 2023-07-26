@@ -15,6 +15,7 @@ public class Flashcard implements Parcelable {
     private String category;
     private Map<String, Double> percentage; // Store percentage as HashMap for different difficulty levels
     private Map<String, Integer> attempts;
+    private int imageResourceId;
     private double totalPercentage;
     public Flashcard() {
         percentage = new HashMap<>();
@@ -29,6 +30,7 @@ public class Flashcard implements Parcelable {
         this.username = username;
         this.category = category;
         percentage = new HashMap<>();
+        this.imageResourceId = imageResourceId;
     }
 
     public String getTitle() {
@@ -85,6 +87,18 @@ public class Flashcard implements Parcelable {
     public void setAttempts(Map<String, Integer> attempts) {
         this.attempts = attempts;
     }
+
+    // Getter and setter for imageResourceId
+    public int getImageResourceId() {
+        return imageResourceId;
+    }
+
+    public void setImageResourceId(int imageResourceId) {
+        this.imageResourceId = imageResourceId;
+    }
+
+
+
     public void updateStats(double percentage, String difficultyLevel) {
         // Update the total percentage and increment the attempts for the respective difficulty level
         totalPercentage += percentage;
@@ -114,6 +128,7 @@ public class Flashcard implements Parcelable {
         title = in.readString();
         questions = in.createStringArrayList();
         answers = in.createStringArrayList();
+
     }
 
     public static final Creator<Flashcard> CREATOR = new Creator<Flashcard>() {
