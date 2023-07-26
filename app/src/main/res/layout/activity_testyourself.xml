@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/backgroundcolor"
     tools:context=".Testyourself">
 
     <ViewFlipper
@@ -26,6 +26,7 @@
         android:layout_marginTop="152dp"
         android:textAlignment="center"
         android:textSize="16sp"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +61,7 @@
         android:layout_marginStart="65dp"
         android:layout_marginEnd="65dp"
         android:hint="@string/ansPrompt"
-        android:textColorHint="@color/black"
+        android:textColorHint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -77,6 +78,7 @@
             android:ems="10"
             android:layout_marginTop="300dp"
             android:textSize="16sp"
+            android:textColor="@color/white"
             android:singleLine="true">
 
         </com.google.android.material.textfield.TextInputEditText>
@@ -109,17 +111,8 @@
         app:layout_constraintBottom_toTopOf="@+id/button3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.333"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/ACard"
-        android:layout_width="348dp"
-        android:layout_height="95dp"
-        android:layout_marginTop="152dp"
-        android:layout_marginEnd="32dp"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
@@ -139,7 +132,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:text="Time: 00:00"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
