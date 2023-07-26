@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fcfeff"
+    android:background="@color/backgroundcolor"
     tools:context=".Login">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -28,6 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
             android:singleLine="true"
+            android:drawableLeft="@drawable/baseline_email_24"
+            android:inputType="textEmailAddress"
             android:textSize="16sp">
 
         </com.google.android.material.textfield.TextInputEditText>
@@ -54,6 +56,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
             android:textSize="16sp"
+            android:inputType="textPassword"
+            android:drawableLeft="@drawable/baseline_lock_24"
             android:singleLine="true">
 
         </com.google.android.material.textfield.TextInputEditText>
