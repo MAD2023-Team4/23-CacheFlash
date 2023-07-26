@@ -11,14 +11,21 @@
         android:id="@+id/view_flipper"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-
-
     </ViewFlipper>
 
 
-
-
+    <TextView
+        android:id="@+id/ftitle"
+        android:layout_width="400dp"
+        android:layout_height="85dp"
+        android:layout_marginTop="18dp"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timerTextView" />
 
     <TextView
         android:id="@+id/QCard"
@@ -35,8 +42,8 @@
 
     <Button
         android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="92dp"
+        android:layout_height="39dp"
         android:layout_marginStart="68dp"
         android:layout_marginTop="492dp"
         android:backgroundTint="@color/darkBlue"
@@ -100,33 +107,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/ftitle"
-        android:layout_width="400dp"
-        android:layout_height="85dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="502dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/button3"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.333"
-        android:textColor="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <Button
         android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="35dp"
-        android:layout_marginBottom="77dp"
+        android:layout_marginStart="44dp"
         android:backgroundTint="@color/darkBlue"
         android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ftitle" />
+        app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <TextView
         android:id="@+id/timerTextView"
