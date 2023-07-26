@@ -22,7 +22,7 @@ public class DifficultyLevelActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         flashcard = intent.getParcelableExtra("flashcard");
-        username = intent.getStringExtra("username");
+        username = intent.getStringExtra("Username");
         Log.d("difficulty name",username);
 
         Button btnEasy = findViewById(R.id.btnEasy);
