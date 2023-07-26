@@ -14,11 +14,14 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +29,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -41,6 +45,8 @@ public class Login extends AppCompatActivity {
 
     public ProgressDialog loginprogress;
     String usernameprofile;
+    private TextInputEditText etPassword;
+    private boolean showpassword;
     /*
     private String GLOBAL_PREF = "MyPrefs";
     private String MY_USERNAME = "MyUserName";
@@ -80,8 +86,9 @@ public class Login extends AppCompatActivity {
         TextView newUser = findViewById(R.id.textView4);
         mAuth = FirebaseAuth.getInstance();
         EditText etUsername = findViewById(R.id.editTextText);
-        EditText etPassword = findViewById(R.id.editTextText2);
+        etPassword = findViewById(R.id.editTextText2);
         TextView Forgetpassword=findViewById(R.id.textView7);
+        ImageView showpasswordicon=findViewById(R.id.imageView11);
         newUser.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -130,6 +137,23 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
+        showpasswordicon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if(showpassword)
+                        {
+                            togglePassVisability();
+                            showpasswordicon.setImageResource(R.drawable.hidepassword);
+                            showpassword=false;
+                        }
+                        else {
+                            togglePassVisability();
+                            showpasswordicon.setImageResource(R.drawable.showpasswordicon);
+                            showpassword=true;
+                        }
+
+                    }
+                });
     }
 
     private void signIn(String email, String password) {
@@ -246,6 +270,22 @@ public class Login extends AppCompatActivity {
                                                }
                                            }
         });
+    }
+    private void togglePassVisability() {
+        if (showpassword) {
+            String pass = etPassword.getText().toString();
+            etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            etPassword.setText(pass);
+            etPassword.setSelection(pass.length());
+        } else {
+            String pass = etPassword.getText().toString();
+            etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            etPassword.setText(pass);
+            etPassword.setSelection(pass.length());
+        }
+
     }
 //        private void resetPasswordWithPhoneNumber(String phoneNumber) {
 //            FirebaseAuth.getInstance().signInWithPhoneNumber(phoneNumber, true)
