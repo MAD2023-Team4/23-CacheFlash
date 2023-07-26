@@ -12,11 +12,14 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
@@ -35,6 +39,8 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     public ProgressDialog loginprogress;
+    private boolean showpassword;
+    private TextInputEditText etPassword;
 
     /*
     private String GLOBAL_PREF = "MyPrefs";
@@ -65,7 +71,8 @@ public class Login extends AppCompatActivity {
         TextView newUser = findViewById(R.id.textView4);
         mAuth = FirebaseAuth.getInstance();
         EditText etUsername = findViewById(R.id.editTextText);
-        EditText etPassword = findViewById(R.id.editTextText2);
+        etPassword = findViewById(R.id.editTextText2);
+        ImageView showhidepassword=findViewById(R.id.imageView10);
         newUser.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -76,6 +83,21 @@ public class Login extends AppCompatActivity {
             }
         });
         //Button forgetpass = findViewById(R.id.button6);
+        showhidepassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(showpassword){
+                    togglePassVisability();
+                    showhidepassword.setImageResource(R.drawable.showpasswordicon);
+                    showpassword=false;
+                } else {
+                    etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    showhidepassword.setImageResource(R.drawable.hidepassword);
+                    showpassword = true;
+                }
+
+            }
+        });
         
         
         Button loginButton = findViewById(R.id.button);
@@ -188,6 +210,22 @@ public class Login extends AppCompatActivity {
             }
         });
 
+
+    }
+    private void togglePassVisability() {
+        if (showpassword) {
+            String pass = etPassword.getText().toString();
+            etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            etPassword.setText(pass);
+            etPassword.setSelection(pass.length());
+        } else {
+            String pass = etPassword.getText().toString();
+            etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            etPassword.setText(pass);
+            etPassword.setSelection(pass.length());
+        }
 
     }
 }

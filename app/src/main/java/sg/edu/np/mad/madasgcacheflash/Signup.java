@@ -6,11 +6,17 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.PhoneAuthCredential;
@@ -21,6 +27,12 @@ public class Signup extends AppCompatActivity {
 
     String title = "Main Activity 2"; //title
     private FirebaseAuth mAuth;
+    private boolean showpassword=true;
+    EditText etUsername;
+
+    private boolean isPasswordVisible;
+
+    private TextInputEditText etPassword;
 
     @Override //OnCreate
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +48,8 @@ public class Signup extends AppCompatActivity {
         Log.i(title,"Starting Acct Creation");
         mAuth = FirebaseAuth.getInstance();
         EditText etUsername = findViewById(R.id.editTextText3);
-        EditText etPassword = findViewById(R.id.editTextText4);
+        etPassword = findViewById(R.id.editTextText4);
+        ImageView hideshowpasswordview=findViewById(R.id.imageView7);
 
         Button createButton = findViewById(R.id.button3);
         Button cancelButton = findViewById(R.id.button2);
@@ -75,7 +88,21 @@ public class Signup extends AppCompatActivity {
 
             }
         });
+        hideshowpasswordview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(showpassword){
+                        togglePassVisability();
+                        hideshowpasswordview.setImageResource(R.drawable.showpasswordicon);
+                        showpassword=false;
+                    } else{
+                    etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    hideshowpasswordview.setImageResource(R.drawable.hidepassword);
+                    showpassword=true;
 
+                }
+            }
+        });
         cancelButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -105,6 +132,23 @@ public class Signup extends AppCompatActivity {
 
 
         }
+    private void togglePassVisability() {
+        if (showpassword) {
+            String pass = etPassword.getText().toString();
+            etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            etPassword.setText(pass);
+            etPassword.setSelection(pass.length());
+        } else {
+            String pass = etPassword.getText().toString();
+            etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            etPassword.setText(pass);
+            etPassword.setSelection(pass.length());
+        }
+
+    }
+
 
     }
 

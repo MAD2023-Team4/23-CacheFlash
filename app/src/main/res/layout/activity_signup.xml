@@ -27,6 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
             android:textSize="16sp"
+            android:drawableLeft="@drawable/ic_profile"
             android:singleLine="true">
 
         </com.google.android.material.textfield.TextInputEditText>
@@ -35,25 +36,29 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textTextInput2"
-        android:layout_width="290dp"
-        android:layout_height="60dp"
+        android:layout_width="257dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textTextInput"
         android:layout_marginStart="65dp"
-        android:layout_marginTop="360dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="65dp"
         android:hint="@string/passwordText"
         android:textColorHint="@color/black"
-        app:hintTextColor="@color/darkBlue"
         app:boxStrokeColor="@color/darkBlue"
         app:boxStrokeWidth="2dp"
-        app:helperTextTextColor="@color/darkBlue">
+        app:helperTextTextColor="@color/darkBlue"
+        app:hintTextColor="@color/darkBlue">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextText4"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="52dp"
             android:layout_marginTop="300dp"
-            android:textSize="16sp"
-            android:singleLine="true">
+            android:drawableLeft="@drawable/baseline_lock_24"
+            android:inputType="textPassword"
+            android:singleLine="true"
+            android:textSize="16sp">
+
 
         </com.google.android.material.textfield.TextInputEditText>
 
@@ -103,11 +108,22 @@
         android:id="@+id/textView24"
         android:layout_width="358dp"
         android:layout_height="113dp"
+        android:layout_alignParentStart="true"
         android:layout_marginBottom="48dp"
         android:text="@string/Disclaimer"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="41dp"
+        android:layout_height="38dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="39dp"
+        android:layout_marginBottom="250dp"
+        app:srcCompat="@drawable/showpasswordicon" />
 
 </RelativeLayout>
