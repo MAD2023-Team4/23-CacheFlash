@@ -149,9 +149,11 @@ public class Testyourself extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     String answer = input.getText().toString();
+                    String answernoexception=answer.toLowerCase().replaceAll("\\s+","");
                     String correctAnswer = answers.get(currentIndex);
+                    String correctedAnswer=correctAnswer.toLowerCase().replaceAll("\\s+","");
 
-                    if (answer.equals(correctAnswer)) {
+                    if (answernoexception.equals(correctedAnswer)) {
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
                         score++;
                         Log.v("Score", String.valueOf(score));
@@ -427,7 +429,12 @@ public class Testyourself extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         // Do something when the "OK" button is clicked
                         Intent intent = new Intent(Testyourself.this, MainActivity.class);
+                        intent.putExtra("Flashcard", flashcard);
+                        intent.putExtra("Score", percentage);
+                        intent.putExtra("Total", total);
+
                         intent.putExtra("Username",username);
+
                         startActivity(intent);
                     }
                 })

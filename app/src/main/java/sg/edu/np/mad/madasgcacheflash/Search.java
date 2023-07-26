@@ -122,9 +122,9 @@ public class Search extends AppCompatActivity {
     }
 
     public void queryFlashcardsByCategory(String username, SearchAdapter adapter) {
-        String capitalizedUsername = username.substring(0, 1).toUpperCase() + username.substring(1);
+        //String capitalizedUsername = username.substring(0, 1).toUpperCase() + username.substring(1);
         DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
-        Query query = usersRef.child(capitalizedUsername).child("categories");
+        Query query = usersRef.child(username).child("categories");
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -162,10 +162,10 @@ public class Search extends AppCompatActivity {
                 .setPositiveButton("Test", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Do something when the "OK" button is clicked
-                        Intent intent = new Intent(Search.this, Testyourself.class);
+                        Intent intent = new Intent(Search.this, DifficultyLevelActivity.class);
                         intent.putExtra("Username", username);
                         intent.putExtra("flashcard", f);
-                        startActivity(intent);
+                        startActivityForResult(intent, 1);
                     }
                 })
                 .setNegativeButton("Learn", new DialogInterface.OnClickListener() {
@@ -178,4 +178,42 @@ public class Search extends AppCompatActivity {
                 })
                 .show();
     }
+
+    //When search class passes an intent to difficulty level activity class and comes back, this
+    //part handles it.
+    //____________________________________________________________________________________________
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                // The result is from the DifficultyLevelActivity
+                // Handle the result data here
+                int difficultyLevel = data.getIntExtra("difficultyLevel", 0);
+                int timerDuration = data.getIntExtra("timerDuration", -1);
+                Flashcard flashcard = data.getParcelableExtra("flashcard");
+
+                if (flashcard != null) {
+                    Log.d("MainActivity", "Receiveds Flashcard: " + flashcard.getTitle());
+                    // Now start the Testyourself activity with the selected difficulty level and timer duration
+                    Intent intent = new Intent(Search.this, Testyourself.class);
+                    intent.putExtra("flashcard", flashcard);
+                    intent.putExtra("difficultyLevel", difficultyLevel);
+                    intent.putExtra("timerDuration", timerDuration);
+                    intent.putExtra("username", username);
+                    startActivity(intent);
+
+                    // Now you can use the data as needed or perform any actions based on the result
+                    // For example, you can show a Toast message or update the UI with the selected data.
+                    Toast.makeText(this, "Selected difficulty level: " + difficultyLevel, Toast.LENGTH_SHORT).show();
+                } else {
+                    // Handle the case where the result is not OK (e.g., user canceled the activity)
+                    // For example, you can show a message or take appropriate actions.
+                    Toast.makeText(this, "Activity result not OK", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
 }

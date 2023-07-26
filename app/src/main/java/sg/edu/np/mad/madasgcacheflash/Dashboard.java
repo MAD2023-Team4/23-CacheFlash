@@ -63,10 +63,13 @@ public class Dashboard extends AppCompatActivity {
 
         Intent intent = getIntent();
         username = intent.getStringExtra("Username"); //get username
+        Log.v("Dashboard class",username);
 
         queryFlashCards();
 
-
+        /*
+        Integer percentage = null; // Default value is null
+        Integer total = null; // Default value is null
         // Find the Spinner and set the adapter for the difficulty levels
         Spinner difficultySpinner = findViewById(R.id.difficultySpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -97,6 +100,8 @@ public class Dashboard extends AppCompatActivity {
          lowestPerformingGaugeChart = findViewById(R.id.lowestPerformingGaugeChart);
 
 
+         */
+
 
         recyclerView = findViewById(R.id.recyclerViewDashboard);
         fcAdapter = new DashboardAdapter(allFlashcards,selectedDifficulty);
@@ -105,6 +110,9 @@ public class Dashboard extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(fcAdapter);
 
+        //Bottom Nav View
+        //It is a constraint layout, to allow transitions from one page to another, using if else statements.
+        //_________________________________________________________________________________________
         bottomNavigationView = findViewById(R.id.bottom_navigator);
         bottomNavigationView.setSelectedItemId(R.id.dashboard);
 
@@ -117,9 +125,23 @@ public class Dashboard extends AppCompatActivity {
                     if (id == R.id.dashboard) {
                         return true;
                     }
+                    else if (id == R.id.search) {
+                        Intent intent = new Intent(getApplicationContext(), Search.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+                    }
                     else if (id == R.id.home) {
                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                         intent.putExtra("Username", username);
+                        startActivity(intent);
+                        overridePendingTransition(0, 0);
+                        return true;
+                    }
+                    else if (id == R.id.leaderboard) {
+                        Intent intent = new Intent(getApplicationContext(), Leaderboard.class);
+                        intent.putExtra("Username", username); // Replace 'username' with your actual variable name
                         startActivity(intent);
                         overridePendingTransition(0, 0);
                         return true;
@@ -170,6 +192,7 @@ public class Dashboard extends AppCompatActivity {
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
     }
+
     private void updateFlashcardList() {
         filteredFlashcards.clear(); // Clear the list before populating it again
 
@@ -231,14 +254,14 @@ public class Dashboard extends AppCompatActivity {
                                                         Log.d("Dashboard", "Filtered Flashcards Size: " + filteredFlashcards.size());
                                                         // Set the text for the TextView elements
                                                         if (bestPerformingFlashcard != null) {
-                                                             bestPercentage = bestPerformingFlashcard.getPercentage().get(selectedDifficulty.toLowerCase()).intValue();
+                                                            bestPercentage = bestPerformingFlashcard.getPercentage().get(selectedDifficulty.toLowerCase()).intValue();
                                                             bestPerformingTextView.setText("Wow, you're doing well for " + bestPerformingFlashcard.getTitle() + "! Keep it up!");
                                                         } else {
                                                             bestPerformingTextView.setText("");
                                                         }
 
                                                         if (lowestPerformingFlashcard != null) {
-                                                             lowestPercentage = lowestPerformingFlashcard.getPercentage().get(selectedDifficulty.toLowerCase()).intValue();
+                                                            lowestPercentage = lowestPerformingFlashcard.getPercentage().get(selectedDifficulty.toLowerCase()).intValue();
                                                             lowestPerformingTextView.setText("Looks like you need to work on " + lowestPerformingFlashcard.getTitle() + ".");
                                                         } else {
                                                             lowestPerformingTextView.setText("");
@@ -352,3 +375,4 @@ public class Dashboard extends AppCompatActivity {
     }
 
 }
+

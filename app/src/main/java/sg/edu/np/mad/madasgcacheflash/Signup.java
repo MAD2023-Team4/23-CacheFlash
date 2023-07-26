@@ -1,38 +1,38 @@
 package sg.edu.np.mad.madasgcacheflash;
 
+import static android.content.ContentValues.TAG;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.text.InputType;
-import android.text.method.HideReturnsTransformationMethod;
-import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
+
 import com.google.protobuf.NullValue;
 
 public class Signup extends AppCompatActivity {
 
     String title = "Main Activity 2"; //title
     private FirebaseAuth mAuth;
-    private boolean showpassword=true;
-    EditText etUsername;
-
-    private boolean isPasswordVisible;
-
-    private TextInputEditText etPassword;
 
     @Override //OnCreate
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +48,8 @@ public class Signup extends AppCompatActivity {
         Log.i(title,"Starting Acct Creation");
         mAuth = FirebaseAuth.getInstance();
         EditText etUsername = findViewById(R.id.editTextText3);
-        etPassword = findViewById(R.id.editTextText4);
-        ImageView hideshowpasswordview=findViewById(R.id.imageView7);
+        EditText etPassword = findViewById(R.id.editTextText4);
+        EditText etemail=findViewById(R.id.editTextText5);
 
         Button createButton = findViewById(R.id.button3);
         Button cancelButton = findViewById(R.id.button2);
@@ -59,8 +59,9 @@ public class Signup extends AppCompatActivity {
             public void onClick(View view){
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
+                String email = etemail.getText().toString().trim();
 
-                if(username.isEmpty() && password.isEmpty()){
+                if(username.isEmpty() && password.isEmpty() && email.isEmpty()){
                     Toast.makeText(Signup.this, "Please enter username and password,do not leave it blank", Toast.LENGTH_SHORT).show();
                 }
                 else if (password.isEmpty()) {
@@ -68,9 +69,11 @@ public class Signup extends AppCompatActivity {
                 }
                 else if(username.isEmpty()){
                     Toast.makeText(Signup.this, "Please enter username,do not leave it blank", Toast.LENGTH_SHORT).show();
-                }
-
-                else {
+                } else if (email.isEmpty()) {
+                    Toast.makeText(Signup.this, "Please enter email,do not leave it blank", Toast.LENGTH_SHORT).show();
+                    
+                    
+                } else {
                     // Check if the username contains only letters and numbers
                     if (!username.matches("^[a-zA-Z0-9]+$")) {
                         Toast.makeText(Signup.this, "Username can only contain letters and numbers", Toast.LENGTH_SHORT).show();
@@ -78,31 +81,18 @@ public class Signup extends AppCompatActivity {
                     else if (password.length() < 6) {
                         Toast.makeText(Signup.this, "Length of password must be at least 6", Toast.LENGTH_SHORT).show();
                     }
-
-
+                        
                     else {
-                        signup(username, password);
+                        signup(email, password,username);
+
+
                     }
                 }
 
 
             }
         });
-        hideshowpasswordview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(showpassword){
-                        togglePassVisability();
-                        hideshowpasswordview.setImageResource(R.drawable.showpasswordicon);
-                        showpassword=false;
-                    } else{
-                    etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    hideshowpasswordview.setImageResource(R.drawable.hidepassword);
-                    showpassword=true;
 
-                }
-            }
-        });
         cancelButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
@@ -112,12 +102,13 @@ public class Signup extends AppCompatActivity {
         });
 
     }
-    private void signup(String username, String password) {
-        mAuth.createUserWithEmailAndPassword(username + "@gmail.com", password)
+    private void signup(String email, String password,String username) {
+        mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         Toast.makeText(Signup.this, "User registered!", Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(Signup.this,Login.class);
+                        intent.putExtra("username",username);
                         startActivity(intent);
                     } else {
                         if (task.getException() instanceof FirebaseAuthUserCollisionException) {
@@ -131,24 +122,35 @@ public class Signup extends AppCompatActivity {
 
 
 
+
         }
-    private void togglePassVisability() {
-        if (showpassword) {
-            String pass = etPassword.getText().toString();
-            etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-            etPassword.setText(pass);
-            etPassword.setSelection(pass.length());
-        } else {
-            String pass = etPassword.getText().toString();
-            etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            etPassword.setInputType(InputType.TYPE_CLASS_TEXT);
-            etPassword.setText(pass);
-            etPassword.setSelection(pass.length());
+
+        private void updateUserprofile(String username){
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(username)
+                    .build();
+
+            assert user != null;
+            user.updateProfile(profileUpdates)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                Log.d(TAG, "User profile updated.");
+                                Toast.makeText(Signup.this, user.getEmail()+"profile updated", Toast.LENGTH_SHORT).show();
+                                mAuth.signOut();
+                            }
+                        }
+                    });
         }
+
+
 
     }
 
 
-    }
+
+
 
