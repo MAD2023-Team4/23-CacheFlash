@@ -111,7 +111,7 @@
         android:textSize="40dp"
         app:layout_constraintStart_toEndOf="@+id/imageView5"
         app:layout_constraintTop_toTopOf="parent" />
-
+`
     <TextView
         android:id="@+id/textView23"
         android:layout_width="267dp"
