@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundcolor"
-    tools:context=".Signup">
+    tools:context=".Login">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundcolor"
+        tools:context=".Login">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textTextInput"
-        android:layout_width="290dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginStart="65dp"
         android:layout_marginTop="295dp"
@@ -37,7 +44,7 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textTextInput2"
-        android:layout_width="290dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginStart="65dp"
         android:layout_marginTop="360dp"
@@ -68,13 +75,13 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextPhoneLayout"
-        android:layout_width="294dp"
+        android:layout_width="match_parent"
         android:layout_height="58dp"
         android:layout_below="@+id/textTextInput2"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="64dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginEnd="65dp"
         android:layout_marginTop="3dp"
         android:layout_marginBottom="178dp"
         android:hint="@string/Email"
@@ -103,15 +110,15 @@
 
     <Button
         android:id="@+id/button3"
-        android:layout_width="match_parent"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
 
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginStart="240dp"
 
-        android:layout_marginEnd="56dp"
-        android:layout_marginBottom="115dp"
+        android:layout_marginEnd="62dp"
+        android:layout_marginBottom="110dp"
         android:backgroundTint="#1400A9"
         android:text="@string/confirmCreationText"
         android:textSize="18sp" />
@@ -145,6 +152,7 @@
         android:layout_below="@+id/imageView2"
         android:layout_marginStart="53dp"
         android:layout_marginTop="6dp"
+        android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-black"
         android:text="@string/createAcctTitle"
         android:textAlignment="center"
@@ -163,3 +171,4 @@
 
 
 </RelativeLayout>
+</ScrollView>

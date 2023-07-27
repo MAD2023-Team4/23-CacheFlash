@@ -27,7 +27,9 @@
             android:layout_marginTop="0dp"
             android:background="@color/darkBlue"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"></androidx.appcompat.widget.Toolbar>
+            android:theme="?attr/actionBarTheme">
+
+        </androidx.appcompat.widget.Toolbar>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -105,9 +107,9 @@
         android:id="@+id/welcomeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="90dp"
         android:textColor="@color/white"
         android:textSize="34sp"
         android:textStyle="bold"
