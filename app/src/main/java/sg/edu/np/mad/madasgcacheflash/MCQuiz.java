@@ -191,15 +191,17 @@ public class MCQuiz extends AppCompatActivity {
                         Log.v("Percentage", String.valueOf(flashcard.getQuestions().size()));
                         //updatePercentage(username, percentage);
                         Log.v("Quiz Finished", String.valueOf(percentage));
+
                         showAlert("Quiz Finished", "Points earned: " + points,
                                 percentage, flashcard.getQuestions().size());
                         updatePercentage(username, percentage, flashcard);
                         updatePoints(username, points);
 
+
                         //Update the flashcard's score locally
                        // flashcard.setPercentage(percentage);
                         // Posting performance of the user into firebase
-                        postPerformance(flashcard, percentage);
+
                     }
                     if (currentIndex >= questions.size()) {
                         currentIndex = questions.size() - 1;
@@ -327,7 +329,7 @@ public class MCQuiz extends AppCompatActivity {
                 .setPositiveButton("Dashboard", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Do something when the "OK" button is clicked
-                        Intent intent = new Intent(MCQuiz.this, Dashboard.class);
+                        Intent intent = new Intent(MCQuiz.this, MainActivity.class);
                         intent.putExtra("flashcards", flashcard);
                         intent.putExtra("Username",username);
                         intent.putExtra("Score", percentage);
