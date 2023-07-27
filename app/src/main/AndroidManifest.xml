@@ -25,9 +25,7 @@
         <activity
             android:name=".CalendarViewClass"
             android:exported="false" />
-        <activity
-            android:name=".ForgetPassword"
-            android:exported="false" />
+
         <activity
             android:name=".DifficultyLevelActivity"
             android:exported="false"
@@ -86,6 +84,11 @@
             android:name=".StreakUpdateService"
             android:enabled="true"
             android:exported="false" />
+
+        <activity
+            android:name=".WalkThrough"
+            android:exported="false" />
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
