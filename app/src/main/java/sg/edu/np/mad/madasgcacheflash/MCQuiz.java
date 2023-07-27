@@ -109,8 +109,6 @@ public class MCQuiz extends AppCompatActivity {
             answerscheck.addAll(answers);
 
 
-
-
             Log.v(TITLE, "hi" + answerscheck.size());
             TextView QuestionView = findViewById(R.id.QuestionViews);
             TextView Title = findViewById(R.id.FlashcardTitle);
@@ -189,13 +187,14 @@ public class MCQuiz extends AppCompatActivity {
                         //make a toast message of the score
 
                         double percentage = (double) score / flashcard.getQuestions().size() * 100.0;
-
+                        int points = (int) percentage/20;
                         Log.v("Percentage", String.valueOf(flashcard.getQuestions().size()));
                         //updatePercentage(username, percentage);
                         Log.v("Quiz Finished", String.valueOf(percentage));
-                        showAlert("Quiz Finished", "Your score: " + percentage
-                                + "%", percentage, flashcard.getQuestions().size());
+                        showAlert("Quiz Finished", "Points earned: " + points,
+                                percentage, flashcard.getQuestions().size());
                         updatePercentage(username, percentage, flashcard);
+                        updatePoints(username, points);
 
                         //Update the flashcard's score locally
                        // flashcard.setPercentage(percentage);
@@ -476,6 +475,61 @@ public class MCQuiz extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 // Handle any errors
+            }
+        });
+    }
+
+    //___________________________________________________________________________________
+    private void updatePoints(String username, int pointsToAdd) {
+        if (username == null) {
+            Log.e("UpdatePoints", "Username is null. Cannot proceed.");
+            return;
+        }
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
+                .child("users")
+                .child(username);
+
+        Log.d("UpdatePoints", "Updating points for user: " + username);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Check if the user exists in the database
+                if (snapshot.exists()) {
+                    User user = snapshot.getValue(User.class);
+                    if (user != null) {
+                        // Get the current points of the user
+                        int currentPoints = user.getPoints();
+
+                        // Calculate the new points
+                        int newPoints = currentPoints + pointsToAdd;
+
+                        // Update the points in the user object
+                        user.setPoints(newPoints);
+
+                        // Save the updated user object back to the database
+                        userRef.setValue(user);
+
+                        Log.d("UpdatePoints", "Points updated for user: " + username + ". New points: " + newPoints);
+                    }
+                } else {
+                    Log.e("UpdatePoints", "User does not exist in the database: " + username);
+
+                    // Create a new User object with the given points
+                    User newUser = new User();
+                    newUser.setPoints(pointsToAdd);
+
+                    // Save the new user object to the database
+                    userRef.setValue(newUser);
+
+                    Log.d("UpdatePoints", "User created with points: " + pointsToAdd);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("UpdatePoints", "Database error: " + databaseError.getMessage());
             }
         });
     }

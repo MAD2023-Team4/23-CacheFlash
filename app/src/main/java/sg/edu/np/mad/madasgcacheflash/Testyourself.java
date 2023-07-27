@@ -154,6 +154,10 @@ public class Testyourself extends AppCompatActivity {
                     String correctedAnswer=correctAnswer.toLowerCase().replaceAll("\\s+","");
 
                     if (answernoexception.equals(correctedAnswer)) {
+
+                        //Animator from AnimationCorrect class is called
+                        //animator.animateObj(Testyourself.class);
+
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
                         score++;
                         Log.v("Score", String.valueOf(score));
@@ -210,11 +214,12 @@ public class Testyourself extends AppCompatActivity {
                         Log.v("Percentage", String.valueOf(flashcard.getQuestions().size()));
                         //updatePercentage(username, percentage);
                         Log.v("Quiz Finished", String.valueOf(percentage));
-                        showAlert("Quiz Finished", "Your score: " + percentage
-                                + "%", percentage, flashcard.getQuestions().size());
+
                         updatePercentage(username, percentage, flashcard,difficultyLevel);
                         int points = (int) percentage/20;
                         updatePoints(username,points);
+                        showAlert("Quiz Finished", "Points earned: " + points,
+                                points, flashcard.getQuestions().size());
 
                     }
                     // Update the percentage of the flashcard in the Firebase Realtime Database
@@ -361,7 +366,8 @@ public class Testyourself extends AppCompatActivity {
                 public void onFinish() {
                     // Timer finished, calculate the percentage based on the number of correct answers
                     double percentage = (double) score / flashcard.getQuestions().size() * 100.0;
-                    showAlert("Time's Up!", "Your time is up!", percentage, flashcard.getQuestions().size());
+                    int points = 0;
+                    showAlert("Time's Up!", "Sadly, you did not earn any points.", points, flashcard.getQuestions().size());
                     updatePercentage(username, percentage, flashcard,difficultyLevel);
 
                 }
@@ -425,29 +431,36 @@ public class Testyourself extends AppCompatActivity {
         Log.v(TITLE, "On Destroy");
     }
 
-    private void showAlert(String title, String text, double percentage, int total) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title)
-                .setMessage(text)
-                .setPositiveButton("Back to home", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Do something when the "OK" button is clicked
-                        Intent intent = new Intent(Testyourself.this, MainActivity.class);
-                        intent.putExtra("Flashcard", flashcard);
-                        intent.putExtra("Score", percentage);
-                        intent.putExtra("Total", total);
+    //Show alert message for points earned
+    //________________________________________________________________________
+    private void showAlert(String title, String text, int points, int total) {
+        if (!isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(title)
+                    .setMessage(text)
+                    .setPositiveButton("Back to home", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Do something when the "OK" button is clicked
+                            Intent intent = new Intent(Testyourself.this, MainActivity.class);
+                            intent.putExtra("Flashcard", flashcard);
+                            intent.putExtra("Score", score);
+                            intent.putExtra("Total", total);
 
-                        intent.putExtra("Username",username);
+                            intent.putExtra("Username", username);
 
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Do something when the "Cancel" button is clicked
-                    }
-                })
-                .show();
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Do something when the "Cancel" button is clicked
+                        }
+                    })
+                    .show();
+        }
+        else{
+            //Do nothing
+        }
     }
 
     private void updatePercentage(String username, double percentage, Flashcard f2, int difficultyLevel) {
