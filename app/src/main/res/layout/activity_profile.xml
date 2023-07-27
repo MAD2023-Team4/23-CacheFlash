@@ -273,9 +273,11 @@
         android:id="@+id/divider6"
         android:layout_width="match_parent"
         android:layout_height="1dp"
+
         android:layout_marginTop="15dp"
         android:background="@color/white"
         app:layout_constraintTop_toBottomOf="@id/imageView9"
+
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="505dp" />
 
@@ -285,12 +287,14 @@
         android:layout_height="54dp"
         android:layout_marginTop="15dp"
         android:layout_marginStart="20dp"
-        android:layout_marginBottom="6dp"
+
+        android:layout_marginBottom="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigator"
 
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/divider6"
         app:srcCompat="@drawable/ic_profile"
-        app:tint="@color/white"/>
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/textView26"

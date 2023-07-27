@@ -167,7 +167,7 @@ public class Login extends AppCompatActivity {
                         Log.d("Login", "Username: " + standardizedUsername);
                         Toast.makeText(Login.this, "Login successful! Welcome " + standardizedUsername, Toast.LENGTH_SHORT).show();
                         // Start the MainActivity
-                        Intent intent = new Intent(Login.this, MainActivity.class);
+                        Intent intent = new Intent(Login.this, WalkThrough.class);
                         intent.putExtra("Username", standardizedUsername);
 
                         startActivity(intent);
@@ -260,15 +260,15 @@ public class Login extends AppCompatActivity {
 
         assert user != null;
         user.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                           @Override
-                                           public void onComplete(@NonNull Task<Void> task) {
-                                               if (task.isSuccessful()) {
-                                                   Log.d(TAG, "User profile updated.");
-                                                   Toast.makeText(Login.this, user.getEmail()+"profile updated", Toast.LENGTH_SHORT).show();
-                                                   mAuth.signOut();
-                                               }
-                                           }
+            .addOnCompleteListener(new OnCompleteListener<Void>() {
+               @Override
+               public void onComplete(@NonNull Task<Void> task) {
+                   if (task.isSuccessful()) {
+                       Log.d(TAG, "User profile updated.");
+                       Toast.makeText(Login.this, user.getEmail()+"profile updated", Toast.LENGTH_SHORT).show();
+                       mAuth.signOut();
+                   }
+               }
         });
     }
     private void togglePassVisability() {

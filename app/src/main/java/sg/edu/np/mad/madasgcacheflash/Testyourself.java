@@ -17,6 +17,7 @@ import android.animation.ObjectAnimator;
 
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -60,6 +61,7 @@ public class Testyourself extends AppCompatActivity {
     private TextView timerTextView;
     private int timerDuration;
     private int difficultyLevel;
+    private ImageView imageView4;
 
 
     String username;
@@ -91,12 +93,16 @@ public class Testyourself extends AppCompatActivity {
         imageView2 = shufflingCardLayout.findViewById(R.id.two);
         imageView3 = shufflingCardLayout.findViewById(R.id.three);
 
+
         imageViews = new ArrayList<>();
         imageViews.add(imageView1);
         imageViews.add(imageView2);
         imageViews.add(imageView3);
 
         Intent intent = getIntent();
+
+
+
         if (intent != null && intent.hasExtra("flashcard")
                 && intent.hasExtra("difficultyLevel")
                 && intent.hasExtra("timerDuration")) {
@@ -135,6 +141,8 @@ public class Testyourself extends AppCompatActivity {
             TextView qcard = findViewById(R.id.QCard);
             timerTextView = findViewById(R.id.timerTextView);
             EditText input = findViewById(R.id.Userinput);
+            imageView4=findViewById(R.id.imageView10);
+            imageView4.setVisibility(View.GONE);
             Button back = findViewById(R.id.button3);
             Button prev = findViewById(R.id.button);
             Button next = findViewById(R.id.button2);
@@ -154,8 +162,13 @@ public class Testyourself extends AppCompatActivity {
                     String correctedAnswer=correctAnswer.toLowerCase().replaceAll("\\s+","");
 
                     if (answernoexception.equals(correctedAnswer)) {
+
+                        //Animator from AnimationCorrect class is called
+                        //animator.animateObj(Testyourself.class);
+
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
                         score++;
+                        imageView4.setVisibility(View.VISIBLE);
                         Log.v("Score", String.valueOf(score));
                     } else {
                         Toast.makeText(getApplicationContext(), "Incorrect. The correct answer is: " + correctAnswer, Toast.LENGTH_SHORT).show();
@@ -199,6 +212,7 @@ public class Testyourself extends AppCompatActivity {
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    imageView4.setVisibility(View.GONE);
                     currentIndex++;
                     if(currentIndex == flashcard.getQuestions().size()){
                         //make a toast message of the score
@@ -210,9 +224,13 @@ public class Testyourself extends AppCompatActivity {
                         Log.v("Percentage", String.valueOf(flashcard.getQuestions().size()));
                         //updatePercentage(username, percentage);
                         Log.v("Quiz Finished", String.valueOf(percentage));
-                        showAlert("Quiz Finished", "Your score: " + percentage
-                                + "%", percentage, flashcard.getQuestions().size());
+
                         updatePercentage(username, percentage, flashcard,difficultyLevel);
+                        int points = (int) percentage/20;
+                        updatePoints(username,points);
+                        showAlert("Quiz Finished", "Points earned: " + points,
+                                points, flashcard.getQuestions().size());
+
                     }
                     // Update the percentage of the flashcard in the Firebase Realtime Database
 
@@ -358,8 +376,10 @@ public class Testyourself extends AppCompatActivity {
                 public void onFinish() {
                     // Timer finished, calculate the percentage based on the number of correct answers
                     double percentage = (double) score / flashcard.getQuestions().size() * 100.0;
-                    showAlert("Time's Up!", "Your time is up!", percentage, flashcard.getQuestions().size());
+                    int points = 0;
+                    showAlert("Time's Up!", "Sadly, you did not earn any points.", points, flashcard.getQuestions().size());
                     updatePercentage(username, percentage, flashcard,difficultyLevel);
+
                 }
             }.start();
         }
@@ -421,29 +441,36 @@ public class Testyourself extends AppCompatActivity {
         Log.v(TITLE, "On Destroy");
     }
 
-    private void showAlert(String title, String text, double percentage, int total) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(title)
-                .setMessage(text)
-                .setPositiveButton("Back to home", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Do something when the "OK" button is clicked
-                        Intent intent = new Intent(Testyourself.this, MainActivity.class);
-                        intent.putExtra("Flashcard", flashcard);
-                        intent.putExtra("Score", percentage);
-                        intent.putExtra("Total", total);
+    //Show alert message for points earned
+    //________________________________________________________________________
+    private void showAlert(String title, String text, int points, int total) {
+        if (!isFinishing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(title)
+                    .setMessage(text)
+                    .setPositiveButton("Back to home", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Do something when the "OK" button is clicked
+                            Intent intent = new Intent(Testyourself.this, MainActivity.class);
+                            intent.putExtra("Flashcard", flashcard);
+                            intent.putExtra("Score", score);
+                            intent.putExtra("Total", total);
 
-                        intent.putExtra("Username",username);
+                            intent.putExtra("Username", username);
 
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Do something when the "Cancel" button is clicked
-                    }
-                })
-                .show();
+                            startActivity(intent);
+                        }
+                    })
+                    .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Do something when the "Cancel" button is clicked
+                        }
+                    })
+                    .show();
+        }
+        else{
+            //Do nothing
+        }
     }
 
     private void updatePercentage(String username, double percentage, Flashcard f2, int difficultyLevel) {
@@ -508,6 +535,64 @@ public class Testyourself extends AppCompatActivity {
             }
         });
     }
+
+    //___________________________________________________________________________________
+    private void updatePoints(String username, int pointsToAdd) {
+        if (username == null) {
+            Log.e("UpdatePoints", "Username is null. Cannot proceed.");
+            return;
+        }
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference()
+                .child("users")
+                .child(username);
+
+        Log.d("UpdatePoints", "Updating points for user: " + username);
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Check if the user exists in the database
+                if (snapshot.exists()) {
+                    User user = snapshot.getValue(User.class);
+                    if (user != null) {
+                        // Get the current points of the user
+                        int currentPoints = user.getPoints();
+
+                        // Calculate the new points
+                        int newPoints = currentPoints + pointsToAdd;
+
+                        // Update the points in the user object
+                        user.setPoints(newPoints);
+
+                        // Save the updated user object back to the database
+                        userRef.setValue(user);
+
+                        Log.d("UpdatePoints", "Points updated for user: " + username + ". New points: " + newPoints);
+                    }
+                } else {
+                    Log.e("UpdatePoints", "User does not exist in the database: " + username);
+
+                    // Create a new User object with the given points
+                    User newUser = new User();
+                    newUser.setPoints(pointsToAdd);
+
+                    // Save the new user object to the database
+                    userRef.setValue(newUser);
+
+                    Log.d("UpdatePoints", "User created with points: " + pointsToAdd);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("UpdatePoints", "Database error: " + databaseError.getMessage());
+            }
+        });
+    }
+
+
+
 
 
 

@@ -265,28 +265,37 @@ public class Profile extends AppCompatActivity {
             }
         });
 
-        notificationStatusRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                boolean notificationStatus = snapshot.getValue(Boolean.class);
-                if (notificationStatus == true)
-                {
-                    Log.v("Notification","True");
-                    createNotificationChannel();
-                    startPeriodicTimeCheck();
-
+        try {
+            notificationStatusRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    try {
+                        boolean notificationStatus = snapshot.getValue(Boolean.class);
+                        if (notificationStatus) {
+                            Log.v("Notification", "True");
+                            createNotificationChannel();
+                            startPeriodicTimeCheck();
+                        } else {
+                            Log.v("Notification", "False");
+                        }
+                    } catch (Exception e) {
+                        // Handle exceptions that occur while retrieving and processing the data
+                        Log.e("Notification", "Error occurred: " + e.getMessage());
+                        e.printStackTrace();
+                    }
                 }
-                else {
-                    Log.v("Notification","False");
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    // Handle onCancelled event, if needed
                 }
+            });
+        } catch (Exception e) {
+            // Handle exceptions that occur while adding the ValueEventListener
+            Log.e("Notification", "Error occurred while adding ValueEventListener: " + e.getMessage());
+            e.printStackTrace();
+        }
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
         textViewchangeusername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
