@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fcfeff"
+    android:background="@color/backgroundcolor"
     tools:context=".Login">
 
     <com.google.android.material.textfield.TextInputLayout
@@ -15,7 +15,7 @@
         android:layout_marginTop="295dp"
         android:layout_marginEnd="65dp"
         android:hint="@string/Email"
-        android:textColorHint="@color/black"
+        android:textColorHint="@color/white"
         app:hintTextColor="@color/darkBlue"
         app:boxStrokeColor="@color/darkBlue"
         app:boxStrokeWidth="2dp"
@@ -28,6 +28,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
             android:singleLine="true"
+            android:drawableLeft="@drawable/baseline_email_24"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white"
             android:textSize="16sp">
 
         </com.google.android.material.textfield.TextInputEditText>
@@ -42,7 +45,7 @@
         android:layout_marginTop="360dp"
         android:layout_marginEnd="65dp"
         android:hint="@string/passwordText"
-        android:textColorHint="@color/black"
+        android:textColorHint="@color/white"
         app:hintTextColor="@color/darkBlue"
         app:boxStrokeColor="@color/darkBlue"
         app:boxStrokeWidth="2dp"
@@ -54,6 +57,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
             android:textSize="16sp"
+            android:inputType="textPassword"
+            android:drawableLeft="@drawable/baseline_lock_24"
+            android:textColor="@color/white"
             android:singleLine="true">
 
         </com.google.android.material.textfield.TextInputEditText>
@@ -73,7 +79,7 @@
 
         android:text="@string/newUserText"
         android:textAlignment="center"
-        android:textColor="#000000"
+        android:textColor="@color/white"
         android:textSize="17sp" />
 
     <TextView
@@ -84,10 +90,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginStart="110dp"
         android:layout_marginEnd="110dp"
-        android:layout_marginBottom="118dp"
+        android:layout_marginBottom="112dp"
         android:text="Forget Password?"
         android:textAlignment="center"
-        android:textColor="#000000"
+        android:textColor="@color/white"
         android:textSize="17sp" />
 
     <Button
@@ -126,7 +132,7 @@
         android:onClick="openPrivacyPolicy"
         android:text="Privacy Policy"
         android:textAlignment="center"
-        android:textColor="@color/darkBlue"
+        android:textColor="@color/yellow_button"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -140,6 +146,7 @@
         android:layout_marginTop="6dp"
         android:layout_marginRight="30dp"
         android:text="By logging in or creating an account, you are agreeing with the privacy policy and that you are above 13 years old"
+        android:textColor="@color/white"
         android:textAlignment="center" />
 
     <TextView
@@ -152,8 +159,19 @@
         android:layout_marginRight="16dp"
         android:gravity="center"
         android:text="CacheFlash"
+        android:textColor="@color/white"
         android:textSize="48sp"
         android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_above="@+id/textView4"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="60dp"
+        app:srcCompat="@drawable/showpasswordicon" />
 
 
 </RelativeLayout>

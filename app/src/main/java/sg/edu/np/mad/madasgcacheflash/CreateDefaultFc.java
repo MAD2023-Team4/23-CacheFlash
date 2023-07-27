@@ -22,6 +22,7 @@ public class CreateDefaultFc {
         france.setQuestions(questions);
         france.setAnswers(answers);
         france.setCategory("Social Studies");
+        france.setImageResourceId(R.drawable.france);
         flashcardList.add(france);
 
         Flashcard math = new Flashcard();
@@ -37,6 +38,7 @@ public class CreateDefaultFc {
         math.setQuestions(questions);
         math.setAnswers(answers);
         math.setCategory("Math");
+        math.setImageResourceId(R.drawable.math);
         flashcardList.add(math);
 
         //___________________________________________________________________________________________
@@ -85,6 +87,7 @@ public class CreateDefaultFc {
         socialStudies.setQuestions(questions);
         socialStudies.setAnswers(answers);
         socialStudies.setCategory("Social Studies");
+        socialStudies.setImageResourceId(R.drawable.sgss);
         flashcardList.add(socialStudies);
 
         //___________________________________________________________________________________________
@@ -169,6 +172,7 @@ public class CreateDefaultFc {
         economics.setQuestions(questions);
         economics.setAnswers(answers);
         economics.setCategory("Economics");
+        economics.setImageResourceId(R.drawable.economics);
         flashcardList.add(economics);
 
         //___________________________________________________________________________________________
@@ -255,6 +259,7 @@ public class CreateDefaultFc {
         internationalTrade.setQuestions(questions);
         internationalTrade.setAnswers(answers);
         internationalTrade.setCategory("Economics");
+        internationalTrade.setImageResourceId(R.drawable.internationaltrade);
         flashcardList.add(internationalTrade);
 
         //___________________________________________________________________________________________
@@ -341,6 +346,7 @@ public class CreateDefaultFc {
         monetaryPolicy.setQuestions(questions);
         monetaryPolicy.setAnswers(answers);
         monetaryPolicy.setCategory("Economics");
+        monetaryPolicy.setImageResourceId(R.drawable.monetorypolicy);
         flashcardList.add(monetaryPolicy);
 
         //___________________________________________________________________________________________
@@ -386,6 +392,7 @@ public class CreateDefaultFc {
         supplyAndDemand.setQuestions(questions);
         supplyAndDemand.setAnswers(answers);
         supplyAndDemand.setCategory("Economics");
+        supplyAndDemand.setImageResourceId(R.drawable.demandnsupply);
         flashcardList.add(supplyAndDemand);
 
         //___________________________________________________________________________________________
@@ -488,6 +495,7 @@ public class CreateDefaultFc {
         sgGeneralKnowledge.setQuestions(questions);
         sgGeneralKnowledge.setAnswers(answers);
         sgGeneralKnowledge.setCategory("Social Studies");
+        sgGeneralKnowledge.setImageResourceId(R.drawable.sgpropog);
         flashcardList.add(sgGeneralKnowledge);
 
         //___________________________________________________________________________________________
@@ -542,6 +550,7 @@ public class CreateDefaultFc {
         algebra.setQuestions(questions);
         algebra.setAnswers(answers);
         algebra.setCategory("Math");
+        algebra.setImageResourceId(R.drawable.algebra);
         flashcardList.add(algebra);
 
         return flashcardList;

@@ -10,14 +10,19 @@ import androidx.appcompat.app.AppCompatDelegate;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
@@ -33,6 +38,8 @@ public class Signup extends AppCompatActivity {
 
     String title = "Main Activity 2"; //title
     private FirebaseAuth mAuth;
+    private TextInputEditText etPassword;
+    private boolean isPasswordVisible;
 
     @Override //OnCreate
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +55,9 @@ public class Signup extends AppCompatActivity {
         Log.i(title,"Starting Acct Creation");
         mAuth = FirebaseAuth.getInstance();
         EditText etUsername = findViewById(R.id.editTextText3);
-        EditText etPassword = findViewById(R.id.editTextText4);
+        etPassword = findViewById(R.id.editTextText4);
         EditText etemail=findViewById(R.id.editTextText5);
+        ImageView hideshowpassword=findViewById(R.id.imageView3);
 
         Button createButton = findViewById(R.id.button3);
         Button cancelButton = findViewById(R.id.button2);
@@ -100,6 +108,23 @@ public class Signup extends AppCompatActivity {
                 startActivity(intent); //next activity
             }
         });
+        hideshowpassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isPasswordVisible)
+                {
+                    togglePassVisability();
+                    hideshowpassword.setImageResource(R.drawable.hidepassword);
+                    isPasswordVisible=false;
+                }
+                else {
+                    togglePassVisability();
+                    hideshowpassword.setImageResource(R.drawable.showpasswordicon);
+                    isPasswordVisible=true;
+                }
+                }
+            }
+        );
 
     }
     private void signup(String email, String password,String username) {
@@ -125,26 +150,23 @@ public class Signup extends AppCompatActivity {
 
         }
 
-        private void updateUserprofile(String username){
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                    .setDisplayName(username)
-                    .build();
-
-            assert user != null;
-            user.updateProfile(profileUpdates)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                Log.d(TAG, "User profile updated.");
-                                Toast.makeText(Signup.this, user.getEmail()+"profile updated", Toast.LENGTH_SHORT).show();
-                                mAuth.signOut();
-                            }
-                        }
-                    });
+    private void togglePassVisability() {
+        if (isPasswordVisible) {
+            String pass = etPassword.getText().toString();
+            etPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            etPassword.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
+            etPassword.setText(pass);
+            etPassword.setSelection(pass.length());
+        } else {
+            String pass = etPassword.getText().toString();
+            etPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            etPassword.setInputType(InputType.TYPE_CLASS_TEXT);
+            etPassword.setText(pass);
+            etPassword.setSelection(pass.length());
         }
+
+    }
 
 
 
