@@ -14,6 +14,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -119,7 +122,7 @@ public class Profile extends AppCompatActivity {
         textViewPasswordReset = findViewById(R.id.password_reset);
         textViewPreference = findViewById(R.id.study_preference);
         textViewStreak = findViewById(R.id.study_streak);
-
+        textViewchangeusername=findViewById(R.id.changeusername);
 
         // Add the code snippet here
         FirebaseMessaging.getInstance().getToken()
@@ -166,6 +169,10 @@ public class Profile extends AppCompatActivity {
             }
         });
 
+        //------------------------------------------------------------------------------------------
+        //Notification: toggles between enabled and disabled, stores boolean value
+        //of getting notified, in shared preferences.
+        //------------------------------------------------------------------------------------------
 
         // Get the notification status from SharedPreferences
         // Initialize Firebase Database references
@@ -296,7 +303,13 @@ public class Profile extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        textViewchangeusername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showchangeUsernameDialog();
 
+            }
+        });
 
 
         Log.d("ProfileActivity", "Received username: " + username);
@@ -351,7 +364,9 @@ public class Profile extends AppCompatActivity {
             }
         });
     }
-
+    //------------------------------------------------------------------------------------------
+    //Show favourite category spinner to filter the favourite categories.
+    //------------------------------------------------------------------------------------------
     private void showFavoriteCategorySpinner() {
         // Create a Spinner component
         Spinner spinner = new Spinner(Profile.this);
@@ -581,25 +596,84 @@ public class Profile extends AppCompatActivity {
         Intent intent = getIntent();
         username = intent.getStringExtra("Username");
     }
-    private void updateUserprofile(String username){
+
+    //----------------------------------------------------------------------------------------------
+    //Updating username. Time complexity is O(N), to loop through every for loop, to check
+    //if there is an existing user that is the same (clashes) with the proposed change of username.
+    //Toast message handles the clash, and updates otherwise.
+    //----------------------------------------------------------------------------------------------
+    private void updateUserprofile(String username) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                boolean isUsernameTaken = false;
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    String usernameTmp = userSnapshot.getKey(); // Assuming the key is the username
 
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(username)
-                .build();
-
-        assert user != null;
-        user.updateProfile(profileUpdates)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Log.d(TAG, "User profile updated.");
-                            Toast.makeText(Profile.this, user.getEmail()+"profile updated", Toast.LENGTH_SHORT).show();
-
-                        }
+                    if (usernameTmp.equals(username)) {
+                        isUsernameTaken = true;
+                        break;
                     }
-                });
+                }
+
+                if (isUsernameTaken) {
+                    Toast.makeText(Profile.this, "Username is already taken. Please choose another one.", Toast.LENGTH_SHORT).show();
+                } else {
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(username)
+                            .build();
+
+                    assert user != null;
+                    user.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "User profile updated.");
+                                        Toast.makeText(Profile.this, user.getEmail() + " profile updated", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle the error, if needed.
+                Toast.makeText(Profile.this, "Failed to retrieve data from the database.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    private void showchangeUsernameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Change Username");
+        LinearLayout linearLayout = new LinearLayout(this);
+        final EditText emailet = new EditText(this);
+
+        // write the email using which you registered
+        emailet.setHint("New username");
+        linearLayout.addView(emailet);
+        linearLayout.setPadding(10, 10, 10, 10);
+        builder.setView(linearLayout);
+
+        // Click on Recover and a email will be sent to your registered email id
+        builder.setPositiveButton("Change Username", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String email = emailet.getText().toString();
+                updateUserprofile(email);
+            }
+        });
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.create().show();
+    }
 }

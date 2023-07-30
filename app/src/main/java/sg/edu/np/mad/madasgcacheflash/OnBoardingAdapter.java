@@ -11,8 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewpager.widget.PagerAdapter;
 
-
-
+//--------------------------------------------------------------------------------------
+//Source from: https://www.youtube.com/watch?v=qX5Z5eKMfd0
+//This is an on-boarding screen layout that guides the user. It puts different chunks of strings,
+//to a datatype, an array of integers.
+//--------------------------------------------------------------------------------------
 public class OnBoardingAdapter extends PagerAdapter {
 
     Context context;

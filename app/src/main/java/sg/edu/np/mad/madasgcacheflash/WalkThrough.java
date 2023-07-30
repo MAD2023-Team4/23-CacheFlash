@@ -13,12 +13,16 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.viewpager.widget.ViewPager;
 
+//--------------------------------------------------------------------------------------
+//Source from: https://www.youtube.com/watch?v=qX5Z5eKMfd0
+//This is an on-boarding screen layout that guides the user.
+//--------------------------------------------------------------------------------------
 public class WalkThrough extends AppCompatActivity {
 
     CardView nextCard;
     LinearLayout dotsLayout;
     ViewPager viewPager;
-
+    String username;
     TextView[] dots;
     int currentPosition;
     SaveState saveState ;
@@ -27,7 +31,8 @@ public class WalkThrough extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
+        Intent intent=getIntent();
+        username = intent.getStringExtra("Username");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_walkthrough);
 
@@ -38,6 +43,7 @@ public class WalkThrough extends AppCompatActivity {
         saveState = new SaveState(WalkThrough.this,"OB");
         if (saveState.getState() == 1){
             Intent i = new Intent(WalkThrough.this,MainActivity.class);
+            i.putExtra("Username",username);
             startActivity(i);
             finish();
         }

@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:itemBackground="@color/darkBlue"
+        app:itemBackground="@color/blue_dark"
         app:itemIconTint="@drawable/serlector"
         app:itemTextColor="@drawable/serlector"
         app:menu="@menu/menu" />
@@ -21,25 +21,20 @@
         android:id="@+id/ldboardRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView3"
-        android:layout_marginTop="10dp" />
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="42dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="300dp"
-        app:srcCompat="@drawable/podium2" />
+        android:layout_above="@+id/bottom_navigator"
+        android:layout_below="@+id/textView30"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp" />
 
     <TextView
         android:id="@+id/textView30"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="15dp"
         android:text="Leaderboard"
+        android:textColor="@color/white"
+        android:textSize="34sp"
         android:textStyle="bold" />
 
 </RelativeLayout>

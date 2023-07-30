@@ -6,47 +6,108 @@ import java.util.List;
 
 public class CreateDefaultFc {
     ArrayList<Flashcard> flashcardList = new ArrayList<>();
+
+    //Feel free to comment out (turn off) a method to create a flashcard, if it is not used to
+    //create a flashcard.
+    //___________________________________________________________________________________________
     public ArrayList<Flashcard> createFlashcards() {
         // Create and add flashcards to the flashcardList
+        createFrance();
+        createLogAndCalc();
+        createGeneralKnowledge();
+        createGeneralEcons();
+        createInternationalTrade();
+        createMonetaryPolicy();
+        createSupplyAndDemand();
+        createSgGeneralKnowledge();
+        createAlgebra();
 
+        return flashcardList;
+    }
+
+
+    //The following code can create individual flashcards.
+    //______________________________________________________________________________________________
+    public void createFrance(){
         Flashcard france = new Flashcard();
         france.setTitle("France");
         List<String> questions = new ArrayList<>();
         List<String> answers = new ArrayList<>();
         questions.add("What is the capital of France?");
-        questions.add("What is the largest city in France?");
         questions.add("What is the national language of France?");
+        questions.add("What river runs through Paris?");
+        questions.add("Which famous art museum is located in Paris?");
+        questions.add("What is the national anthem of France?");
+        questions.add("Which French holiday is celebrated on July 14th?");
+        questions.add("What is the name of the famous Gothic cathedral in Paris?");
+        questions.add("Which French fashion designer founded the luxury brand Chanel?");
+        questions.add("What is the French currency called?");
+        questions.add("What iconic tower is in Paris, offering panoramic city views?");
+
         answers.add("Paris");
-        answers.add("Lyon");
         answers.add("French");
+        answers.add("Seine");
+        answers.add("Louvre");
+        answers.add("La Marseillaise");
+        answers.add("Bastille Day");
+        answers.add("Notre-Dame");
+        answers.add("Coco Chanel");
+        answers.add("Euro");
+        answers.add("Eiffel Tower");
+
         france.setQuestions(questions);
         france.setAnswers(answers);
         france.setCategory("Social Studies");
         france.setImageResourceId(R.drawable.france);
         flashcardList.add(france);
+    }
 
+    public void createLogAndCalc(){
         Flashcard math = new Flashcard();
-        math.setTitle("Logarithm and Calculus");
-        questions = new ArrayList<>();
-        answers = new ArrayList<>();
-        questions.add("What is the product rule of logarithm?");
-        questions.add("What is the quotient rule of logarithm?");
-        questions.add("What is the notation for differentiation?");
-        answers.add("logb(xy) = logb x + logb y");
-        answers.add("loga(x/y)  = loga x – loga y");
-        answers.add("dy/dx or f'(x)");
+        math.setTitle("Prime Factorisation");
+        List<String> questions = new ArrayList<>();
+        List<String> answers = new ArrayList<>();
+
+        // Questions
+        questions.add("What is the prime factorization of the perfect square 784?");
+        questions.add("What is the prime factorization of the perfect square 1089?");
+        questions.add("What is the prime factorization of the perfect square 1764?");
+        questions.add("What is the prime factorization of the perfect square 2116?");
+        questions.add("What is the prime factorization of the perfect square 2916?");
+        questions.add("What is the prime factorization of the perfect square 4356?");
+        questions.add("What is the prime factorization of the perfect square 5041?");
+        questions.add("What is the prime factorization of the perfect square 6241?");
+        questions.add("What is the prime factorization of the perfect square 7744?");
+        questions.add("What is the prime factorization of the perfect square 8464?");
+
+        // Answers
+        answers.add("2^4 * 7^2");    // Prime factorization of 784 (2^4 * 7^2)
+        answers.add("3^2 * 11^2");   // Prime factorization of 1089 (3^2 * 11^2)
+        answers.add("2^2 * 3^2 * 7^2");    // Prime factorization of 1764 (2^2 * 3^2 * 7^2)
+        answers.add("2^2 * 29^2");    // Prime factorization of 2116 (2^2 * 29^2)
+        answers.add("2^2 * 3^4");    // Prime factorization of 2916 (2^2 * 3^4)
+        answers.add("2^2 * 3^2 * 11^2");    // Prime factorization of 4356 (2^2 * 3^2 * 11^2)
+        answers.add("71^2");    // Prime factorization of 5041 (71^2)
+        answers.add("79^2");    // Prime factorization of 6241 (79^2)
+        answers.add("2^8 * 19^2");    // Prime factorization of 7744 (2^8 * 19^2)
+        answers.add("2^8 * 13^2");    // Prime factorization of 8464 (2^8 * 13^2)
+
+        //inspired by chatgpt, and
+        // https://study.com/academy/flashcards/perfect-squares-list-flashcards.html
+
         math.setQuestions(questions);
         math.setAnswers(answers);
         math.setCategory("Math");
         math.setImageResourceId(R.drawable.math);
         flashcardList.add(math);
+    }
 
-        //___________________________________________________________________________________________
-
+    public void createGeneralKnowledge(){
         Flashcard socialStudies = new Flashcard();
         socialStudies.setTitle("General Knowledge");
-        questions = new ArrayList<>();
-        answers = new ArrayList<>();
+        List<String> questions = new ArrayList<>();
+        List<String> answers = new ArrayList<>();
+
         questions.add("When did Singapore gain independence?");
         questions.add("Who won the gold medal in Rio 2016?");
         questions.add("Who is the president of Singapore in 2020?");
@@ -89,13 +150,14 @@ public class CreateDefaultFc {
         socialStudies.setCategory("Social Studies");
         socialStudies.setImageResourceId(R.drawable.sgss);
         flashcardList.add(socialStudies);
+    }
 
-        //___________________________________________________________________________________________
-
+    public void createGeneralEcons(){
         Flashcard economics = new Flashcard();
         economics.setTitle("General Economics");
-        questions = new ArrayList<>();
-        answers = new ArrayList<>();
+        List<String> questions = new ArrayList<>();
+        List<String> answers = new ArrayList<>();
+
         questions.add("What is the study of how people make choices?");
         questions.add("What do economists study?");
         questions.add("What is the basic economic problem?");
@@ -168,239 +230,239 @@ public class CreateDefaultFc {
         https://www.bls.gov/ooh/life-physical-and-social-science/economists.htm#:~:text=Economists%20analyze%20topics%20related%20to,%2C%20health%2C%20and%20the%20environment.
          */
 
-
         economics.setQuestions(questions);
         economics.setAnswers(answers);
         economics.setCategory("Economics");
         economics.setImageResourceId(R.drawable.economics);
         flashcardList.add(economics);
+    }
 
-        //___________________________________________________________________________________________
-
+    public void createInternationalTrade(){
         Flashcard internationalTrade = new Flashcard();
         internationalTrade.setTitle("International Trade");
-        questions = new ArrayList<>();
-        answers = new ArrayList<>();
+        List<String> questions = new ArrayList<>();
+        List<String> answers = new ArrayList<>();
 
         questions.add("What is international trade?");
-        answers.add("The exchange of goods, services, and capital across international borders.");
+        answers.add("Exchange of goods, services, and capital across borders.");
 
         questions.add("Explain the principle of comparative advantage.");
-        answers.add("A country should specialize in producing the goods it can produce most efficiently relative to other countries and trade for goods it cannot produce as efficiently.");
+        answers.add("Countries specialize efficiently and trade accordingly.");
 
         questions.add("What are the benefits of international trade?");
-        answers.add("Increased efficiency, access to a wider variety of goods, and economic growth.");
+        answers.add("Increased efficiency, wider variety of goods, economic growth.");
 
         questions.add("Define trade surplus.");
-        answers.add("When a country exports more goods and services than it imports.");
+        answers.add("Exports > imports.");
 
         questions.add("Explain trade deficit.");
-        answers.add("When a country imports more goods and services than it exports.");
+        answers.add("Imports > exports.");
 
         questions.add("What are import tariffs?");
-        answers.add("Taxes imposed on imported goods to protect domestic industries and raise revenue for the government.");
+        answers.add("Taxes on imported goods, protect domestic industries, raise revenue.");
 
         questions.add("Define trade barriers.");
-        answers.add("Government-imposed restrictions on international trade, such as tariffs, quotas, and embargoes.");
+        answers.add("Government restrictions on trade, e.g., tariffs, quotas, embargoes.");
 
         questions.add("Explain the concept of trade liberalization.");
-        answers.add("The removal or reduction of trade barriers to promote free trade.");
+        answers.add("Removing trade barriers to promote free trade.");
 
         questions.add("What is a free trade agreement?");
-        answers.add("A pact between two or more countries to reduce or eliminate trade barriers among them.");
+        answers.add("Pact to reduce/eliminate trade barriers between countries.");
 
         questions.add("Define balance of trade.");
-        answers.add("The difference between a country's exports and imports of goods and services.");
+        answers.add("Exports - imports of goods and services.");
 
         questions.add("Explain the role of the World Trade Organization (WTO).");
-        answers.add("It is an international organization that deals with global rules of trade between nations.");
+        answers.add("Handles global trade rules between nations.");
 
         questions.add("What are export subsidies?");
-        answers.add("Financial incentives given by governments to domestic companies to encourage exporting.");
+        answers.add("Incentives for domestic companies to encourage exporting.");
 
         questions.add("Define protectionism.");
-        answers.add("The economic policy of restricting trade between countries to protect domestic industries.");
+        answers.add("Restricting trade to protect domestic industries.");
 
         questions.add("Explain the terms of trade.");
-        answers.add("The ratio at which a country can trade its exports for imports from other countries.");
+        answers.add("Ratio of a country's exports for imports.");
 
         questions.add("What is a trade bloc?");
-        answers.add("A group of countries that join together and eliminate trade barriers among themselves.");
+        answers.add("Group of countries with reduced trade barriers.");
 
         questions.add("Define foreign direct investment (FDI).");
-        answers.add("When a company or individual from one country invests directly in assets in another country.");
+        answers.add("Investment from one country in another's assets.");
 
         questions.add("Explain the infant industry argument.");
-        answers.add("A justification for trade protectionism, stating that young domestic industries need protection to grow and compete with established foreign competitors.");
+        answers.add("Protection for young domestic industries to grow.");
 
         questions.add("What are the implications of a devaluation of a country's currency?");
-        answers.add("It makes a country's exports cheaper and imports more expensive, potentially improving the trade balance.");
+        answers.add("Cheaper exports, costlier imports, potentially better trade balance.");
 
         questions.add("Define trade sanctions.");
-        answers.add("Economic penalties imposed by one or more countries against a targeted country to pressure it to change its policies.");
+        answers.add("Penalties imposed by countries to pressure policy change.");
 
         questions.add("Explain the concept of trade dumping.");
-        answers.add("When a country exports goods to another country at a price lower than the production cost to gain a competitive advantage.");
+        answers.add("Exporting goods below production cost for advantage.");
 
         questions.add("What are trade negotiations?");
-        answers.add("Discussions between countries to reach agreements on international trade issues.");
+        answers.add("Discussions between countries for trade agreements.");
 
         questions.add("Explain the concept of trade in services.");
-        answers.add("The exchange of services, such as banking, tourism, and consulting, between countries.");
+        answers.add("Exchange of services between countries (e.g., banking, tourism).");
 
         questions.add("Define the terms 'exports' and 'imports'.");
-        answers.add("Exports refer to goods and services sold to foreign countries, while imports refer to goods and services bought from foreign countries.");
+        answers.add("Exports: sold abroad. Imports: bought from abroad.");
 
         questions.add("What is a current account deficit?");
-        answers.add("When a country's imports of goods, services, and transfers exceed its exports and income received from abroad.");
+        answers.add("Imports, transfers exceed exports and income received.");
 
         questions.add("Explain the concept of foreign exchange reserves.");
-        answers.add("The foreign currencies held by a country's central bank and used to settle international transactions.");
+        answers.add("Foreign currencies held by a country's central bank.");
+
         internationalTrade.setQuestions(questions);
         internationalTrade.setAnswers(answers);
         internationalTrade.setCategory("Economics");
         internationalTrade.setImageResourceId(R.drawable.internationaltrade);
         flashcardList.add(internationalTrade);
+    }
 
-        //___________________________________________________________________________________________
-
+    public void createMonetaryPolicy(){
         Flashcard monetaryPolicy = new Flashcard();
         monetaryPolicy.setTitle("Monetary Policy");
-        questions = new ArrayList<>();
-        answers = new ArrayList<>();
+        List<String> questions = new ArrayList<>();
+        List<String> answers = new ArrayList<>();
+
         questions.add("What is monetary policy?");
-        answers.add("The use of central bank tools to control the money supply and interest rates to achieve economic goals.");
+        answers.add("Central bank tools to control money supply, interest rates.");
 
         questions.add("Explain the role of the central bank in monetary policy.");
-        answers.add("The central bank is responsible for implementing monetary policy and regulating the banking system.");
+        answers.add("Implements policy, regulates banking system.");
 
         questions.add("What are the main goals of monetary policy?");
-        answers.add("Stable prices, full employment, and economic growth.");
+        answers.add("Stable prices, full employment, economic growth.");
 
         questions.add("Define inflation.");
-        answers.add("A sustained increase in the general price level of goods and services in an economy over time.");
+        answers.add("Sustained increase in general price level.");
 
         questions.add("Explain the concept of deflation.");
-        answers.add("A sustained decrease in the general price level of goods and services in an economy over time.");
+        answers.add("Sustained decrease in general price level.");
 
         questions.add("What is the Federal Reserve (Fed)?");
-        answers.add("The central bank of the United States, responsible for conducting monetary policy.");
+        answers.add("US central bank, conducts monetary policy.");
 
         questions.add("Define the discount rate.");
-        answers.add("The interest rate at which the central bank lends money to commercial banks.");
+        answers.add("Interest rate central bank lends to commercial banks.");
 
         questions.add("Explain open market operations.");
-        answers.add("The buying and selling of government securities by the central bank to control the money supply.");
+        answers.add("Buying, selling government securities to control money supply.");
 
         questions.add("What is the reserve requirement?");
-        answers.add("The percentage of deposits that banks are required to hold as reserves.");
+        answers.add("Percentage of deposits banks must hold as reserves.");
 
         questions.add("Define expansionary monetary policy.");
-        answers.add("A policy that aims to stimulate economic growth by increasing the money supply and reducing interest rates.");
+        answers.add("Stimulates growth, increases money supply, lowers interest rates.");
 
         questions.add("Explain contractionary monetary policy.");
-        answers.add("A policy that aims to slow down economic growth by reducing the money supply and increasing interest rates.");
+        answers.add("Slows growth, reduces money supply, raises interest rates.");
 
         questions.add("What is the Taylor rule?");
-        answers.add("A formula that guides central banks in setting the appropriate interest rate based on inflation and economic output.");
+        answers.add("Guides interest rate setting based on inflation, economic output.");
 
         questions.add("Define quantitative easing.");
-        answers.add("A monetary policy in which a central bank buys financial assets to increase the money supply.");
+        answers.add("Central bank buys financial assets to increase money supply.");
 
         questions.add("Explain the concept of the money multiplier.");
-        answers.add("The ratio of the change in the money supply to the change in the monetary base.");
+        answers.add("Ratio of change in money supply to monetary base.");
 
         questions.add("What is the Phillips curve?");
-        answers.add("A concept that shows the trade-off between inflation and unemployment.");
+        answers.add("Shows inflation-unemployment trade-off.");
 
         questions.add("Define the natural rate of unemployment.");
-        answers.add("The rate of unemployment when the economy is at its potential output.");
+        answers.add("Unemployment rate at potential output.");
 
         questions.add("Explain the concept of the zero lower bound.");
-        answers.add("The lower limit to which interest rates can be reduced, typically close to zero.");
+        answers.add("Lower limit of near-zero interest rates.");
 
         questions.add("What is the role of the European Central Bank (ECB)?");
-        answers.add("The central bank of the Eurozone, responsible for monetary policy and the euro currency.");
+        answers.add("Eurozone's central bank, manages monetary policy, euro currency.");
 
         questions.add("Define exchange rate.");
-        answers.add("The rate at which one currency can be exchanged for another.");
+        answers.add("Rate of currency exchange.");
 
         questions.add("Explain the concept of a currency peg.");
-        answers.add("A fixed exchange rate system in which a country's currency is tied to another currency or a basket of currencies.");
+        answers.add("Fixed exchange rate tied to another currency or basket.");
 
         questions.add("What are the advantages of an independent central bank?");
-        answers.add("It can focus on long-term economic stability without political interference.");
+        answers.add("Focus on economic stability without political interference.");
 
         questions.add("Define the real interest rate.");
-        answers.add("The nominal interest rate adjusted for inflation.");
+        answers.add("Nominal interest rate adjusted for inflation.");
 
         questions.add("Explain the concept of forward guidance in monetary policy.");
-        answers.add("Central banks use forward guidance to communicate their future policy intentions to influence expectations and economic behavior.");
+        answers.add("Central banks use communication to influence expectations, behavior.");
 
         questions.add("What are the challenges of implementing effective monetary policy?");
-        answers.add("Lags in policy impact, uncertainty, and potential unintended consequences.");
+        answers.add("Policy lags, uncertainty, unintended consequences.");
 
         questions.add("Define the money supply.");
-        answers.add("The total amount of money in circulation in an economy, including cash and various forms of deposits.");
+        answers.add("Total money in circulation, including cash, deposits.");
 
         monetaryPolicy.setQuestions(questions);
         monetaryPolicy.setAnswers(answers);
         monetaryPolicy.setCategory("Economics");
         monetaryPolicy.setImageResourceId(R.drawable.monetorypolicy);
         flashcardList.add(monetaryPolicy);
+    }
 
-        //___________________________________________________________________________________________
-
+    public void createSupplyAndDemand(){
         Flashcard supplyAndDemand = new Flashcard();
         supplyAndDemand.setTitle("Supply and Demand");
-        questions = new ArrayList<>();
-        answers = new ArrayList<>();
-
+        List<String> questions = new ArrayList<>();
+        List<String> answers = new ArrayList<>();
         questions.add("What is supply?");
-        answers.add("Supply refers to the quantity of a product or service that producers are willing and able to provide at various price levels in the market.");
+        answers.add("Quantity producers offer at various price levels.");
 
         questions.add("What happens when there is a surplus in the market?");
-        answers.add("A surplus occurs when the quantity supplied exceeds the quantity demanded at the prevailing price. This typically leads to a decrease in price until the surplus is eliminated.");
+        answers.add("Excess supply, price decrease until surplus is gone.");
 
         questions.add("What happens when there is a shortage in the market?");
-        answers.add("A shortage occurs when the quantity demanded exceeds the quantity supplied at the current price. This often results in an increase in price until the shortage is resolved.");
+        answers.add("Excess demand, price increase until shortage resolves.");
 
         questions.add("Explain the concept of elasticity of demand.");
-        answers.add("Elasticity of demand measures how responsive the quantity demanded of a good or service is to changes in its price. If demand is elastic, a small change in price leads to a proportionately larger change in quantity demanded.");
+        answers.add("Measures responsiveness of demand to price changes.");
 
         questions.add("What are the factors that influence demand?");
-        answers.add("Factors influencing demand include consumer preferences, income levels, prices of related goods, population, and advertising.");
+        answers.add("Consumer preferences, income, related goods' prices, population, advertising.");
 
         questions.add("What are the factors that influence supply?");
-        answers.add("Factors influencing supply include input prices, technology, government policies, and natural disasters.");
+        answers.add("Input prices, technology, government policies, natural disasters.");
 
         questions.add("How do changes in consumer tastes and preferences affect demand?");
-        answers.add("When consumer tastes and preferences for a product increase, the demand for that product may increase.");
+        answers.add("Increased preferences lead to higher demand.");
 
         questions.add("What is a price elasticity of demand greater than 1?");
-        answers.add("A price elasticity of demand greater than 1 (elastic demand) indicates that demand is highly responsive to changes in price.");
+        answers.add("Elastic demand, highly responsive to price changes.");
 
         questions.add("What is a price elasticity of demand less than 1?");
-        answers.add("A price elasticity of demand less than 1 (inelastic demand) indicates that demand is less responsive to changes in price.");
+        answers.add("Inelastic demand, less responsive to price changes.");
 
         questions.add("What is the cross-price elasticity of demand?");
-        answers.add("Cross-price elasticity of demand measures how the quantity demanded of one good changes in response to a change in the price of another good.");
+        answers.add("Measures how demand changes with another good's price.");
 
         questions.add("How does technological advancement affect supply?");
-        answers.add("Technological advancement often increases supply, as it allows producers to produce more efficiently and at lower costs.");
+        answers.add("Increases supply, enhances efficiency, lowers costs.");
 
         supplyAndDemand.setQuestions(questions);
         supplyAndDemand.setAnswers(answers);
         supplyAndDemand.setCategory("Economics");
         supplyAndDemand.setImageResourceId(R.drawable.demandnsupply);
         flashcardList.add(supplyAndDemand);
+    }
 
-        //___________________________________________________________________________________________
-
+    public void createSgGeneralKnowledge(){
         Flashcard sgGeneralKnowledge = new Flashcard();
         sgGeneralKnowledge.setTitle("Singapore General Knowledge");
-        questions = new ArrayList<>();
-        answers = new ArrayList<>();
+        List<String> questions = new ArrayList<>();
+        List<String> answers = new ArrayList<>();
 
         questions.add("What is the official name of Singapore?");
         answers.add("Republic of Singapore");
@@ -497,62 +559,50 @@ public class CreateDefaultFc {
         sgGeneralKnowledge.setCategory("Social Studies");
         sgGeneralKnowledge.setImageResourceId(R.drawable.sgpropog);
         flashcardList.add(sgGeneralKnowledge);
+    }
 
-        //___________________________________________________________________________________________
-
+    public void createAlgebra(){
         Flashcard algebra = new Flashcard();
         algebra.setTitle("Algebra");
-        questions = new ArrayList<>();
-        answers = new ArrayList<>();
+        List<String> questions = new ArrayList<>();
+        List<String> answers = new ArrayList<>();
 
-        questions.add("Simplify the expression: 3x + 2x");
-        answers.add("5x");
+        questions.add("Solve for x: 2x + 3 = 11");
+        answers.add("x = 4");
 
-        questions.add("Factor the expression: x^2 - 9");
-        answers.add("(x - 3)(x + 3)");
+        questions.add("Solve for x: 5x - 8 = 22");
+        answers.add("x = 6");
 
-        questions.add("Solve for x: 2x - 7 = 15");
-        answers.add("x = 11");
+        questions.add("Solve for x: 3(x - 2) = 15");
+        answers.add("x = 7");
 
-        questions.add("Expand the expression: (2a + 3b)^2");
-        answers.add("4a^2 + 12ab + 9b^2");
+        questions.add("Solve for x: 4x - 9 = 23");
+        answers.add("x = 8");
 
-        questions.add("Simplify the equation: 5(2x + 3) - 4(3x - 2) = 12");
-        answers.add("x = 3");
+        questions.add("Solve for x: 2(3x - 5) = 16");
+        answers.add("x = 13/3");
 
-        questions.add("Solve the system of equations: 2x + y = 8, x - y = 2");
-        answers.add("x = 3, y = 2");
+        questions.add("Solve for x: 2x/3 = 8");
+        answers.add("x = 12");
 
-        questions.add("Factor the quadratic expression: x^2 + 5x + 6");
-        answers.add("(x + 2)(x + 3)");
+        questions.add("Solve for x: 3x + 5 = 2x - 10");
+        answers.add("x = -15");
 
-        questions.add("Solve for x: 3(x - 2) = 9 - 2x");
-        answers.add("x = 3");
+        questions.add("Solve for x: 6(x + 4) - 3 = 27");
+        answers.add("x = 1");
 
-        questions.add("Factor the quadratic expression: 2x^2 - 8x");
-        answers.add("2x(x - 4)");
+        questions.add("Solve for x: 2(x - 4) + 4(x + 1) = 18");
+        answers.add("x = 11/3");
 
-        questions.add("Simplify the expression: 5(x + 3) - 2(2x - 5)");
-        answers.add("x + 23");
-
-        questions.add("Solve the system of equations: \n3x + y = 10\n2x - y = 4");
-        answers.add("x = 2, y = 4");
-
-        questions.add("Factor the trinomial: x^2 - 6x + 9");
-        answers.add("(x - 3)^2");
-
-        questions.add("Simplify the expression: 4(2x - 3) - 2(x + 5)");
-        answers.add("6x - 22");
-
-        questions.add("Simplify the expression: 3(4x + 5) - 2(2x - 1)");
-        answers.add("10x + 13");
+        questions.add("Solve for x: 4(x + 2) - 3(x - 1) = 9");
+        answers.add("x = 2");
 
         algebra.setQuestions(questions);
         algebra.setAnswers(answers);
         algebra.setCategory("Math");
         algebra.setImageResourceId(R.drawable.algebra);
         flashcardList.add(algebra);
-
-        return flashcardList;
     }
+
+
 }

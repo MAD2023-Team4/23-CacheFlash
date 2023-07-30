@@ -12,20 +12,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:itemBackground="@color/darkBlue"
+        app:itemBackground="@color/blue_dark"
         app:itemIconTint="@drawable/serlector"
         app:itemTextColor="@drawable/serlector"
         app:menu="@menu/menu" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="643dp">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_navigator"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="0dp">
 
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="328dp"
             android:background="@drawable/search_view_bg"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -36,14 +44,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.001"
-            app:queryHint="Search here..." />
+            app:queryHint="Search here..."
+            app:searchViewStyle="@style/MySearchViewStyle" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchRecyclerView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@+id/searchView"
+            android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -56,13 +65,13 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="All Flashcards Available"
+            android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
         <!-- Add other views and constraints here -->
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

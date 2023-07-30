@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -10,34 +9,32 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/backgroundcolor"
-        tools:context=".Login">
+        android:layout_height="wrap_content">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textTextInput"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textView5"
             android:layout_marginStart="65dp"
-            android:layout_marginTop="295dp"
+            android:layout_marginTop="100dp"
             android:layout_marginEnd="65dp"
-            android:hint="@string/usernameText"
+            android:hint="@string/Email"
+            android:inputType="textEmailAddress"
             android:textColorHint="@color/white"
-            app:hintTextColor="@color/darkBlue"
-            app:boxStrokeColor="@color/darkBlue"
+            app:boxStrokeColor="@color/white"
             app:boxStrokeWidth="2dp"
-            app:helperTextTextColor="@color/darkBlue"
-            android:inputType="textEmailAddress">
+            app:helperTextTextColor="@color/white"
+            app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="300dp"
-
+                android:drawableLeft="@drawable/baseline_email_24"
+                android:inputType="textEmailAddress"
                 android:singleLine="true"
-                android:drawableStart="@drawable/ic_profile"
-                android:inputType="text"
                 android:textColor="@color/white"
                 android:textSize="16sp">
 
@@ -48,27 +45,28 @@
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/textTextInput2"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textTextInput"
             android:layout_marginStart="65dp"
-            android:layout_marginTop="360dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="65dp"
             android:hint="@string/passwordText"
             android:textColorHint="@color/white"
-            app:hintTextColor="@color/darkBlue"
-            app:boxStrokeColor="@color/darkBlue"
+            app:boxStrokeColor="@color/white"
             app:boxStrokeWidth="2dp"
-            app:helperTextTextColor="@color/darkBlue">
+            app:helperTextTextColor="@color/white"
+            app:hintTextColor="@color/white">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/editTextText2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="300dp"
-                android:textSize="16sp"
-                android:inputType="textPassword"
                 android:drawableLeft="@drawable/baseline_lock_24"
+                android:inputType="textPassword"
+                android:singleLine="true"
                 android:textColor="@color/white"
-                android:singleLine="true">
+                android:textSize="16sp">
 
             </com.google.android.material.textfield.TextInputEditText>
 
@@ -82,7 +80,7 @@
             android:layout_below="@+id/button"
 
             android:layout_marginLeft="70dp"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="10dp"
             android:layout_marginRight="70dp"
 
             android:text="@string/newUserText"
@@ -92,12 +90,12 @@
 
         <TextView
             android:id="@+id/textView7"
-            android:layout_width="190dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/textView4"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="112dp"
-            android:layout_below="@+id/textView13"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="110dp"
             android:text="Forget Password?"
             android:textAlignment="center"
             android:textColor="@color/white"
@@ -112,28 +110,20 @@
             android:layout_marginStart="130dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="130dp"
-            android:backgroundTint="#1400A9"
+            android:background="@drawable/buttons"
+            app:backgroundTint="@color/button"
             android:text="@string/loginButtonText"
             android:textColor="#FFFFFF"
             android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="155dp"
-            android:layout_height="155dp"
-            android:layout_below="@+id/textView5"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/applogo" />
-
         <TextView
             android:id="@+id/privacy_policy_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/textView4"
-            android:layout_marginTop="27dp"
-            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/textView7"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="100dp"
             android:onClick="openPrivacyPolicy"
             android:text="Privacy Policy"
             android:textAlignment="center"
@@ -147,9 +137,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/privacy_policy_text"
             android:layout_centerHorizontal="true"
-            android:layout_marginStart="40dp"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="6dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginRight="30dp"
             android:text="By logging in or creating an account, you are agreeing with the privacy policy and that you are above 13 years old"
             android:textColor="@color/white"
             android:textAlignment="center" />
@@ -178,6 +168,6 @@
             android:layout_marginBottom="60dp"
             app:srcCompat="@drawable/showpasswordicon" />
 
-
     </RelativeLayout>
+
 </ScrollView>

@@ -61,7 +61,7 @@ public class Testyourself extends AppCompatActivity {
     private TextView timerTextView;
     private int timerDuration;
     private int difficultyLevel;
-
+    private ImageView imageView4;
 
 
     String username;
@@ -141,8 +141,8 @@ public class Testyourself extends AppCompatActivity {
             TextView qcard = findViewById(R.id.QCard);
             timerTextView = findViewById(R.id.timerTextView);
             EditText input = findViewById(R.id.Userinput);
-
-
+            imageView4=findViewById(R.id.imageView10);
+            imageView4.setVisibility(View.GONE);
             Button back = findViewById(R.id.button3);
             Button prev = findViewById(R.id.button);
             Button next = findViewById(R.id.button2);
@@ -156,9 +156,9 @@ public class Testyourself extends AppCompatActivity {
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String answer = input.getText().toString();
+                    String answer = input.getText().toString().trim();
                     String answernoexception=answer.toLowerCase().replaceAll("\\s+","");
-                    String correctAnswer = answers.get(currentIndex);
+                    String correctAnswer = answers.get(currentIndex).trim();
                     String correctedAnswer=correctAnswer.toLowerCase().replaceAll("\\s+","");
 
                     if (answernoexception.equals(correctedAnswer)) {
@@ -168,7 +168,7 @@ public class Testyourself extends AppCompatActivity {
 
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
                         score++;
-
+                        imageView4.setVisibility(View.VISIBLE);
                         Log.v("Score", String.valueOf(score));
                     } else {
                         Toast.makeText(getApplicationContext(), "Incorrect. The correct answer is: " + correctAnswer, Toast.LENGTH_SHORT).show();
@@ -212,7 +212,7 @@ public class Testyourself extends AppCompatActivity {
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    imageView4.setVisibility(View.GONE);
                     currentIndex++;
                     if(currentIndex == flashcard.getQuestions().size()){
                         //make a toast message of the score
@@ -448,7 +448,7 @@ public class Testyourself extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(title)
                     .setMessage(text)
-                    .setPositiveButton("Back to home", new DialogInterface.OnClickListener() {
+                    .setPositiveButton("Close", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // Do something when the "OK" button is clicked
                             Intent intent = new Intent(Testyourself.this, MainActivity.class);
@@ -461,11 +461,7 @@ public class Testyourself extends AppCompatActivity {
                             startActivity(intent);
                         }
                     })
-                    .setNegativeButton("Close", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            // Do something when the "Cancel" button is clicked
-                        }
-                    })
+                    .setCancelable(false)
                     .show();
         }
         else{
@@ -565,8 +561,8 @@ public class Testyourself extends AppCompatActivity {
                         // Update the points in the user object
                         user.setPoints(newPoints);
 
-                        // Save the updated user object back to the database
-                        userRef.setValue(user);
+                        // Save only the points field back to the database
+                        userRef.child("points").setValue(newPoints);
 
                         Log.d("UpdatePoints", "Points updated for user: " + username + ". New points: " + newPoints);
                     }
@@ -590,6 +586,7 @@ public class Testyourself extends AppCompatActivity {
             }
         });
     }
+
 
 
 
