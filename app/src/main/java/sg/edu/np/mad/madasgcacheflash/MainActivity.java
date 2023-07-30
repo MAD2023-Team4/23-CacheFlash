@@ -96,17 +96,14 @@ public class MainActivity extends AppCompatActivity {
         Log.d("MainActivity", "Received Username: " + username);
         FirebaseApp.initializeApp(MainActivity.this);
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            if(user.getDisplayName()!=null)
-            {username=user.getDisplayName();}
+        if (user.getDisplayName() != null) {
             TextView welcomeTxt = findViewById(R.id.welcomeText);
             String welcomeMessage = getString(R.string.welcome_message);
-            String formattedMessage = String.format(welcomeMessage, username);
-            Log.i(title, "The username is null, so it is a problem"+user.getDisplayName());
-
+            String formattedMessage = String.format(welcomeMessage, user.getDisplayName());
             welcomeTxt.setText(formattedMessage);
         } else {
-            Log.i(title, "The username is null, so it is a problem");
+            Log.i(title, "The userdisplayname is null, so it is a problem");
+
         }
 
         // Set the interval for updating the streak (e.g., every 24 hours)
