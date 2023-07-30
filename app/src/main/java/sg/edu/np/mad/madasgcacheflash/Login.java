@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,6 +47,7 @@ public class Login extends AppCompatActivity {
     private TextInputEditText etPassword;
     private boolean showpassword;
 
+
     /*
     private String GLOBAL_PREF = "MyPrefs";
     private String MY_USERNAME = "MyUserName";
@@ -59,6 +61,7 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         TextView privacyPolicyTextView = findViewById(R.id.privacy_policy_text);
         Intent intent = getIntent();
+
 
         privacyPolicyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,6 +82,7 @@ public class Login extends AppCompatActivity {
         EditText etUsername = findViewById(R.id.editTextText);
         etPassword = findViewById(R.id.editTextText2);
         TextView Forgetpassword = findViewById(R.id.textView7);
+        ImageView showpasswordicon=findViewById(R.id.imageView11);
         newUser.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -119,6 +123,25 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
+        showpasswordicon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(showpassword)
+                {
+                    togglePassVisability();
+                    showpasswordicon.setImageResource(R.drawable.hidepassword);
+                    showpassword=false;
+                }
+                else {
+                    togglePassVisability();
+                    showpasswordicon.setImageResource(R.drawable.showpasswordicon);
+                    showpassword=true;
+                }
+
+            }
+        });
+
+
     }
 
     private void signIn(String username, String password) {
