@@ -73,70 +73,39 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/editTextPhoneLayout"
-        android:layout_width="match_parent"
-        android:layout_height="58dp"
-        android:layout_below="@+id/textTextInput2"
-        android:layout_alignParentStart="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="65dp"
-        android:layout_marginEnd="65dp"
-        android:layout_marginTop="3dp"
-        android:layout_marginBottom="178dp"
-        android:hint="@string/Email"
-        android:textColorHint="@color/white"
-        app:hintTextColor="@color/white"
-        app:boxStrokeColor="@color/darkBlue"
-        app:boxStrokeWidth="2dp"
-        app:helperTextTextColor="@color/darkBlue">
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="110dp"
+            android:layout_height="wrap_content"
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/editTextText5"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+
+            android:layout_marginStart="240dp"
+            android:layout_marginTop="372dp"
+            android:layout_marginEnd="62dp"
+            android:layout_marginBottom="0dp"
+            android:backgroundTint="#1400A9"
+            android:text="@string/confirmCreationText"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="110dp"
+            android:layout_height="48dp"
+
             android:layout_alignParentStart="true"
-            android:layout_marginTop="300dp"
-            android:drawableLeft="@drawable/baseline_email_24"
-            android:inputType="textEmailAddress"
-            android:textColor="@color/white"
-            android:singleLine="true"
-            android:textSize="16sp">
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
 
-        </com.google.android.material.textfield.TextInputEditText>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <Button
-        android:id="@+id/button3"
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="240dp"
-
-        android:layout_marginEnd="62dp"
-        android:layout_marginBottom="110dp"
-        android:backgroundTint="#1400A9"
-        android:text="@string/confirmCreationText"
-        android:textSize="18sp" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="110dp"
-        android:layout_height="48dp"
-
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="62dp"
-
-        android:layout_marginEnd="240dp"
-        android:layout_marginBottom="116dp"
-        android:backgroundTint="#1400A9"
-        android:text="@string/cancelCreationText"
-        android:textSize="18sp" />
+            android:layout_marginStart="62dp"
+            android:layout_marginTop="372dp"
+            android:layout_marginEnd="240dp"
+            android:layout_marginBottom="116dp"
+            android:backgroundTint="#1400A9"
+            android:text="@string/cancelCreationText"
+            android:textSize="18sp" />
 
     <ImageView
         android:id="@+id/imageView2"

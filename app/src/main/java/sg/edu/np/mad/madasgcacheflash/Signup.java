@@ -12,6 +12,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class Signup extends AppCompatActivity {
 
@@ -95,4 +102,37 @@ public class Signup extends AppCompatActivity {
                     }
                 });
     }
+    public ArrayList<User> queryAllUsersAndPoints(ArrayList<User> uList, Leaderboard.DataCallback callback) {
+        DatabaseReference usersRef = FirebaseDatabase.getInstance().getReference().child("users");
+        usersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    // Retrieve the points attribute
+                    Integer points = userSnapshot.child("points").getValue(Integer.class);
+                    String username = userSnapshot.getKey(); // Assuming the key is the username
+                    Log.v("User Points", "User: " + username + ", Points: " + points);
+
+                    // Skip if username or points is null
+                    if (username == null || points == null) {
+                        continue; // Skip this iteration and proceed to the next user
+                    }
+
+                    // We temporarily set the password to null. Anyway, it is not needed and confidential.
+                    User eachUser = new User(username, null, points);
+                    uList.add(eachUser);
+                }
+                callback.onDataReceived(uList);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle any errors that occur
+            }
+        });
+
+        return uList;
+    }
+
+
 }
