@@ -35,12 +35,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Dashboard extends AppCompatActivity {
     private String username;
-    List<Flashcard> allFlashcards = new ArrayList<>();
 
     private List<Flashcard> filteredFlashcards = new ArrayList<>();
     BottomNavigationView bottomNavigationView;
     private RecyclerView recyclerView;
-    private DashboardAdapter fcAdapter;
+    //private DashboardAdapter fcAdapter;
     private String selectedDifficulty = "Easy";
 
     private Flashcard bestPerformingFlashcard;
@@ -54,6 +53,11 @@ public class Dashboard extends AppCompatActivity {
 
     private int bestPercentage;
     private int lowestPercentage;
+
+    private TextView lowestAveragePercentage;
+    private TextView lowestAttempts;
+    private TextView highestAveragePercentage;
+    private TextView highestAttempts;
     Flashcard flashcard;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,18 +69,14 @@ public class Dashboard extends AppCompatActivity {
         username = intent.getStringExtra("Username"); //get username
         Log.v("Dashboard class",username);
 
-        queryFlashCards();
 
-        /*
-        Integer percentage = null; // Default value is null
-        Integer total = null; // Default value is null
         // Find the Spinner and set the adapter for the difficulty levels
         Spinner difficultySpinner = findViewById(R.id.difficultySpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.difficulty_levels, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         difficultySpinner.setAdapter(adapter);
-
+        difficultySpinner.setSelection(0);
         // Set the OnItemSelectedListener to update the selected difficulty level
         difficultySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -84,6 +84,7 @@ public class Dashboard extends AppCompatActivity {
                 selectedDifficulty = parent.getItemAtPosition(position).toString();
                 // Update the RecyclerView to display flashcards based on the selected difficulty
                 updateFlashcardList();
+                //difficultySpinner.setSelection(position);
             }
 
             @Override
@@ -92,24 +93,34 @@ public class Dashboard extends AppCompatActivity {
             }
         });
 
+
         // Find the TextView elements for displaying best performing and lowest performing flashcards
-         bestPerformingTextView = findViewById(R.id.bestPerformingTextView);
+        bestPerformingTextView = findViewById(R.id.bestPerformingTextView);
         lowestPerformingTextView = findViewById(R.id.lowestPerformingTextView);
-// Find the gauge charts by their IDs
-         bestPerformingGaugeChart = findViewById(R.id.bestperformingGaugeChart);
-         lowestPerformingGaugeChart = findViewById(R.id.lowestPerformingGaugeChart);
+        // Find the gauge charts by their IDs
+        bestPerformingGaugeChart = findViewById(R.id.bestperformingGaugeChart);
+        lowestPerformingGaugeChart = findViewById(R.id.lowestPerformingGaugeChart);
 
 
-         */
+        highestAttempts = findViewById(R.id.bestPerformingAttemptsTextView);
+        highestAveragePercentage = findViewById(R.id.bestPerformingPercentageTextView);
+        lowestAttempts = findViewById(R.id.lowestPerformingAttemptsTextView);
+        lowestAveragePercentage = findViewById(R.id.lowestPerformingPercentageTextView);
 
 
+
+
+
+/*
         recyclerView = findViewById(R.id.recyclerViewDashboard);
-        fcAdapter = new DashboardAdapter(allFlashcards,selectedDifficulty);
+        fcAdapter = new DashboardAdapter(filteredFlashcards,selectedDifficulty);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(8), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(fcAdapter);
 
+
+ */
         //Bottom Nav View
         //It is a constraint layout, to allow transitions from one page to another, using if else statements.
         //_________________________________________________________________________________________
@@ -160,34 +171,7 @@ public class Dashboard extends AppCompatActivity {
 
 
     }
-    private void queryFlashCards(){
-        DatabaseReference categoriesRef = FirebaseDatabase.getInstance().getReference()
-                .child("users")
-                .child(username)
-                .child("categories");
 
-        categoriesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
-                for (DataSnapshot categorySnapshot : snapshot.getChildren()) {
-                    for (DataSnapshot flashcardSnapshot : categorySnapshot.getChildren()) {
-                        Flashcard flashcard = flashcardSnapshot.getValue(Flashcard.class);
-                        if (flashcard != null) {
-                            allFlashcards.add(flashcard);
-                        }
-                    }
-                }
-                fcAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                // Handle any errors that occur while fetching the data (optional).
-            }
-        });
-    }
     private int dpToPx(int dp) {
         float density = getResources().getDisplayMetrics().density;
         return Math.round(dp * density);
@@ -250,19 +234,27 @@ public class Dashboard extends AppCompatActivity {
                                                         // Calculate best and lowest performing flashcards after the list is populated
                                                         bestPerformingFlashcard = findBestPerformingFlashcard();
                                                         lowestPerformingFlashcard = findLowestPerformingFlashcard();
+                                                        //fcAdapter.setFlashcards(filteredFlashcards);
+                                                        //fcAdapter.notifyDataSetChanged();
 
                                                         Log.d("Dashboard", "Filtered Flashcards Size: " + filteredFlashcards.size());
                                                         // Set the text for the TextView elements
                                                         if (bestPerformingFlashcard != null) {
                                                             bestPercentage = bestPerformingFlashcard.getPercentage().get(selectedDifficulty.toLowerCase()).intValue();
+                                                            int bestAttempts = bestPerformingFlashcard.getAttempts().get(selectedDifficulty.toLowerCase());
                                                             bestPerformingTextView.setText("Wow, you're doing well for " + bestPerformingFlashcard.getTitle() + "! Keep it up!");
+                                                            highestAveragePercentage.setText("Average Percentage: " + bestPercentage + "%");
+                                                            highestAttempts.setText("Attempts: " + bestAttempts);
                                                         } else {
                                                             bestPerformingTextView.setText("");
                                                         }
 
                                                         if (lowestPerformingFlashcard != null) {
                                                             lowestPercentage = lowestPerformingFlashcard.getPercentage().get(selectedDifficulty.toLowerCase()).intValue();
+                                                            int worseAttempts = lowestPerformingFlashcard.getAttempts().get(selectedDifficulty.toLowerCase());
                                                             lowestPerformingTextView.setText("Looks like you need to work on " + lowestPerformingFlashcard.getTitle() + ".");
+                                                            lowestAttempts.setText("Attempts: " + worseAttempts);
+                                                            lowestAveragePercentage.setText("Average Percentage: " + lowestPercentage + "%");
                                                         } else {
                                                             lowestPerformingTextView.setText("");
                                                         }
@@ -270,7 +262,7 @@ public class Dashboard extends AppCompatActivity {
                                                         setGaugeChartValues(lowestPerformingGaugeChart, lowestPercentage);
 
                                                         // Update the adapter with the filtered flashcards
-                                                        fcAdapter.setFlashcards(filteredFlashcards);
+                                                        //fcAdapter.setFlashcards(filteredFlashcards);
                                                     }
                                                 }
                                             }
@@ -335,14 +327,28 @@ public class Dashboard extends AppCompatActivity {
         for (Flashcard flashcard : filteredFlashcards) {
             // Get the average percentage for the selected difficulty level
             double averagePercentage = flashcard.getPercentage().get(selectedDifficulty.toLowerCase());
-            if (averagePercentage < lowestAveragePercentage) {
+
+            // Get the number of attempts for the selected difficulty level
+            int attempts = flashcard.getAttempts().get(selectedDifficulty.toLowerCase());
+
+            if (attempts >= 1 && averagePercentage < lowestAveragePercentage) {
                 lowestAveragePercentage = averagePercentage;
+                lowestPerformingFlashcard = flashcard;
+                if(attempts == 1){
+                    lowestPerformingFlashcard = null;
+                }
+
+            }
+
+            // If there's no flashcard with 1 or more attempts, return the first flashcard with 0 attempts
+            if (lowestPerformingFlashcard == null && attempts == 0) {
                 lowestPerformingFlashcard = flashcard;
             }
         }
 
         return lowestPerformingFlashcard;
     }
+
     private void setGaugeChartValues(FullGauge gaugeChart, int percentage) {
         // Set the percentage value for the gauge chart
         gaugeChart.setValue(percentage);
@@ -375,4 +381,3 @@ public class Dashboard extends AppCompatActivity {
     }
 
 }
-

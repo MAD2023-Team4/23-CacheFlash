@@ -15,4 +15,14 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="MySearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- Customize the hint text color to white -->
+        <item name="android:textColorHint">#FFFFFFFF</item>
+    </style>
+
+    <style name="WhiteBorderTextInputStyle" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <!-- Set the box stroke color to white -->
+        <item name="boxStrokeColor">@color/white</item>
+    </style>
+
 </resources>

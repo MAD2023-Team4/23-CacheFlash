@@ -11,18 +11,21 @@
         android:id="@+id/btnEasy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Easy" />
+        android:text="Easy"
+        android:background="@drawable/buttons"/>
 
     <Button
         android:id="@+id/btnMedium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Medium" />
+        android:text="Medium"
+        android:background="@drawable/buttons"/>
 
     <Button
         android:id="@+id/btnHard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hard" />
+        android:text="Hard"
+        android:background="@drawable/buttons"/>
 
 </LinearLayout>

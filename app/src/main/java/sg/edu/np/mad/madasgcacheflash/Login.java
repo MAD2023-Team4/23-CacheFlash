@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 
 public class Login extends AppCompatActivity {
 
+    //String username;
     String title = "Main activity";
     private FirebaseAuth mAuth;
 
@@ -119,7 +120,6 @@ public class Login extends AppCompatActivity {
                 } else {
                     signIn(username, password);
 
-
                 }
             }
         });
@@ -149,8 +149,20 @@ public class Login extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Login successful
-                        String standardizedUsername = username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase();
-                        Log.d("Login", "Username: " + username);
+
+                        String[] email1=email.split("@");
+                        String Frontend=email1[0];
+                        String standardizedUsername = Frontend.substring(0, 1).toUpperCase() + Frontend.substring(1).toLowerCase();
+                        if(usernameprofile!=null)
+                        {
+                            updateUserprofile(usernameprofile);
+                        } else if (mAuth.getCurrentUser().getDisplayName()==null) {
+                            updateUserprofile(standardizedUsername);
+
+                        }
+
+                        Log.d("Login", "Username: " + standardizedUsername);
+
                         Toast.makeText(Login.this, "Login successful! Welcome " + standardizedUsername, Toast.LENGTH_SHORT).show();
                         // Start the MainActivity
                         Intent intent = new Intent(Login.this, MainActivity.class);
@@ -160,7 +172,7 @@ public class Login extends AppCompatActivity {
                         // Login failed
                         if (task.getException() instanceof FirebaseAuthInvalidUserException) {
                             // Invalid username
-                            Toast.makeText(Login.this, "Invalid username", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Login.this, "Invalid email", Toast.LENGTH_SHORT).show();
                         } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
                             // Invalid password
                             Toast.makeText(Login.this, "Invalid password", Toast.LENGTH_SHORT).show();

@@ -13,8 +13,8 @@ android {
         applicationId "sg.edu.np.mad.madasgcacheflash"
         minSdk 21
         targetSdk 33
-        versionCode 1
-        versionName "1.0"
+        versionCode 12
+        versionName "12.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
