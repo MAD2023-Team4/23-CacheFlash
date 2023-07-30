@@ -45,9 +45,10 @@ public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     public ProgressDialog loginprogress;
-    String usernameprofile;
     private TextInputEditText etPassword;
     private boolean showpassword;
+
+
     /*
     private String GLOBAL_PREF = "MyPrefs";
     private String MY_USERNAME = "MyUserName";
@@ -60,15 +61,8 @@ public class Login extends AppCompatActivity {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         setContentView(R.layout.activity_login);
         TextView privacyPolicyTextView = findViewById(R.id.privacy_policy_text);
-        Intent intent=getIntent();
-        if (intent != null && intent.hasExtra("username"))
-        {
-            usernameprofile=intent.getStringExtra("username");
-        }
-        else
-        {
-            usernameprofile=null;
-        }
+        Intent intent = getIntent();
+
 
         privacyPolicyTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +82,7 @@ public class Login extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         EditText etUsername = findViewById(R.id.editTextText);
         etPassword = findViewById(R.id.editTextText2);
-        TextView Forgetpassword=findViewById(R.id.textView7);
+        TextView Forgetpassword = findViewById(R.id.textView7);
         ImageView showpasswordicon=findViewById(R.id.imageView11);
         newUser.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -109,7 +103,7 @@ public class Login extends AppCompatActivity {
 
 
         });
-        
+
         Button loginButton = findViewById(R.id.button);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,29 +124,32 @@ public class Login extends AppCompatActivity {
             }
         });
         showpasswordicon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(showpassword)
-                        {
-                            togglePassVisability();
-                            showpasswordicon.setImageResource(R.drawable.hidepassword);
-                            showpassword=false;
-                        }
-                        else {
-                            togglePassVisability();
-                            showpasswordicon.setImageResource(R.drawable.showpasswordicon);
-                            showpassword=true;
-                        }
+            @Override
+            public void onClick(View v) {
+                if(showpassword)
+                {
+                    togglePassVisability();
+                    showpasswordicon.setImageResource(R.drawable.hidepassword);
+                    showpassword=false;
+                }
+                else {
+                    togglePassVisability();
+                    showpasswordicon.setImageResource(R.drawable.showpasswordicon);
+                    showpassword=true;
+                }
 
-                    }
-                });
+            }
+        });
+
+
     }
 
-    private void signIn(String email, String password) {
-        mAuth.signInWithEmailAndPassword(email, password)
+    private void signIn(String username, String password) {
+        mAuth.signInWithEmailAndPassword(username + "@gmail.com", password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         // Login successful
+
                         String[] email1=email.split("@");
                         String Frontend=email1[0];
                         String standardizedUsername = Frontend.substring(0, 1).toUpperCase() + Frontend.substring(1).toLowerCase();
@@ -165,11 +162,11 @@ public class Login extends AppCompatActivity {
                         }
 
                         Log.d("Login", "Username: " + standardizedUsername);
+
                         Toast.makeText(Login.this, "Login successful! Welcome " + standardizedUsername, Toast.LENGTH_SHORT).show();
                         // Start the MainActivity
-                        Intent intent = new Intent(Login.this, WalkThrough.class);
+                        Intent intent = new Intent(Login.this, MainActivity.class);
                         intent.putExtra("Username", standardizedUsername);
-
                         startActivity(intent);
                     } else {
                         // Login failed
@@ -251,26 +248,7 @@ public class Login extends AppCompatActivity {
         });
 
     }
-    private void updateUserprofile(String username){
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-                .setDisplayName(username)
-                .build();
-
-        assert user != null;
-        user.updateProfile(profileUpdates)
-            .addOnCompleteListener(new OnCompleteListener<Void>() {
-               @Override
-               public void onComplete(@NonNull Task<Void> task) {
-                   if (task.isSuccessful()) {
-                       Log.d(TAG, "User profile updated.");
-                       Toast.makeText(Login.this, user.getEmail()+"profile updated", Toast.LENGTH_SHORT).show();
-                       mAuth.signOut();
-                   }
-               }
-        });
-    }
     private void togglePassVisability() {
         if (showpassword) {
             String pass = etPassword.getText().toString();
@@ -287,6 +265,7 @@ public class Login extends AppCompatActivity {
         }
 
     }
+}
 //        private void resetPasswordWithPhoneNumber(String phoneNumber) {
 //            FirebaseAuth.getInstance().signInWithPhoneNumber(phoneNumber, true)
 //                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -305,7 +284,123 @@ public class Login extends AppCompatActivity {
 //        }
 
 
+
+    /*package sg.edu.np.mad.madasgcacheflash;
+
+            import androidx.appcompat.app.AppCompatActivity;
+            import androidx.appcompat.app.AppCompatDelegate;
+
+            import android.content.Intent;
+            import android.content.SharedPreferences;
+            import android.net.Uri;
+            import android.os.Bundle;
+            import android.util.Log;
+            import android.view.MotionEvent;
+            import android.view.View;
+            import android.widget.Button;
+            import android.widget.EditText;
+            import android.widget.TextView;
+            import android.widget.Toast;
+
+            import com.google.firebase.auth.FirebaseAuth;
+            import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+            import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+            import com.google.gson.Gson;
+
+public class Login extends AppCompatActivity {
+
+    String title = "Main activity";
+    private FirebaseAuth mAuth;
+    *//*
+    private String GLOBAL_PREF = "MyPrefs";
+    private String MY_USERNAME = "MyUserName";
+    private String MY_PASSWORD = "MyPassword";
+    SharedPreferences sharedPreferences;
+     *//*
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        setContentView(R.layout.activity_login);
+
+        TextView privacyPolicyTextView = findViewById(R.id.privacy_policy_text);
+        privacyPolicyTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("https://westwq.github.io/MADPrivacy/"));
+                startActivity(intent);
+            }
+        });
     }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        Log.i(title, "Starting App Login Page");
+        TextView newUser = findViewById(R.id.textView4);
+        mAuth = FirebaseAuth.getInstance();
+        EditText etUsername = findViewById(R.id.editTextText);
+        EditText etPassword = findViewById(R.id.editTextText2);
+        newUser.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                Intent intent = new Intent(Login.this, Signup.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                return false;
+            }
+        });
+
+        Button loginButton = findViewById(R.id.button);
+        loginButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                String username = etUsername.getText().toString();
+                String password = etPassword.getText().toString();
+                if(username.isEmpty() && password.isEmpty()){
+                    Toast.makeText(Login.this, "Please enter username and password,do not leave it blank", Toast.LENGTH_SHORT).show();
+                }
+                else if (password.isEmpty()) {
+                    Toast.makeText(Login.this, "Please enter password,do not leave it blank", Toast.LENGTH_SHORT).show();
+                }
+                else if(username.isEmpty()){
+                    Toast.makeText(Login.this, "Please enter username,do not leave it blank", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    signIn(username,password);
+                }
+            }
+        });
+    }
+    private void signIn(String username, String password) {
+        mAuth.signInWithEmailAndPassword(username + "@gmail.com", password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        // Login successful
+                        String standardizedUsername = username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase();
+                        Log.d("Login", "Username: " + username);
+                        Toast.makeText(Login.this, "Login successful! Welcome " + standardizedUsername, Toast.LENGTH_SHORT).show();
+                        // Start the MainActivity
+                        Intent intent = new Intent(Login.this, MainActivity.class);
+                        intent.putExtra("Username",standardizedUsername);
+                        startActivity(intent);
+                    } else {
+                        // Login failed
+                        if (task.getException() instanceof FirebaseAuthInvalidUserException) {
+                            // Invalid username
+                            Toast.makeText(Login.this, "Invalid username", Toast.LENGTH_SHORT).show();
+                        } else if (task.getException() instanceof FirebaseAuthInvalidCredentialsException) {
+                            // Invalid password
+                            Toast.makeText(Login.this, "Invalid password", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Other login error
+                            Toast.makeText(Login.this, "Login failed. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
+}*/
 
 /*
 import androidx.annotation.NonNull;

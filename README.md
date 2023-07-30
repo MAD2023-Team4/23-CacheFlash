@@ -29,14 +29,27 @@ Previously, we were experimenting GitHub, and we made mistakes on our previous r
 
 
 ### Stage 2 - Proposed New Features:
- - Speedrun feature for users who want a challenge, and let them edit the time they have to answer (Hui Ting)
- - Dashboard feature to track user data by calculating the timing to review the flashcards (Forgetting Curve) [Samuel]
+ -Difficulty level for test yourself(easy-unlimited time,medium-30s per question,hard-15s per question) (Bryan,Hui Ting)
+ - Dashboard feature that displays the best and worse performance flashcards by showing the percentage of the flashcard based on each difficulty level(Bryan,Samuel)
+ - Quote of the day feature that displays a quote every day, user can also click on the quote to change the quote if they do not like the current quote (Bryan)
+ - Profile(Bryan)
+ - Creating and initialising of firebase(Bryan)
+  1.Change Password feature
+  2.Study Preference
+   -Favourite Category allows user to choose their favourie category and main activity will display flashcards for that category
+   -Study Time allows user to choose the time they want to study and a notification will show up at that time to remind them to study
+  3.Notification
+   -User can choose to on or off notification,no pop up messages
+  4.Study Streak
+   - Tracks the amount of times user uses this app(streak, total number of days).There will be a medal for each 10 day streak up till 30 days
  - Information Depository for users to key in notes outside of the flashcards (Hui Ting)
- - Image Relaxation (Bryan)
- -  Multiple choice style - there will be multiple choice questions, and the user selects the correct answer. (John)
- -  Creating flashcards - the user creates custom flashcards for own revision (Bryan)
- -  Improvement of app UI (Victoria)
- 
+ - Multiple choice style - there will be multiple choice questions, and the user selects the correct answer. (John)
+ - Creating flashcards - the user creates custom flashcards for own revision (Bryan)
+ - Improvement of app UI (Huiting,Samuel)
+ - Design(Samuel,John)
+ - Leaderboard(Samuel)
+ - Search feature(Samuel)
+ - Forget Password feature where user reset their password with verfication through email(John)
  #### Explanation of Calculation of Optimal Timing (Samuel)
  [The forgetting curve](https://en.wikipedia.org/wiki/Forgetting_curve) can help remind the users when would they almost forget that information (the exact date and timing). This is done by sending them a notification when the retainability has reached a certain level as time passes. For example, a user has finished a deck of flashcards, and the app estimates that he/she will forget about 70% of information in 6 days. This means that R is reduced, until about R = 1 - 0.7 = 0.3. Hence, it will send a notification 6 days later to the user.
 
