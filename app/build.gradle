@@ -96,4 +96,5 @@ dependencies {
 
     //cardview elevation for custom flashcard item
     implementation 'androidx.cardview:cardview:1.0.0'  // Replace with the latest version if needed
+    implementation 'com.airbnb.android:lottie:3.7.0'
 }

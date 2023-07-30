@@ -1,22 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fcfeff"
-    tools:context=".Signup">
+    android:background="@color/backgroundcolor"
+    tools:context=".Login">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/backgroundcolor"
+        tools:context=".Login">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textTextInput"
-        android:layout_width="290dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginStart="65dp"
         android:layout_marginTop="295dp"
         android:layout_marginEnd="65dp"
         android:hint="@string/usernameText"
-        android:textColorHint="@color/black"
-        app:hintTextColor="@color/black"
+        android:textColorHint="@color/white"
+        app:hintTextColor="@color/white"
         app:boxStrokeColor="@color/darkBlue"
         app:boxStrokeWidth="2dp"
         app:helperTextTextColor="@color/darkBlue">
@@ -26,6 +33,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
+            android:drawableLeft="@drawable/ic_profile"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:singleLine="true">
 
@@ -35,14 +44,14 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textTextInput2"
-        android:layout_width="290dp"
+        android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginStart="65dp"
         android:layout_marginTop="360dp"
         android:layout_marginEnd="65dp"
         android:hint="@string/passwordText"
-        android:textColorHint="@color/black"
-        app:hintTextColor="@color/darkBlue"
+        android:textColorHint="@color/white"
+        app:hintTextColor="@color/white"
         app:boxStrokeColor="@color/darkBlue"
         app:boxStrokeWidth="2dp"
         app:helperTextTextColor="@color/darkBlue">
@@ -52,44 +61,79 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
+            android:drawableLeft="@drawable/baseline_lock_24"
+            android:inputType="textPassword"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:singleLine="true">
+
+        </com.google.android.material.textfield.TextInputEditText>
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editTextPhoneLayout"
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:layout_below="@+id/textTextInput2"
+        android:layout_alignParentStart="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="65dp"
+        android:layout_marginEnd="65dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="178dp"
+        android:hint="@string/Email"
+        android:textColorHint="@color/white"
+        app:hintTextColor="@color/white"
+        app:boxStrokeColor="@color/darkBlue"
+        app:boxStrokeWidth="2dp"
+        app:helperTextTextColor="@color/darkBlue">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextText5"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="300dp"
+            android:drawableLeft="@drawable/baseline_email_24"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/white"
+            android:singleLine="true"
+            android:textSize="16sp">
 
         </com.google.android.material.textfield.TextInputEditText>
 
     </com.google.android.material.textfield.TextInputLayout>
 
 
-
-
-
-
     <Button
         android:id="@+id/button3"
-        android:layout_width="match_parent"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
 
-        android:layout_below="@+id/textTextInput2"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:layout_marginStart="240dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="65dp"
 
+        android:layout_marginEnd="62dp"
+        android:layout_marginBottom="110dp"
         android:backgroundTint="#1400A9"
         android:text="@string/confirmCreationText"
         android:textSize="18sp" />
 
     <Button
         android:id="@+id/button2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="110dp"
+        android:layout_height="48dp"
 
-        android:layout_below="@+id/textTextInput2"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="65dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="240dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="62dp"
 
+        android:layout_marginEnd="240dp"
+        android:layout_marginBottom="116dp"
         android:backgroundTint="#1400A9"
         android:text="@string/cancelCreationText"
         android:textSize="18sp" />
@@ -108,23 +152,23 @@
         android:layout_below="@+id/imageView2"
         android:layout_marginStart="53dp"
         android:layout_marginTop="6dp"
+        android:layout_centerHorizontal="true"
         android:fontFamily="sans-serif-black"
         android:text="@string/createAcctTitle"
         android:textAlignment="center"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="34sp" />
 
-    <TextView
-        android:id="@+id/textView24"
-        android:layout_width="358dp"
-        android:layout_height="113dp"
-        android:layout_marginBottom="48dp"
-        android:text="@string/Disclaimer"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
-        app:layout_constraintStart_toStartOf="parent" />
-
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="38dp"
+        android:layout_height="43dp"
+        android:layout_alignBottom="@+id/textTextInput2"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="6dp"
+        app:srcCompat="@drawable/showpasswordicon" />
 
 
 </RelativeLayout>
+</ScrollView>

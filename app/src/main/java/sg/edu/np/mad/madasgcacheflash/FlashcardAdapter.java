@@ -43,7 +43,14 @@ public class FlashcardAdapter extends RecyclerView.Adapter<FlashcardViewHolder> 
         // Bind the data to the views in the flashcard_item.xml layout
         holder.titleTextView.setText(flashcard.getTitle());
         holder.descTextView.setText(flashcard.getQuestions().size() + " questions");
-        // Bind other views as needed
+        // Check if the imageResourceId is valid (not null or 0)
+        if (flashcard.getImageResourceId() != 0) {
+            // Load the image into the ImageView using the resource ID
+            holder.imageView.setImageResource(flashcard.getImageResourceId());
+        } else {
+            // If imageResourceId is null or 0, set a default picture here
+            holder.imageView.setImageResource(R.drawable.defaultlearningimage); // Replace "default_image" with the resource ID of your default image
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

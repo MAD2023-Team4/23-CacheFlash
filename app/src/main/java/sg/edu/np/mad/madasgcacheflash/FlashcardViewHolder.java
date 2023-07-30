@@ -12,6 +12,7 @@ public class FlashcardViewHolder extends RecyclerView.ViewHolder {
     // Declare the views in flashcard_item.xml
     public TextView titleTextView;
     public TextView descTextView;
+    public ImageView imageView;
 
     public FlashcardViewHolder(View itemView) {
         super(itemView);
@@ -19,6 +20,7 @@ public class FlashcardViewHolder extends RecyclerView.ViewHolder {
         // Initialize the views in flashcard_item.xml
         titleTextView = itemView.findViewById(R.id.titleTextView);
         descTextView = itemView.findViewById(R.id.textViewDesc);
+        imageView = itemView.findViewById(R.id.imageView);
         // Initialize other views as needed
     }
 }
