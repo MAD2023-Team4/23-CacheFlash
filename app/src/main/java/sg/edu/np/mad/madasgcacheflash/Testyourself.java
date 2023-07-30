@@ -61,7 +61,7 @@ public class Testyourself extends AppCompatActivity {
     private TextView timerTextView;
     private int timerDuration;
     private int difficultyLevel;
-    private ImageView imageView4;
+
 
 
     String username;
@@ -141,8 +141,8 @@ public class Testyourself extends AppCompatActivity {
             TextView qcard = findViewById(R.id.QCard);
             timerTextView = findViewById(R.id.timerTextView);
             EditText input = findViewById(R.id.Userinput);
-            imageView4=findViewById(R.id.imageView10);
-            imageView4.setVisibility(View.GONE);
+
+
             Button back = findViewById(R.id.button3);
             Button prev = findViewById(R.id.button);
             Button next = findViewById(R.id.button2);
@@ -168,7 +168,7 @@ public class Testyourself extends AppCompatActivity {
 
                         Toast.makeText(getApplicationContext(), answer + " is correct.", Toast.LENGTH_SHORT).show();
                         score++;
-                        imageView4.setVisibility(View.VISIBLE);
+
                         Log.v("Score", String.valueOf(score));
                     } else {
                         Toast.makeText(getApplicationContext(), "Incorrect. The correct answer is: " + correctAnswer, Toast.LENGTH_SHORT).show();
@@ -212,7 +212,7 @@ public class Testyourself extends AppCompatActivity {
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    imageView4.setVisibility(View.GONE);
+
                     currentIndex++;
                     if(currentIndex == flashcard.getQuestions().size()){
                         //make a toast message of the score

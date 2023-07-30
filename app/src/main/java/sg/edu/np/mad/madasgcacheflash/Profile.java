@@ -119,7 +119,7 @@ public class Profile extends AppCompatActivity {
         textViewPasswordReset = findViewById(R.id.password_reset);
         textViewPreference = findViewById(R.id.study_preference);
         textViewStreak = findViewById(R.id.study_streak);
-        textViewchangeusername=findViewById(R.id.changeusername);
+
 
         // Add the code snippet here
         FirebaseMessaging.getInstance().getToken()
@@ -296,13 +296,7 @@ public class Profile extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        textViewchangeusername.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showchangeUsernameDialog();
 
-            }
-        });
 
 
         Log.d("ProfileActivity", "Received username: " + username);
@@ -607,33 +601,5 @@ public class Profile extends AppCompatActivity {
                     }
                 });
     }
-    private void showchangeUsernameDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("ChangeUsername");
-        LinearLayout linearLayout = new LinearLayout(this);
-        final EditText emailet = new EditText(this);
 
-        // write the email using which you registered
-        emailet.setHint("new username");
-        linearLayout.addView(emailet);
-        linearLayout.setPadding(10, 10, 10, 10);
-        builder.setView(linearLayout);
-
-        // Click on Recover and a email will be sent to your registered email id
-        builder.setPositiveButton("Change username", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String email = emailet.getText().toString();
-                updateUserprofile(email);
-            }
-        });
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.create().show();
-    }
 }
