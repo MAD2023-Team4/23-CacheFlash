@@ -8,7 +8,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="71dp"
+        android:layout_height="67dp"
         tools:context=".MainActivity">
         <!--
         <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -60,7 +60,7 @@
             android:layout_width="52dp"
             android:layout_height="51dp"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -41,9 +41,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="68dp"
         android:layout_marginTop="60dp"
-        android:background="@drawable/buttons"
-        app:backgroundTint="@color/button"
+        android:background="@drawable/shape_shadow_button"
         android:text="@string/previous"
+        app:backgroundTint="@color/lightRed"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button4" />
 
@@ -53,25 +53,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
         android:layout_marginEnd="76dp"
-        android:background="@drawable/buttons"
-        app:backgroundTint="@color/button"
+        android:background="@drawable/shape_shadow_button"
         android:text="@string/next"
+        app:backgroundTint="@color/green_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button4" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textTextInput2"
-        android:layout_width="342dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="65dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
         android:layout_marginTop="292dp"
-        android:layout_marginEnd="65dp"
+        android:layout_marginEnd="50dp"
         android:hint="@string/ansPrompt"
+        android:textColor="@color/white"
         android:textColorHint="@color/white"
-        app:boxStrokeColor="@color/darkBlue"
+        app:boxStrokeColor="@color/white"
         app:boxStrokeWidth="2dp"
-        app:helperTextTextColor="@color/darkBlue"
-        app:hintTextColor="@color/darkBlue"
+        app:helperTextTextColor="@color/white"
+        app:hintTextColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -79,23 +80,21 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/Userinput"
+            style="@style/WhiteBorderTextInputStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="300dp"
             android:ems="10"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            style="@style/WhiteBorderTextInputStyle">
+            android:textSize="16sp">
 
         </com.google.android.material.textfield.TextInputEditText>
 
         <ViewFlipper
             android:id="@+id/view_flipper"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </ViewFlipper>
+            android:layout_height="match_parent"></ViewFlipper>
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -108,8 +107,8 @@
         android:layout_marginTop="20dp"
         android:layout_marginRight="50dp"
         android:background="@drawable/buttons"
-        app:backgroundTint="@color/button"
         android:text="@string/submit"
+        app:backgroundTint="@color/green_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
@@ -150,5 +149,4 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/skunk" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

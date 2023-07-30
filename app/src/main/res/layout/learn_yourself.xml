@@ -46,8 +46,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:background="@drawable/buttons"
-        app:backgroundTint="@color/button"
         android:text="@string/b2h"
+        app:backgroundTint="@color/button"
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -83,7 +83,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/buttons"
-        app:backgroundTint="@color/button"
+        app:backgroundTint="@color/lightRed"
         android:text="@string/btn1"
         app:layout_constraintBottom_toTopOf="@id/guideline3"
         app:layout_constraintEnd_toStartOf="@id/guideline3"
@@ -98,8 +98,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="4dp"
         android:background="@drawable/buttons"
-        app:backgroundTint="@color/button"
+        app:backgroundTint="@color/green_dark"
         android:text="@string/btn2"
+
         app:layout_constraintBottom_toTopOf="@id/guideline3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline3"
@@ -117,7 +118,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.7" />
+        app:layout_constraintGuide_begin="512dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"

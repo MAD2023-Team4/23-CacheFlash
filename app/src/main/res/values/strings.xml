@@ -19,9 +19,9 @@
     <string name="testTitle">Test Yourself!</string>
     <string name="usernamePrompt">Enter username here</string>
     <string name="passwordPrompt">Enter password here</string>
-    <string name="welcome_message">Welcome, %1$s!</string>
-    <string name="btn1">previous</string>
-    <string name="btn2">next</string>
+    <string name="welcome_message">Welcome, %1$s</string>
+    <string name="btn1">Previous</string>
+    <string name="btn2">Next</string>
     <string name="b2h">Back to Home</string>
 
     <string name="dashboard">Dashboard (coming soon!)</string>
@@ -58,14 +58,14 @@
     <string name="Phone">Phone</string>
 
     <string name="title1">Welcome to CacheFlash!</string>
-    <string name="title2">Discover topics to learn and test yourself</string>
+    <string name="title2">Discover topics</string>
     <string name="title3">Time yourself, and set reminders</string>
     <string name="title4">View your learning statistics</string>
-    <string name="subtitle1">Your flashcards app for studying anytime, anywhere</string>
+    <string name="subtitle1">Your flashcards app for studying anytime, anywhere.</string>
     <string name="subtitle2">Click on the text of the flashcard to flip the flashcard, and see the answer.
-        \nDone? Feel free to test yourself, with Multiple Choice Questions (MCQ), or open-ended for a challenge.</string>
+        \nDone? Test yourself with Multiple Choice Questions (MCQ), or open-ended for a challenge.</string>
     <string name="subtitle3">When testing yourself, you can set difficulty levels,
-        which the more difficult, allows a stricter time limit. Similarly, you can set a study reminder</string>
+        which the more difficult, allows a stricter time limit. Similarly, you can set a study reminder. </string>
     <string name="subtitle4">After doing a quiz, you can see how well you performed.\nEnjoy!</string>
 
     <string name="goodJob">Good job!</string>
