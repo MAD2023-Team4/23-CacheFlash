@@ -192,6 +192,7 @@ public class MCQuiz extends AppCompatActivity {
                         //updatePercentage(username, percentage);
                         Log.v("Quiz Finished", String.valueOf(percentage));
 
+
                         showAlert("Quiz Finished", "Points earned: " + points,
                                 percentage, flashcard.getQuestions().size());
                         updatePercentage(username, percentage, flashcard);
@@ -326,9 +327,9 @@ public class MCQuiz extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setMessage(text)
-                .setPositiveButton("Dashboard", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Close", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Do something when the "OK" button is clicked
+                        // Do something when the "Cancel" button is clicked
                         Intent intent = new Intent(MCQuiz.this, MainActivity.class);
                         intent.putExtra("flashcards", flashcard);
                         intent.putExtra("Username",username);
@@ -337,11 +338,7 @@ public class MCQuiz extends AppCompatActivity {
                         startActivity(intent);
                     }
                 })
-                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // Do something when the "Cancel" button is clicked
-                    }
-                })
+                .setCancelable(false)
                 .show();
     }
 

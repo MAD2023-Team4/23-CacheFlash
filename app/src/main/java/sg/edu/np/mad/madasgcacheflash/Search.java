@@ -158,7 +158,7 @@ public class Search extends AppCompatActivity {
     public void showAlert(String title, Flashcard f) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
-                .setMessage("Learn Yourself (5 points)\nTest Yourself (10 points)")
+                .setMessage("Learn Yourself (no points)\nTest Yourself (Earn points)")
                 .setPositiveButton("Test", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Do something when the "OK" button is clicked

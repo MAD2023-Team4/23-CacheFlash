@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,71 +8,162 @@
     android:background="@color/backgroundcolor"
     tools:context=".Dashboard">
 
-    <RelativeLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-    <!-- Spinner -->
-    <Spinner
-        android:id="@+id/difficultySpinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="16dp"
-        android:entries="@array/difficulty_levels" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottom_navigator"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="0dp">
+            <!-- Spinner -->
 
-    <!-- TextView for Best Performing Flashcard -->
-    <TextView
-        android:id="@+id/bestPerformingTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/difficultySpinner"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Wow, you're doing well in {Category}! Keep it up."
-        android:textSize="16sp"
-        android:textStyle="bold" />
+            <!-- TextView for Best Performing Flashcard -->
 
-    <!-- Gauge Chart for Best Performing Flashcard -->
-    <com.ekn.gruzer.gaugelibrary.FullGauge
-        android:id="@+id/bestperformingGaugeChart"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_below="@id/bestPerformingTextView"
-        android:layout_marginTop="16dp"/>
+            <!-- Gauge Chart for Best Performing Flashcard -->
+
+            <Spinner
+                android:id="@+id/difficultySpinner"
+                android:layout_width="94dp"
+                android:layout_height="31dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="34dp"
+                android:background="@drawable/search_view_bg"
+                android:entries="@array/difficulty_levels"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/bestPerformingTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/difficultySpinner"
+                android:layout_marginTop="10dp"
+                android:text="Wow, you're doing well in {Category}! Keep it up."
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/difficultySpinner" />
 
 
+            <!-- TextView for Lowest Performing Flashcard -->
 
-    <!-- TextView for Lowest Performing Flashcard -->
-    <TextView
-        android:id="@+id/lowestPerformingTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/bestperformingGaugeChart"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:text="Looks like you need to work on {Category}."
-        android:textSize="16sp"
-        android:textStyle="bold" />
+            <!-- Gauge Chart for Lowest Performing Flashcard -->
 
-    <!-- Gauge Chart for Lowest Performing Flashcard -->
-    <com.ekn.gruzer.gaugelibrary.FullGauge
-        android:id="@+id/lowestPerformingGaugeChart"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_below="@id/lowestPerformingTextView"
-        android:layout_marginTop="16dp" />
+            <!-- RecyclerView -->
 
-    <!-- RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewDashboard"
-        android:layout_width="match_parent"
-        android:layout_height="582dp"
-        android:layout_below="@id/lowestPerformingGaugeChart" />
+            <com.ekn.gruzer.gaugelibrary.FullGauge
+                android:id="@+id/bestperformingGaugeChart"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_below="@id/bestPerformingTextView"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bestPerformingTextView" />
+
+            <TextView
+                android:id="@+id/bestPerformingAttemptsTextView"
+                android:layout_width="157dp"
+                android:layout_height="34dp"
+                android:layout_below="@id/bestPerformingTextView"
+                android:layout_toEndOf="@id/bestperformingGaugeChart"
+                android:text="Attempts: 5"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/bestperformingGaugeChart"
+                app:layout_constraintTop_toBottomOf="@+id/bestPerformingPercentageTextView" />
+
+            <TextView
+                android:id="@+id/bestPerformingPercentageTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/bestPerformingAttemptsTextView"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="15dp"
+                android:layout_toEndOf="@id/bestperformingGaugeChart"
+                android:text="Average Percentage: 80.2%"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/bestperformingGaugeChart"
+                app:layout_constraintTop_toBottomOf="@+id/bestPerformingTextView" />
+
+            <TextView
+                android:id="@+id/lowestPerformingTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/bestperformingGaugeChart"
+                android:layout_marginTop="150dp"
+                android:text="Looks like you need to work on {Category}."
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bestPerformingAttemptsTextView" />
+
+            <com.ekn.gruzer.gaugelibrary.FullGauge
+                android:id="@+id/lowestPerformingGaugeChart"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_below="@id/lowestPerformingTextView"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lowestPerformingTextView" />
+
+            <TextView
+                android:id="@+id/lowestPerformingAttemptsTextView"
+                android:layout_width="180dp"
+                android:layout_height="29dp"
+                android:layout_below="@id/lowestPerformingTextView"
+                android:layout_toEndOf="@id/lowestPerformingGaugeChart"
+                android:text="Attempts: 2"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintStart_toEndOf="@+id/lowestPerformingGaugeChart"
+                app:layout_constraintTop_toBottomOf="@+id/lowestPerformingPercentageTextView" />
+
+            <TextView
+                android:id="@+id/lowestPerformingPercentageTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lowestPerformingAttemptsTextView"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/lowestPerformingGaugeChart"
+                android:text="Average Percentage: 70.5%"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/lowestPerformingGaugeChart"
+                app:layout_constraintTop_toBottomOf="@+id/lowestPerformingTextView" />
+
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp"
+                android:text="Filter Difficulty Levels"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
     <!-- Bottom Navigation View (if needed) -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -80,11 +171,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:itemBackground="@color/darkBlue"
+        app:itemBackground="@color/blue_dark"
         app:itemIconTint="@drawable/serlector"
         app:itemTextColor="@drawable/serlector"
         app:menu="@menu/menu" />
 
-    </RelativeLayout>
 
-</ScrollView>
+</RelativeLayout>
