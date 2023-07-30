@@ -11,6 +11,8 @@ Wanting to study a particular topic, but struggle to do so? Don't worry, we can 
 - Test Yourself - user gets to access his/her own knowledge of the topic of choice, by recalling answer by typing answer out, the system will check if the answer typed out matches the correct answer. (John)
 - Profile page (Hui Ting)
 - App UI and logo (Victoria)
+
+- ### Stage 1 - Other than code:
 - Uploading to play store (Samuel & Hui Ting)
 - Slides (Group)
 - Google feedback form for account deletion (John)
@@ -29,18 +31,42 @@ Previously, we were experimenting GitHub, and we made mistakes on our previous r
 
 
 ### Stage 2 - Proposed New Features:
- - Speedrun feature for users who want a challenge, and let them edit the time they have to answer (Hui Ting)
- - Dashboard feature to track user data by calculating the timing to review the flashcards (Forgetting Curve) [Samuel]
- - Information Depository for users to key in notes outside of the flashcards (Hui Ting)
- - Image Relaxation (Bryan)
- -  Multiple choice style - there will be multiple choice questions, and the user selects the correct answer. (John)
- -  Creating flashcards - the user creates custom flashcards for own revision (Bryan)
- -  Improvement of app UI (Victoria)
- 
- #### Explanation of Calculation of Optimal Timing (Samuel)
- [The forgetting curve](https://en.wikipedia.org/wiki/Forgetting_curve) can help remind the users when would they almost forget that information (the exact date and timing). This is done by sending them a notification when the retainability has reached a certain level as time passes. For example, a user has finished a deck of flashcards, and the app estimates that he/she will forget about 70% of information in 6 days. This means that R is reduced, until about R = 1 - 0.7 = 0.3. Hence, it will send a notification 6 days later to the user.
+ - Difficulty levels in test yourself - Set difficulty levels to easy/medium/hard, and different time limits are set accoringly (Bryan)
+ - Creating flashcards - the user creates custom flashcards for own revision (Bryan)
+ - Password management - user can change password (Bryan)
+ - Study preference - set favourite flashcard category or subject (Bryan)
+ - Notifications - A study reminder is set like an alarm. Alert notification to the user when time is met. User must quit the app for this to work. (Bryan)
+ - Study streak - Earn badges for logging in every 10/20/30 days for beginner/achiever/expert badges (Bryan)
+ - Dashboard - to track user data by calculating the Average Percentage of each difficulty level (Bryan & Samuel - Bryan did the most for this one)
+ - Information Depository for users to key in notes outside of the flashcards (Hui Ting, back up)
+ - Search - User can search and filter their choices of flashcards (Samuel)
+ - Leaderboard - Made enhancements that points can be accumulated if user finishes both MCQ or open-ended quiz, and points of each player are displayed in descending order (Samuel)
+ - Walkthrough - If it is the first time the user is using the account, there is a walkthrough to guide the user. Can demonstrate if the param for, if (saveState.getState() == 1), is set to > 1 instead, i.e. 3. (Samuel)
+ - Calendar - Plan your study events (Samuel, back up)
+ - Multiple choice questions - there will be multiple choice questions, and the user selects the correct answer. (John)
+ - Change username - after logging in, the username is the email before the @. So, an option to change username is given. (John)
 
- #### How does the App Estimate How Well the User Remembers Information? (Samuel)
- The Forgetting Curve formula has to estimate R, as t, passes. Also, in the equation, another factor that determines R is S. However, S is assumed to be the same for everyone. To customise everyone's S, we increase S for every question the user gets right in the "Test Yourself" feature, and vice versa. Substitute it into the Forgetting Curve formula, and you will get a curve. The app will then use that curve to estimate the duration, as mentioned above. (Refer to Explanation of New Feature if not sure)
+### Stage 2 - Enhancements:
+ - Home page is added with pngs and designs (John)
+ - Overall background color and font color (John)
+ - Layout measurements and proportions (Hui Ting)
+ - Learn flashcards overall layout and design (Samuel)
+ - Test flashcards overall layout and design (Samuel)
+ - Shuffling animation (Bryan)
+ - Tried animations to encourage user for correct qns (Samuel)
 
+### Stage 2 - Other than code:
+- Uploading to play store (Samuel & Hui Ting - Hui Ting did the most for this one)
+- Slides (Group)
+- Git problem, merging of codes (Samuel)
+- Administrator of repo (Samuel)
+- Design (Hui Ting, John, Samuel - John did the most for this one)
+
+Source from:
 [Referenced by Peaceknight05](https://github.com/peaceknight05/Pentagone)
+- MCQ feature: https://www.youtube.com/watch?v=pKMqJAc6wYw
+- Search bar: https://www.youtube.com/watch?v=tQ7V7iBg5zE
+- Calendar: https://www.youtube.com/watch?v=IIAXwiEFIVU&list=LL&index=9 (back-up)
+- Animation enhancements: https://www.youtube.com/watch?v=VcrzLcokvvc&list=LL&index=10 (back-up)
+- Button inspirations: https://www.youtube.com/watch?v=zKTDJBDoI2k&list=LL&index=6
+- Walkthrough: https://www.youtube.com/watch?v=gTzcHWfbEXw
