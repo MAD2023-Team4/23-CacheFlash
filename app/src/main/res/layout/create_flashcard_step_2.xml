@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:text="Back"
-            android:background="@drawable/buttons"/>
+            android:background="@drawable/buttons" />
 
         <Button
             android:id="@+id/btnNext"
@@ -113,7 +113,7 @@
             android:layout_gravity="end"
             android:layout_marginTop="16dp"
             android:text="Next"
-            android:background="@drawable/buttons"/>
+            android:background="@drawable/buttons" />
 
     </LinearLayout>
 

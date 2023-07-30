@@ -19,17 +19,6 @@
             android:layout_margin="16dp"
             app:srcCompat="@android:drawable/ic_input_add" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="0dp"
-            android:background="@color/button"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme">
-
-        </androidx.appcompat.widget.Toolbar>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -69,6 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView11"
         android:layout_marginLeft="16dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="16dp"
         android:text="@string/learnTitle"
         android:textColor="@color/white"
@@ -92,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/welcomeText"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="45dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="16dp"
         android:ellipsize="end"
         android:maxLines="4"

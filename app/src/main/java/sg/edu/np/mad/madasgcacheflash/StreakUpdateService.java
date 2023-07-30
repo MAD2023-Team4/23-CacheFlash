@@ -33,7 +33,17 @@ public class StreakUpdateService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // Retrieve the username from the intent
         String username = intent.getStringExtra("Username");
-        Log.d("StreakUpdateService", username);
+        Log.d("StreakUpdateService", "Username"+username);
+
+        //----------------------------------------------------------------------------------------------
+        //Perform checker, if the username has the unsanitised version of the username, remove the @gmail.com.
+        //----------------------------------------------------------------------------------------------
+
+        if (username.contains("@")){
+            String[] username1 = username.split("@");
+            username = username1[0];
+            username = username.substring(0, 1).toUpperCase() + username.substring(1).toLowerCase();
+        }
 
         // Get a reference to the streak status and total days in Firebase
         streakStatus = FirebaseDatabase.getInstance().getReference().child("users").child(username).child("Streak Status");

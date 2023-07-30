@@ -6,8 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import androidx.core.content.ContextCompat;
-
-import androidx.constraintlayout.motion.widget.MotionLayout;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.animation.Animator;
@@ -40,6 +38,7 @@ import java.util.Random;
 public class MCQuiz extends AppCompatActivity {
     final String TITLE = "TestyourselfMCQ";
     int currentIndex = 0;
+    boolean hasFinished = false;
     int score=0;
     String username;
     Flashcard flashcard;
@@ -47,9 +46,9 @@ public class MCQuiz extends AppCompatActivity {
     List<String> answers = new ArrayList<>();
     List<String> answerscheck = new ArrayList<>();
     List<String> optionsList = new ArrayList<>();
-    private MotionLayout motionLayout;
+    //private MotionLayout motionLayout;
 
-    boolean isAnswered = false;
+    //boolean isAnswered = false;
     private int animationDuration = 100;
     private int pauseDuration = 500; // Adjust the pause duration here
     private int roundCount = 0;
@@ -119,42 +118,12 @@ public class MCQuiz extends AppCompatActivity {
             Button next = findViewById(R.id.button9);
             Title.setText(flashcard.getTitle());
             changequestion(QuestionView,next,option1,option2,option3,option4,answers,questions,answerscheck,optionsList);
-//            QuestionView.setText(questions.get(currentIndex));
-//            next.setEnabled(false);
-//            Random random = new Random();
-//
-//            String coption = answers.get(currentIndex);
-//            answers.remove(currentIndex);
-//            optionsList.add(coption);
-//
-//
-//            for (int i = 0; i < 3; i++) {
-//                int options = random.nextInt(answers.size());
-//                String option = answers.get(options);
-//                answers.remove(option);
-//                optionsList.add(option);
-//
-//            }
-//
-//            Log.v(TITLE, "Size: " + answers.size());
-//            Collections.shuffle(optionsList);
-//            for (int i = 0; i < optionsList.size(); i++) {
-//                String buttonText = optionsList.get(i);
-//                if (i == 0) {
-//                    option1.setText(buttonText);
-//                } else if (i == 1) {
-//                    option2.setText(buttonText);
-//                } else if (i == 2) {
-//                    option3.setText(buttonText);
-//                } else if (i == 3) {
-//                    option4.setText(buttonText);
-//                }
-//            }
+
             option1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     getanswer(option1, option2, option3, option4, answerscheck, currentIndex, next);
+
                 }
 
             });
@@ -179,12 +148,17 @@ public class MCQuiz extends AppCompatActivity {
 
                 }
             });
+
+            //--------------------------------------------------------------------------------------
+            //When next button is pressed, and the user has finished answering all questions:
+            //--------------------------------------------------------------------------------------
             next.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     currentIndex++;
-                    if(currentIndex == flashcard.getQuestions().size()){
+                    if(currentIndex == flashcard.getQuestions().size() && !hasFinished){
                         //make a toast message of the score
+                        hasFinished = true;
 
                         double percentage = (double) score / flashcard.getQuestions().size() * 100.0;
                         int points = (int) percentage/20;
@@ -192,15 +166,24 @@ public class MCQuiz extends AppCompatActivity {
                         //updatePercentage(username, percentage);
                         Log.v("Quiz Finished", String.valueOf(percentage));
 
-
-                        showAlert("Quiz Finished", "Points earned: " + points,
+                        showAlert("You Finished on Time!", "Points earned: " + points,
                                 percentage, flashcard.getQuestions().size());
+                        //--------------------------------------------------------------------
+                        //Disable the quiz, and the next button since it has ended
+                        //--------------------------------------------------------------------
+                        option1.setEnabled(false);
+                        option2.setEnabled(false);
+                        option3.setEnabled(false);
+                        option4.setEnabled(false);
+                        next.setEnabled(false);
+                        Log.v("options disabled","options disable");
+
                         updatePercentage(username, percentage, flashcard);
                         updatePoints(username, points);
 
 
                         //Update the flashcard's score locally
-                       // flashcard.setPercentage(percentage);
+                        // flashcard.setPercentage(percentage);
                         // Posting performance of the user into firebase
 
                     }
@@ -219,6 +202,10 @@ public class MCQuiz extends AppCompatActivity {
             });
         }
     }
+
+    //--------------------------------------------------------------------------------------
+    //Methods
+    //--------------------------------------------------------------------------------------
     public void changequestion(TextView Qcard,Button next,Button option1,Button option2,Button option3,Button option4,List<String>AList,List<String>QList,List<String>SList,List<String>OList)
     {
         int blueColor = ContextCompat.getColor(this, R.color.stepIndicatorUnselectedColor);
@@ -240,7 +227,6 @@ public class MCQuiz extends AppCompatActivity {
         AList.remove(coption);
 
 
-
         for (int i = 0; i < 3; i++) {
             //Do a checker if AList is empty, it will have a negative bound error
             if (AList.size() > 0) {
@@ -249,7 +235,7 @@ public class MCQuiz extends AppCompatActivity {
                 OList.add(option);
                 AList.remove(option);
             }
-            else{
+            else {
 
             }
 
@@ -270,6 +256,8 @@ public class MCQuiz extends AppCompatActivity {
                 option4.setText(buttonText);
             }
         }
+
+        //Can consider to put it in OnDestroy
         AList.clear();
         AList.addAll(SList);
         OList.clear();
@@ -278,13 +266,21 @@ public class MCQuiz extends AppCompatActivity {
     }
 
 
-
+    //--------------------------------------------------------------------------------------
+    //Check whether answer is correct
+    //--------------------------------------------------------------------------------------
     public boolean checkAnswer(String correctAnswer, String guessedAnswer) {
         if (correctAnswer.equals(guessedAnswer)) {
             return true;
         }
         return false;
     }
+
+
+    //--------------------------------------------------------------------------------------
+    //Now, the getanswer method calls the checkanswer method, to see if it returns true,
+    //set the background color to green, else red.
+    //--------------------------------------------------------------------------------------
     public void getanswer(Button b,Button b2,Button b3,Button b4, List<String> AL,int i,Button next)
     {
         //Getting the integers of colors from the colors.xml file, into variables, then accessing them
@@ -303,14 +299,17 @@ public class MCQuiz extends AppCompatActivity {
             if(checkAnswer(AL.get(i),b2.getText().toString()))
             {
                 b2.setBackgroundColor(greenColor);
+                Log.v("Back","Bg color set");
             }
             else if(checkAnswer(AL.get(i),b3.getText().toString()))
             {
                 b3.setBackgroundColor(greenColor);
+                Log.v("Back","Bg color set 2");
             }
             else if(checkAnswer(AL.get(i),b4.getText().toString()))
             {
                 b4.setBackgroundColor(greenColor);
+                Log.v("Back","Bg color set 3");
             }
         }
 
@@ -327,9 +326,9 @@ public class MCQuiz extends AppCompatActivity {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(title)
                 .setMessage(text)
-                .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Back to Home", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        // Do something when the "Cancel" button is clicked
+                        // Do something when the "OK" button is clicked
                         Intent intent = new Intent(MCQuiz.this, MainActivity.class);
                         intent.putExtra("flashcards", flashcard);
                         intent.putExtra("Username",username);
@@ -338,11 +337,14 @@ public class MCQuiz extends AppCompatActivity {
                         startActivity(intent);
                     }
                 })
-                .setCancelable(false)
                 .show();
     }
 
-
+    //----------------------------------------------------------------------------------------------
+    //Back-up feature: Update the performance of the flashcards as a whole (without Bryan's difficulty
+    //levels, then using this to calculate the best recall time to recall the questions for flashcard.)
+    //----------------------------------------------------------------------------------------------
+    /*
     private void postPerformance(Flashcard flashcard, double percentage) {
 
         DatabaseReference flashcardsRef = FirebaseDatabase.getInstance().getReference()
@@ -370,9 +372,18 @@ public class MCQuiz extends AppCompatActivity {
         });
     }
 
+ */
+
+    //----------------------------------------------------------------------------------------------
+    //Back-up feature: Update the performance of the flashcards as a whole (without Bryan's difficulty
+    //levels, then using this to calculate the best recall time to recall the questions for flashcard.)
+    //----------------------------------------------------------------------------------------------
+    /*
     private float calculatePercentage(int score, int totalQuestions) {
         return ((float) score / totalQuestions) * 100;
     }
+     */
+
     private void startShufflingAnimation(View shufflingCardLayout, ConstraintLayout mainLayout) {
         final int totalImages = imageViews.size();
 

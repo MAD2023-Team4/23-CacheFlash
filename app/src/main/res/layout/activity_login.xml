@@ -19,10 +19,8 @@
             android:layout_marginStart="65dp"
             android:layout_marginTop="100dp"
             android:layout_marginEnd="65dp"
-
             android:hint="@string/Email"
             android:inputType="textEmailAddress"
-
             android:textColorHint="@color/white"
             app:boxStrokeColor="@color/white"
             app:boxStrokeWidth="2dp"
@@ -34,11 +32,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="300dp"
-
                 android:drawableLeft="@drawable/baseline_email_24"
                 android:inputType="textEmailAddress"
                 android:singleLine="true"
-
                 android:textColor="@color/white"
                 android:textSize="16sp">
 
